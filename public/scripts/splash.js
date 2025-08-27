@@ -1,7 +1,7 @@
 const CANVAS_ID = 'splashCanvas';
 const MAX_CIRCLES = 100;
 const MIN_DURATION_MILLIS = 500;
-const MAX_DURATION_MILLIS = 5_000;
+const MAX_DURATION_MILLIS = 5000;
 
 let circles = [];
 let circleTimer;
