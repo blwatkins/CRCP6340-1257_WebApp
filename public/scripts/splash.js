@@ -92,7 +92,7 @@ class Circle {
 
     fadeIn() {
         if (this.alpha < 255) {
-            if (this.timer.isDone()){
+            if (this.timer.isDone()) {
                 this.alpha += 1;
                 this.color.setAlpha(this.alpha);
                 this.state = 'fadingIn';
