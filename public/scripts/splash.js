@@ -1,9 +1,9 @@
 const CANVAS_ID = 'splashCanvas';
-const CIRCLES = [];
 const MAX_CIRCLES = 100;
 const MIN_DURATION_MILLIS = 500;
 const MAX_DURATION_MILLIS = 5_000;
 
+let circles = [];
 let circleTimer;
 
 function setup() {
@@ -16,7 +16,7 @@ function setup() {
 function draw() {
     background(255);
     
-    CIRCLES.forEach(circle => {
+    circles.forEach(circle => {
         circle.draw();
         circle.update();
     });
@@ -29,19 +29,16 @@ function draw() {
 }
 
 function addCircles() {
-    if (CIRCLES.length < MAX_CIRCLES && circleTimer.isDone()) {
-        CIRCLES.push(buildCircle());
+    if (circles.length < MAX_CIRCLES && circleTimer.isDone()) {
+        circles.push(buildCircle());
         circleTimer.reset();
         circleTimer.setDuration(Math.ceil(random(MIN_DURATION_MILLIS, MAX_DURATION_MILLIS)));
     }
 }
 
 function removeCircles() {
-    for (let i = CIRCLES.length - 1; i >= 0; i--) {
-        if (CIRCLES[i].isDone()) {
-            CIRCLES.splice(i, 1);
-        }
-    }
+    let activeCircles = circles.filter(circle => !circle.isDone());
+    circles = activeCircles;
 }
 
 function buildCircle() {
