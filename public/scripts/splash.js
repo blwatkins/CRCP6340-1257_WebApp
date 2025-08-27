@@ -10,14 +10,12 @@ function setup() {
     const canvas = document.getElementById(CANVAS_ID);
     createCanvas(canvas.offsetWidth, canvas.offsetHeight, canvas);
     updateCanvasSize();
-    circleTimer = new Timer(Math.ceil(random(MIN_DURATION_MILLIS, MAX_DURATION_MILLIS)));
+    circleTimer = new Timer(MIN_DURATION_MILLIS);
 }
 
 function draw() {
     background(255);
-    h1("brittni watkins", width / 2, (height / 2.0) - 100);
-    h2("Fall 2025 NFTs", width / 2, (height / 2.0));
-
+    
     CIRCLES.forEach(circle => {
         circle.draw();
         circle.update();
@@ -25,6 +23,9 @@ function draw() {
 
     addCircles();
     removeCircles();
+
+    h1("brittni watkins", color(0), width / 2, (height / 2.0) - 100);
+    h2("Fall 2025 NFTs", color(0), width / 2, (height / 2.0));
 }
 
 function addCircles() {
@@ -50,18 +51,20 @@ function buildCircle() {
     return (new Circle(position, diameter, c));
 }
 
-function h1(textContent, x, y) {
+function h1(textContent, textColor, x, y) {
     rectMode(CENTER);
     textSize(64);
-    fill(255);
+    textFont('JetBrains Mono');
+    fill(textColor);
     textAlign(CENTER, CENTER);
     text(textContent, x, y, width);
 }
 
-function h2(textContent, x, y) {
+function h2(textContent, textColor, x, y) {
     rectMode(CENTER);
     textSize(32);
-    fill(255);
+    textFont('JetBrains Mono');
+    fill(textColor);
     textAlign(CENTER, CENTER);
     text(textContent, x, y, width);
 }
