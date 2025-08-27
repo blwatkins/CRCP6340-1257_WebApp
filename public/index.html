@@ -35,7 +35,10 @@
                 </div>
             </nav>
         </header>
-        <!-- TODO - splash image with title -->
+        <!-- Splash image section -->
+        <section id="splash" class="splash-container">
+            <canvas id="splashCanvas" class="splash-canvas"></canvas>
+        </section>
         <!-- TODO - featured project section -->
         <!-- TODO - link to all projects page -->
         <div class="container">
@@ -62,5 +65,28 @@
             </nav>
         </footer>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        <script>
+            // Initialize splash canvas with green background
+            document.addEventListener('DOMContentLoaded', function() {
+                const canvas = document.getElementById('splashCanvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Set canvas size to match container
+                function resizeCanvas() {
+                    canvas.width = canvas.offsetWidth;
+                    canvas.height = canvas.offsetHeight;
+                    
+                    // Fill with green background
+                    ctx.fillStyle = '#228B22'; // Forest green
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                }
+                
+                // Initial setup
+                resizeCanvas();
+                
+                // Resize canvas when window resizes
+                window.addEventListener('resize', resizeCanvas);
+            });
+        </script>
     </body>
 </html>
