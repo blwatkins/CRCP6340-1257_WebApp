@@ -1,0 +1,22 @@
+/* source: https://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/ */
+
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+h1, h2, h3, h4, h5, h6, .jetbrains {
+  font-family: "JetBrains Mono", monospace;
+}
+
+.btn-primary, .bg-primary {
+    background-color: #4B0082 !important;
+    border-color: #4B0082 !important;
+}
+
+.text-primary {
+    color: #4B0082 !important;
+}
