@@ -1,16 +1,16 @@
-// TODO - fix const capitalization
-const canvasId = 'splashCanvas';
-const circles = [];
-const maxCircles = 100;
+const CANVAS_ID = 'splashCanvas';
+const CIRCLES = [];
+const MAX_CIRCLES = 100;
+const MIN_DURATION_MILLIS = 500;
+const MAX_DURATION_MILLIS = 5_000;
+
 let circleTimer;
-const minDuration = 500;
-const maxDuration = 5_000;
 
 function setup() {
-    const canvas = document.getElementById(canvasId);
+    const canvas = document.getElementById(CANVAS_ID);
     createCanvas(canvas.offsetWidth, canvas.offsetHeight, canvas);
     updateCanvasSize();
-    circleTimer = new Timer(Math.ceil(random(minDuration, maxDuration)));
+    circleTimer = new Timer(Math.ceil(random(MIN_DURATION_MILLIS, MAX_DURATION_MILLIS)));
 }
 
 function draw() {
@@ -18,7 +18,7 @@ function draw() {
     h1("brittni watkins", width / 2, (height / 2.0) - 100);
     h2("Fall 2025 NFTs", width / 2, (height / 2.0));
 
-    circles.forEach(circle => {
+    CIRCLES.forEach(circle => {
         circle.draw();
         circle.update();
     });
@@ -28,17 +28,17 @@ function draw() {
 }
 
 function addCircles() {
-    if (circles.length < maxCircles && circleTimer.isDone()) {
-        circles.push(buildCircle());
+    if (CIRCLES.length < MAX_CIRCLES && circleTimer.isDone()) {
+        CIRCLES.push(buildCircle());
         circleTimer.reset();
-        circleTimer.setDuration(Math.ceil(random(minDuration, maxDuration)));
+        circleTimer.setDuration(Math.ceil(random(MIN_DURATION_MILLIS, MAX_DURATION_MILLIS)));
     }
 }
 
 function removeCircles() {
-    for (let i = circles.length - 1; i >= 0; i--) {
-        if (circles[i].isDone()) {
-            circles.splice(i, 1);
+    for (let i = CIRCLES.length - 1; i >= 0; i--) {
+        if (CIRCLES[i].isDone()) {
+            CIRCLES.splice(i, 1);
         }
     }
 }
@@ -71,7 +71,7 @@ function windowResized() {
 }
 
 function updateCanvasSize() {
-    const canvas = document.getElementById(canvasId);
+    const canvas = document.getElementById(CANVAS_ID);
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
     resizeCanvas(canvas.width, canvas.height);
