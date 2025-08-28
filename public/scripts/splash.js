@@ -15,8 +15,8 @@ function setup() {
 
 function draw() {
     background(255);
-    
-    circles.forEach(circle => {
+
+    circles.forEach((circle) => {
         circle.draw();
         circle.update();
     });
@@ -24,8 +24,8 @@ function draw() {
     addCircles();
     removeCircles();
 
-    h1("brittni watkins", color(0), width / 2, (height / 2.0) - 100);
-    h2("Fall 2025 NFTs", color(0), width / 2, (height / 2.0));
+    h1('brittni watkins', color(0), width / 2, (height / 2.0) - 100);
+    h2('Fall 2025 NFTs', color(0), width / 2, (height / 2.0));
 }
 
 function addCircles() {
@@ -151,7 +151,7 @@ class Circle {
             fill(this.color);
             noStroke();
         }
-        
+
         ellipse(this.position.x, this.position.y, this.diameter, this.diameter);
     }
 
