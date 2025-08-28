@@ -35,6 +35,11 @@ After making any changes, ALWAYS validate the application by:
    - Page loads with purple navigation bar
    - "brittni's fall 2025 nfts" branding displays
    - Navigation links ("home", "about") are clickable
+   - **Splash screen displays** with animated p5.js canvas showing:
+     - Animated colorful circles appearing and fading
+     - "brittni watkins" text centered on screen (64px JetBrains Mono)
+     - "Fall 2025 NFTs" text below (32px JetBrains Mono)
+     - Full viewport height canvas (100vh)
    - "about brittni" section displays with Lorem ipsum content
    - Footer displays copyright notice
 
@@ -45,8 +50,9 @@ After making any changes, ALWAYS validate the application by:
 - Navigation uses anchor links for single-page scrolling
 
 ### Known Issues
-- External resources (Google Fonts, Bootstrap CDN) may be blocked in some environments - this is normal and doesn't affect core functionality
+- External resources (Google Fonts, Bootstrap CDN, p5.js CDN) may be blocked in some environments - this is normal and doesn't affect core functionality
 - Test command is not implemented and will fail with exit code 1
+- Splash screen animation requires JavaScript to be enabled
 
 ## Project Structure
 
@@ -60,6 +66,8 @@ After making any changes, ALWAYS validate the application by:
 │   ├── index.html           # Main homepage
 │   ├── contact.html         # Contact page (placeholder)
 │   ├── projects.html        # Projects page (placeholder)
+│   ├── scripts/
+│   │   └── splash.js        # p5.js animated splash screen
 │   ├── style/
 │   │   └── style.css        # Custom CSS styles
 │   └── images/
@@ -77,8 +85,9 @@ After making any changes, ALWAYS validate the application by:
 
 ### Important Code Locations
 - **Server configuration**: `app.js` (Express server setup, port 3000, static file serving)
-- **Main webpage**: `public/index.html` (homepage with navigation and about section)
-- **Styling**: `public/style/style.css` (custom purple theme, JetBrains Mono font)
+- **Main webpage**: `public/index.html` (homepage with navigation, p5.js splash screen, and about section)
+- **Splash animation**: `public/scripts/splash.js` (p5.js animated canvas with circles and text)
+- **Styling**: `public/style/style.css` (custom purple theme, JetBrains Mono font, splash styles)
 - **Static assets**: `public/images/` (favicon and other images)
 - **Placeholder pages**: `public/contact.html` and `public/projects.html` (TODO comments only)
 
@@ -122,6 +131,12 @@ public/
 }
 ```
 
+### External CDN Dependencies
+- **p5.js**: `https://cdn.jsdelivr.net/npm/p5@1.11.10/lib/p5.min.js` (for splash screen animation)
+- **Bootstrap CSS**: `https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css`
+- **Bootstrap JS**: `https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js`
+- **Google Fonts**: JetBrains Mono font family
+
 ## Development Guidelines
 
 ### Making Changes
@@ -145,6 +160,8 @@ public/
 - **Modify styling**: Edit `public/style/style.css`
 - **Add images**: Place in `public/images/` directory
 - **Update navigation**: Modify nav section in `public/index.html`
+- **Modify splash animation**: Edit `public/scripts/splash.js` (p5.js sketch)
+- **Add JavaScript functionality**: Create files in `public/scripts/` directory
 - **Server configuration**: Edit `app.js` (port, middleware, etc.)
 
 ## Troubleshooting
@@ -161,5 +178,7 @@ public/
 
 ### External Resources Blocked
 - Google Fonts and Bootstrap CDN may be blocked in some environments
+- p5.js CDN may be blocked in some environments
 - This is normal and doesn't affect core site functionality
 - Custom CSS in `public/style/style.css` provides fallback styling
+- Splash screen will not animate if p5.js fails to load
