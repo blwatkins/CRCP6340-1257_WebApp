@@ -53,6 +53,7 @@ function h1(textContent, textColor, x, y) {
     textSize(64);
     textFont('JetBrains Mono');
     fill(textColor);
+    noStroke();
     textAlign(CENTER, CENTER);
     text(textContent, x, y, width);
 }
@@ -62,6 +63,7 @@ function h2(textContent, textColor, x, y) {
     textSize(32);
     textFont('JetBrains Mono');
     fill(textColor);
+    noStroke();
     textAlign(CENTER, CENTER);
     text(textContent, x, y, width);
 }
@@ -80,14 +82,34 @@ function updateCanvasSize() {
 }
 
 class Circle {
+    #TYPE_FILL = 'fill';
+    #TYPE_OUTLINE = 'outline';
+
+    #STATE_START = 'start';
+    #STATE_FADING_IN = 'fadingIn';
+    #STATE_OPAQUE = 'opaque';
+    #STATE_FADING_OUT = 'fadingOut';
+    #STATE_END = 'end';
+
     constructor(position, diameter, c) {
         this.position = position;
         this.diameter = diameter;
         this.color = c;
         this.alpha = 0;
         this.color.setAlpha(this.alpha);
-        this.state = 'start';
+        this.strokeWeight = random(1, 10);
+        this.state = this.#STATE_START;
         this.timer = new Timer(Math.ceil(random(25, 1000)));
+        this.setRandomType();
+    }
+
+    setRandomType() {
+        const r = Math.floor(random(2));
+        if (r === 0) {
+            this.type = this.#TYPE_FILL;
+        } else {
+            this.type = this.#TYPE_OUTLINE;
+        }
     }
 
     fadeIn() {
@@ -95,11 +117,11 @@ class Circle {
             if (this.timer.isDone()) {
                 this.alpha += 1;
                 this.color.setAlpha(this.alpha);
-                this.state = 'fadingIn';
+                this.state = this.#STATE_FADING_IN;
                 this.timer.reset();
             }
         } else {
-            this.state = 'opaque';
+            this.state = this.#STATE_OPAQUE;
         }
     }
 
@@ -108,28 +130,35 @@ class Circle {
             if (this.timer.isDone()) {
                 this.alpha -= 1;
                 this.color.setAlpha(this.alpha);
-                this.state = 'fadingOut';
+                this.state = this.#STATE_FADING_OUT;
                 this.timer.reset();
             }
         } else {
-            this.state = 'end';
+            this.state = this.#STATE_END;
         }
     }
 
     isDone() {
-        return this.state === 'end';
+        return this.state === this.#STATE_END;
     }
 
     draw() {
-        fill(this.color);
-        noStroke();
+        if (this.type === this.#TYPE_OUTLINE) {
+            noFill();
+            stroke(this.color);
+            strokeWeight(this.strokeWeight);
+        } else {
+            fill(this.color);
+            noStroke();
+        }
+        
         ellipse(this.position.x, this.position.y, this.diameter, this.diameter);
     }
 
     update() {
-        if (this.state === 'start' || this.state === 'fadingIn') {
+        if (this.state === this.#STATE_START || this.state === this.#STATE_FADING_IN) {
             this.fadeIn();
-        } else if (this.state === 'opaque' || this.state === 'fadingOut') {
+        } else if (this.state === this.#STATE_OPAQUE || this.state === this.#STATE_FADING_OUT) {
             this.fadeOut();
         }
     }
