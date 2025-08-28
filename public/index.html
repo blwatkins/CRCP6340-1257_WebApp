@@ -29,40 +29,73 @@
                         <div class="navbar-nav ms-auto">
                             <a class="nav-link" href="#">home</a>
                             <a class="nav-link" href="#about">about</a>
-                            <!-- TODO - link to contact page -->
+                            <a class="nav-link" href="./projects.html">projects</a>
+                            <a class="nav-link" href="./contact.html">contact</a>
                         </div>
                     </div>
                 </div>
             </nav>
         </header>
-        <!-- Splash image section -->
+        <!-- splash image -->
         <script src="https://cdn.jsdelivr.net/npm/p5@1.11.10/lib/p5.min.js"></script>
         <script src="./scripts/splash.js"></script>
-        <section id="splash" class="splash-container">
+        <div id="splash" class="splash-container">
             <canvas id="splashCanvas" class="splash-canvas"></canvas>
-        </section>
-        <!-- TODO - featured project section -->
-        <!-- TODO - link to all projects page -->
-        <div class="container">
-            <div class="row py-3">
-                <h2 class="text-center" id="about">about brittni</h2>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam at ultrices odio, non porta purus. Integer blandit odio nec turpis pulvinar dictum. Proin ultrices euismod enim, eget interdum neque egestas ut. Proin luctus lorem at velit feugiat, at fringilla mi semper. Praesent vehicula nibh mauris, ut euismod nisi malesuada ac. Mauris turpis quam, condimentum sed leo nec, vulputate vehicula nulla. Ut vel ex porttitor, sodales sem non, laoreet urna. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in bibendum nulla. Etiam sollicitudin est at velit suscipit ultrices.
-                </p>
-                <p>
-                    Nulla dignissim, arcu sit amet porta maximus, ex nunc placerat leo, in efficitur diam purus a ante. Cras turpis diam, consectetur at lacus ut, tincidunt maximus augue. Sed a gravida mauris. Etiam facilisis libero at nisl facilisis rhoncus. Vestibulum ut tellus sed massa laoreet laoreet eget quis quam. Vivamus commodo elementum auctor. Morbi aliquet et magna a dapibus.
-                </p>    
-                <p>
-                    Vivamus aliquam vestibulum nisl vel pulvinar. Suspendisse feugiat lectus in tellus tempus, a suscipit odio fermentum. Donec vitae ipsum ullamcorper, pharetra sapien bibendum, rutrum velit. In finibus odio at dolor tempor, non placerat nisi viverra. Proin id sagittis nisi. In hac habitasse platea dictumst. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce cursus pellentesque libero, vel cursus ex lacinia sed. Curabitur ante ipsum, tristique quis convallis eu, maximus efficitur orci. Curabitur id sapien vitae ante sagittis auctor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent sit amet ex leo. Morbi vestibulum risus ultricies neque placerat imperdiet. Maecenas vitae ex egestas, faucibus mauris a, maximus libero. Mauris faucibus, orci vitae varius facilisis, ante enim hendrerit ante, a rutrum elit arcu eget velit.
-                </p>
+        </div>
+        <!-- main content -->
+        <div id="content" class="container">
+            <div class="row py-3 align-items-center">
+                <div class="col text-center m-2">
+                    <h2 class="text-center">featured project</h2>
+                    <div class="card mx-auto my-2" style="width: 20rem; max-width: 90%;">
+                        <img src="./images/coming-soon-poster.png" class="card-img-top px-3 pt-3" alt="coming soon poster with light bulbs and a purple and blue butterfly on a purple background.">
+                        <div class="card-body text-center">
+                            <h5 class="card-title m-0">coming soon!</h5>
+                        </div>
+                    </div>
+                    <a href="./projects.html" class="btn btn-primary mx-auto my-2" role="button">
+                        view all projects
+                    </a>
+                </div>
+                <div class="col m-2" id="about">
+                    <h2 class="text-center">about brittni</h2>
+                    <p>
+                        Brittni is an educator, software developer, and algorithmic artist. She is passionate about teaching people from all backgrounds how to code. Her current research interests include algorithmic art, blockchain development, web application development, and DevSecOps. The applications of computer programming are numerous and varied; there is space for everyone.
+                    </p>
+                    <p>
+                        Brittni creates algorithmic art, photography, and music under her pseudonym,
+                        <a href="https://azurepolarbear.github.io/" target="_blank" rel="noopener noreferrer">azurepolarbear</a>.
+                        As an artist, she strives to discover striking visuals that can be created from logic and logical forms, such as geometric shapes and mathematical equations. She takes as much pride in the quality of her code as she does in the output it produces.
+                    </p>
+                    <p>
+                        With a bachelor's degree in creative computation, brittni has been creating art with code for more than a decade. She is a perpetual student, constantly exploring and learning about the intersection of creative practice, technical application, and technological innovation.
+                    </p>
+                    <p>
+                        Through her work as an artist, programmer, and educator, brittni hopes to inspire and encourage others to learn how to program and explore the amazing capabilities of code. Her philosophy is that art, art education, and computer science education should be available and accessible to all.
+                    </p>
+                    <p>
+                        <b>
+                            There is beauty in code, and code can make beautiful things.
+                        </b>
+                    </p>
+                </div>
             </div>
         </div>
         <footer>
-            <nav class="navbar sticky-bottom bg-primary w-100" data-bs-theme="dark">
+            <div class="row" style="min-height: 15vh;">&nbsp;</div>
+            <nav class="navbar fixed-bottom bg-primary w-100 navbar-expand" data-bs-theme="dark">
                 <div class="container-fluid">
                     <span class="navbar-text">
                         Copyright &copy; 2025 brittni watkins.
                     </span>
+                    <div id="navbarNavFooter">
+                        <div class="navbar-nav ms-auto">
+                            <a class="nav-link" href="#">home</a>
+                            <a class="nav-link" href="#about">about</a>
+                            <a class="nav-link" href="./projects.html">projects</a>
+                            <a class="nav-link" href="./contact.html">contact</a>
+                        </div>
+                    </div>
                 </div>
             </nav>
         </footer>
