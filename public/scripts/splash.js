@@ -97,7 +97,7 @@ class Circle {
         this.color = c;
         this.alpha = 0;
         this.color.setAlpha(this.alpha);
-        this.strokeWeight = random(1, 10);
+        this.strokeWeight = random(2, 10);
         this.state = this.#STATE_START;
         this.timer = new Timer(Math.ceil(random(25, 1000)));
         this.setRandomType();
