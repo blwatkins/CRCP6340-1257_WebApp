@@ -91,13 +91,16 @@ class Circle {
     #STATE_FADING_OUT = 'fadingOut';
     #STATE_END = 'end';
 
+    #MIN_STROKE_WEIGHT = 2;
+    #MAX_STROKE_WEIGHT = 10;
+
     constructor(position, diameter, c) {
         this.position = position;
         this.diameter = diameter;
         this.color = c;
         this.alpha = 0;
         this.color.setAlpha(this.alpha);
-        this.strokeWeight = random(2, 10);
+        this.strokeWeight = random(this.#MIN_STROKE_WEIGHT, this.#MAX_STROKE_WEIGHT);
         this.state = this.#STATE_START;
         this.timer = new Timer(Math.ceil(random(25, 1000)));
         this.setRandomType();
