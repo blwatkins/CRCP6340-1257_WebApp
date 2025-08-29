@@ -154,6 +154,8 @@ export default [
 
             /* eslint-plugin-n */
 
+            'n/no-extraneous-import': 'off',
+
             'n/no-missing-import': 'error',
 
             'n/no-unsupported-features/node-builtins': ['error', {
