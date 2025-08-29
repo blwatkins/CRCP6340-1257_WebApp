@@ -6,9 +6,7 @@ dotenv.config();
 export async function sendContactEmail(subject, text) {
     if (verifyMailSettings()) {
         const transport = nodemailer.createTransport({
-            host: process.env.SMTP_HOST,
-            port: process.env.SMTP_PORT,
-            secure: process.env.SMTP_SECURE,
+            service: process.env.SMTP_SERVICE,
             requireTLS: process.env.SMTP_REQUIRE_TLS,
             auth: {
                 user: process.env.MAIL_USER,
@@ -38,13 +36,11 @@ export async function sendContactEmail(subject, text) {
 }
 
 function verifyMailSettings() {
-    const host = process.env.SMTP_HOST;
-    const port = process.env.SMTP_PORT;
-    const secure = process.env.SMTP_SECURE;
+    const service = process.env.SMTP_SERVICE;
     const requireTLS = process.env.SMTP_REQUIRE_TLS;
     const user = process.env.MAIL_USER;
     const password = process.env.MAIL_PASSWORD;
     const mailFrom = process.env.MAIL_FROM;
     const mailTo = process.env.MAIL_TO;
-    return host && port && secure && requireTLS && user && password && mailFrom && mailTo;
+    return service && requireTLS && user && password && mailFrom && mailTo;
 }
