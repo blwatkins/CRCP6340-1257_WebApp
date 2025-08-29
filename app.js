@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 
-import { isValidString, sanitizeString, sendContactEmail } from './utils/utils.js';
+import { isValidString, sanitizeString, sendEmail } from './utils/utils.js';
 
 dotenv.config();
 
@@ -28,7 +28,7 @@ app.post('/mail', async (request, response) => {
     }
 
     if (subject && message) {
-        await sendContactEmail(subject, message)
+        await sendEmail(subject, message)
             .then(() => {
                 const successMessage = 'Email sent successfully.';
                 console.debug(successMessage);
