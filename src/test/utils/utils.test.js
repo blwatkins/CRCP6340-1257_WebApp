@@ -1,4 +1,16 @@
-import { isValidString, sanitizeEmailBody, sanitizeEmailSubject, sanitizeString, verifyEmailSettings } from '../../main/utils/utils.js';
+import { jest } from '@jest/globals';
+
+import { isValidString, sanitizeEmailBody, sanitizeEmailSubject, sanitizeString, sendEmail, verifyEmailSettings } from '../../main/utils/utils.js';
+
+jest.unstable_mockModule('nodemailer', () => ({
+    createTransport: jest.fn()
+}));
+
+let nodemailer;
+
+beforeAll(async () => {
+    nodemailer = await import('nodemailer');
+});
 
 describe('utils.js', () => {
     describe('isValidString()', () => {
@@ -221,6 +233,70 @@ describe('utils.js', () => {
             process.env[missingVar] = undefined;
 
             expect(verifyEmailSettings()).toBeFalsy();
+        });
+    });
+
+    describe('sendEmail()', () => {
+        const ORIGINAL_ENV = process.env;
+
+        beforeEach(() => {
+            process.env = {
+                ...ORIGINAL_ENV,
+                SMTP_SERVICE: 'gmail',
+                SMTP_REQUIRE_TLS: 'true',
+                MAIL_USER: 'user@example.com',
+                MAIL_PASSWORD: 'password',
+                MAIL_FROM: 'from@example.com',
+                MAIL_TO: 'to@example.com'
+            };
+            nodemailer.createTransport.mockClear();
+        });
+
+        afterAll(() => {
+            process.env = ORIGINAL_ENV;
+        });
+
+        test('sendEmail() - sends email successfully', async () => {
+            const sendMailMock = jest.fn().mockResolvedValue('success');
+            nodemailer.createTransport.mockReturnValue({ sendMail: sendMailMock });
+
+            await expect(sendEmail('Test Subject', 'Test Body')).resolves.toBeUndefined();
+
+            expect(nodemailer.createTransport).toHaveBeenCalledWith({
+                service: 'gmail',
+                requireTLS: 'true',
+                auth: {
+                    user: 'user@example.com',
+                    pass: 'password'
+                }
+            });
+
+            expect(sendMailMock).toHaveBeenCalledWith({
+                from: 'from@example.com',
+                to: 'to@example.com',
+                subject: 'Test Subject',
+                text: 'Test Body'
+            });
+        });
+
+        test('sendEmail() - email settings are missing', async () => {
+            process.env.SMTP_SERVICE = '';
+            await expect(sendEmail('Test Subject', 'Test Body')).rejects.toThrow('Email settings not properly configured.');
+        });
+
+        test('sendEmail() - subject is invalid', async () => {
+            await expect(sendEmail('', 'Test Body')).rejects.toThrow('Email subject or body is invalid.');
+        });
+
+        test('sendEmail() - body is invalid', async () => {
+            await expect(sendEmail('Test Subject', '')).rejects.toThrow('Email subject or body is invalid.');
+        });
+
+        test('sendEmail() - sendMail fails', async () => {
+            const sendMailMock = jest.fn().mockRejectedValue(new Error('SMTP error'));
+            nodemailer.createTransport.mockReturnValue({ sendMail: sendMailMock });
+
+            await expect(sendEmail('Test Subject', 'Test Body')).rejects.toThrow('Email send failed: Error: SMTP error');
         });
     });
 });

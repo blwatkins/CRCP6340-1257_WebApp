@@ -20,8 +20,6 @@
  * SOFTWARE.
  */
 
-import nodemailer from 'nodemailer';
-
 export function verifyEmailSettings() {
     const service = process.env.SMTP_SERVICE;
     const requireTLS = process.env.SMTP_REQUIRE_TLS;
@@ -96,6 +94,8 @@ export async function sendEmail(subject, body) {
     if (!verifyEmailSettings()) {
         throw new Error('Email settings not properly configured.');
     }
+
+    const nodemailer = await import('nodemailer');
 
     const transport = nodemailer.createTransport({
         service: process.env.SMTP_SERVICE,
