@@ -21,7 +21,7 @@
     "start": "dotenvx run -- node ./src/main/app.js",
     "dev": "dotenvx run -- nodemon ./src/main/app.js",
     "lint": "eslint ./eslint.config.js ./app.js ./public/scripts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.49.0",
