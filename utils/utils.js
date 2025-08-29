@@ -1,8 +1,6 @@
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 
-import { encode } from 'html-entities';
-
 dotenv.config();
 
 function verifyEmailSettings() {
@@ -61,8 +59,7 @@ export function isValidString(input) {
 export function sanitizeString(input) {
     if (isValidString(input)) {
         const trimmed = input.trim();
-        const htmlEncoded = encode(trimmed);
-        return htmlEncoded;
+        return trimmed;
     } else {
         return undefined;
     }
