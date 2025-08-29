@@ -1,7 +1,4 @@
 import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 function verifyEmailSettings() {
     const service = process.env.SMTP_SERVICE;

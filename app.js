@@ -1,9 +1,6 @@
 import express from 'express';
-import dotenv from 'dotenv';
 
 import { isValidString, sanitizeString, sendEmail } from './utils/utils.js';
-
-dotenv.config();
 
 const app = express();
 const port = 3000;
