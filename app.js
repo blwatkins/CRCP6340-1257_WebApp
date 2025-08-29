@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 
-import { sendMessage } from './utils/utils.js';
+import { sendContactEmail } from './utils/utils.js';
 
 dotenv.config();
 
@@ -17,7 +17,7 @@ app.post('/mail', async (request, response) => {
     // TODO - validate request body
     // TODO - sanitize request body
     // TODO - set proper subject and text from request body
-    await sendMessage('Test Subject', 'This is a test email body.')
+    await sendContactEmail('Test Subject', 'This is a test email body.')
         .then(() => {
             console.log('Email sent successfully from app.js');
             response.send('Email sent successfully from app.js');

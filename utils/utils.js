@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export async function sendMessage(subject, text) {
+export async function sendContactEmail(subject, text) {
     if (verifyMailSettings()) {
         const transport = nodemailer.createTransport({
             host: process.env.SMTP_HOST,
