@@ -32,7 +32,7 @@ function verifyEmailSettings() {
     return service && requireTLS && user && password && mailFrom && mailTo;
 }
 
-function sanitizeEmailSubject(subject) {
+export function sanitizeEmailSubject(subject) {
     const MAX_SUBJECT_LENGTH = 256;
 
     if (isValidString(subject)) {
@@ -48,7 +48,7 @@ function sanitizeEmailSubject(subject) {
     }
 }
 
-function sanitizeEmailBody(body) {
+export function sanitizeEmailBody(body) {
     const MAX_BODY_LENGTH = 16384;
 
     if (isValidString(body)) {
