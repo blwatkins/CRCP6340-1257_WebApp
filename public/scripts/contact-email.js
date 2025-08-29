@@ -44,11 +44,11 @@
     async function sendContactEmail() {
         const name = document.getElementById(NAME_INPUT_ID).value;
         const email = document.getElementById(EMAIL_INPUT_ID).value;
-        const messageBody = document.getElementById(MESSAGE_INPUT_ID).value;
+        const message = document.getElementById(MESSAGE_INPUT_ID).value;
 
-        const message = {
-            subject: `Contact Form Submission from ${name} <${email}>`,
-            body: messageBody
+        const requestBody = {
+            subject: `CRCP6340-1257 - Contact Form Submission from ${name} <${email}>`,
+            message: message
         };
 
         let success = false;
@@ -58,7 +58,7 @@
                 'Content-Type': 'application/json'
             },
             method: 'POST',
-            body: JSON.stringify(message)
+            body: JSON.stringify(requestBody)
         })
         .then((response) => {
             const formResponse = document.getElementById(FORM_RESPONSE_ID);
