@@ -8,13 +8,13 @@ import stylistic from '@stylistic/eslint-plugin';
 
 export default [
     eslint.configs.recommended,
-    es_x.configs['flat/restrict-to-es2022'],
+    es_x.configs['flat/restrict-to-es2023'],
     node.configs['flat/recommended'],
     security.configs.recommended,
     stylistic.configs['recommended'],
     {
         languageOptions: {
-            ecmaVersion: 2022,
+            ecmaVersion: 2023,
             sourceType: 'module'
         },
         rules: {
@@ -128,11 +128,16 @@ export default [
 
             /* eslint-plugin-security */
 
-            'security/detect-object-injection': 'off',
+            'security/detect-object-injection': 'error',
 
             /* eslint-plugin-n */
 
-            'n/no-missing-import': 'off'
+            'n/no-missing-import': 'error',
+
+            'n/no-unsupported-features/node-builtins': ['error', {
+                version: '>=22.0.0',
+                ignores: []
+            }]
         }
     }
 ];
