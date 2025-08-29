@@ -16,6 +16,8 @@ export async function sendMessage(subject, text) {
             }
         });
 
+        // TODO - validate subject and text parameters (empty, too long)
+        // TODO - sanitize subject and text parameters if necessary
         const message = {
             from: process.env.MAIL_FROM,
             to: process.env.MAIL_TO,
