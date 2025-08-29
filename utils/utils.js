@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-function sendEmail(subject, text) {
+export async function sendMessage(subject, text) {
     if (verifyMailSettings()) {
         const transport = nodemailer.createTransport({
             host: process.env.SMTP_HOST,
@@ -22,6 +22,14 @@ function sendEmail(subject, text) {
             subject: subject,
             text: text
         };
+
+        await transport.sendMail(message)
+            .then(() => {
+                console.log('Email send successfully');
+            })
+            .catch((error) => {
+                throw new Error(`Error sending email: ${error}`);
+            });
     } else {
         throw new Error('Mail settings are not properly configured.');
     }
