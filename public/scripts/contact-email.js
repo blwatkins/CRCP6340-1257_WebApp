@@ -59,8 +59,7 @@
             },
             method: 'POST',
             body: JSON.stringify(requestBody)
-        })
-        .then((response) => {
+        }).then((response) => {
             const formResponse = document.getElementById(FORM_RESPONSE_ID);
 
             if (response.ok) {
@@ -71,11 +70,11 @@
                 formResponse.classList.add('text-danger');
                 formResponse.innerHTML = 'Error sending message. Please try again later.';
             }
-        })
-        .then(async () => {
-            await new Promise((f) => setTimeout(f, FORM_TIMEOUT_MILLIS));
-        })
-        .then(() => {
+        }).then(async () => {
+            await new Promise((f) => {
+                setTimeout(f, FORM_TIMEOUT_MILLIS);
+            });
+        }).then(() => {
             clearFormIfSuccess(success);
             clearFormResponse();
             enableForm();
