@@ -1,6 +1,8 @@
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 
+import { encode } from 'html-entities';
+
 dotenv.config();
 
 export async function sendContactEmail(subject, text) {
@@ -32,6 +34,27 @@ export async function sendContactEmail(subject, text) {
             });
     } else {
         throw new Error('Mail settings are not properly configured.');
+    }
+}
+
+export function isValidString(input) {
+    const validType = typeof input === 'string';
+    let validContent = false;
+
+    if (validType) {
+        validContent = input.trim().length > 0;
+    }
+
+    return validType && validContent;
+}
+
+export function sanitizeString(input) {
+    if (isValidString(input)) {
+        const trimmed = input.trim();
+        const htmlEncoded = encode(trimmed);
+        return htmlEncoded;
+    } else {
+        return undefined;
     }
 }
 
