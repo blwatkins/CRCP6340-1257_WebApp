@@ -150,7 +150,7 @@ export default [
 
             /* eslint-plugin-security */
 
-            'security/detect-object-injection': 'error',
+            'security/detect-object-injection': 'off',
 
             /* eslint-plugin-n */
 

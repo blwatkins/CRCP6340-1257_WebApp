@@ -1,4 +1,4 @@
-import { isValidString, sanitizeEmailBody, sanitizeEmailSubject, sanitizeString } from '../../main/utils/utils.js';
+import { isValidString, sanitizeEmailBody, sanitizeEmailSubject, sanitizeString, verifyEmailSettings } from '../../main/utils/utils.js';
 
 describe('utils.js', () => {
     describe('isValidString()', () => {
@@ -148,6 +148,79 @@ describe('utils.js', () => {
             { input: 'body with special chars !@#$%^&*()', expected: 'body with special chars !@#$%^&*()' }
         ])('sanitizeEmailBody() - $#', ({ input, expected }) => {
             expect(sanitizeEmailBody(input)).toBe(expected);
+        });
+    });
+
+    describe('verifyEmailSettings()', () => {
+        const ORIGINAL_ENV = process.env;
+        const REQUIRED_VARS = [
+            ['SMTP_SERVICE'],
+            ['SMTP_REQUIRE_TLS'],
+            ['MAIL_USER'],
+            ['MAIL_PASSWORD'],
+            ['MAIL_FROM'],
+            ['MAIL_TO']
+        ];
+
+        beforeEach(() => {
+            process.env = { ...ORIGINAL_ENV };
+        });
+
+        afterAll(() => {
+            process.env = ORIGINAL_ENV;
+        });
+
+        test('verifyEmailSettings() - all required variables set', () => {
+            process.env.SMTP_SERVICE = 'gmail';
+            process.env.SMTP_REQUIRE_TLS = 'true';
+            process.env.MAIL_USER = 'user@example.com';
+            process.env.MAIL_PASSWORD = 'password';
+            process.env.MAIL_FROM = 'from@example.com';
+            process.env.MAIL_TO = 'to@example.com';
+
+            expect(verifyEmailSettings()).toBeTruthy();
+        });
+
+        test.each(
+            REQUIRED_VARS
+        )('verifyEmailSettings() - %s is missing', (missingVar) => {
+            process.env.SMTP_SERVICE = 'gmail';
+            process.env.SMTP_REQUIRE_TLS = 'true';
+            process.env.MAIL_USER = 'user@example.com';
+            process.env.MAIL_PASSWORD = 'password';
+            process.env.MAIL_FROM = 'from@example.com';
+            process.env.MAIL_TO = 'to@example.com';
+            delete process.env[missingVar];
+
+            expect(verifyEmailSettings()).toBeFalsy();
+        });
+
+        test.each(
+            REQUIRED_VARS
+        )('verifyEmailSettings() - %s is empty string', (missingVar) => {
+            process.env.SMTP_SERVICE = 'gmail';
+            process.env.SMTP_REQUIRE_TLS = 'true';
+            process.env.MAIL_USER = 'user@example.com';
+            process.env.MAIL_PASSWORD = 'password';
+            process.env.MAIL_FROM = 'from@example.com';
+            process.env.MAIL_TO = 'to@example.com';
+            process.env[missingVar] = '';
+
+            expect(verifyEmailSettings()).toBeFalsy();
+        });
+
+        test.each(
+            REQUIRED_VARS
+        )('verifyEmailSettings() - %s is undefined', (missingVar) => {
+            process.env.SMTP_SERVICE = 'gmail';
+            process.env.SMTP_REQUIRE_TLS = 'true';
+            process.env.MAIL_USER = 'user@example.com';
+            process.env.MAIL_PASSWORD = 'password';
+            process.env.MAIL_FROM = 'from@example.com';
+            process.env.MAIL_TO = 'to@example.com';
+            process.env[missingVar] = undefined;
+
+            expect(verifyEmailSettings()).toBeFalsy();
         });
     });
 });

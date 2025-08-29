@@ -22,7 +22,7 @@
 
 import nodemailer from 'nodemailer';
 
-function verifyEmailSettings() {
+export function verifyEmailSettings() {
     const service = process.env.SMTP_SERVICE;
     const requireTLS = process.env.SMTP_REQUIRE_TLS;
     const user = process.env.MAIL_USER;
