@@ -17,7 +17,7 @@ app.post('/mail', async (request, response) => {
     // TODO - validate request body
     // TODO - sanitize request body
     // TODO - set proper subject and text from request body
-    await sendContactEmail('Test Subject', 'This is a test email body.')
+    await sendContactEmail('[TEST]: Test Subject', '[TEST]: This is a test email body.')
         .then(() => {
             console.log('Email sent successfully from app.js');
             response.send('Email sent successfully from app.js');
