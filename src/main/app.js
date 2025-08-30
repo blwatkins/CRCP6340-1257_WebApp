@@ -25,7 +25,6 @@ const express = require('express');
 const { isValidString, sanitizeString, sendEmail } = require('./utils/utils.js');
 
 const app = express();
-const port = 3000;
 
 app.use(express.json());
 app.use(express.static('public'));
@@ -66,6 +65,4 @@ app.post('/mail', async (request, response) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`CRCP 6340 (1257) WebApp listening at http://localhost:${port}`);
-});
+exports.app = app;
