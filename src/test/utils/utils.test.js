@@ -1,16 +1,8 @@
-import { jest } from '@jest/globals';
+const nodemailer = require('nodemailer');
 
-import { isValidString, sanitizeEmailBody, sanitizeEmailSubject, sanitizeString, sendEmail, verifyEmailSettings } from '../../main/utils/utils.js';
+const { isValidString, sanitizeEmailBody, sanitizeEmailSubject, sanitizeString, sendEmail, verifyEmailSettings } = require('../../main/utils/utils.js');
 
-let nodemailer;
-
-jest.unstable_mockModule('nodemailer', () => ({
-    createTransport: jest.fn()
-}));
-
-beforeAll(async () => {
-    nodemailer = await import('nodemailer');
-});
+jest.mock('nodemailer');
 
 afterAll(() => {
     jest.clearAllMocks();
@@ -246,7 +238,7 @@ describe('utils.js', () => {
 
             expect(nodemailer.createTransport).toHaveBeenCalledWith({
                 service: TEST_ENV.SMTP_SERVICE,
-                requireTLS: TEST_ENV.SMTP_REQUIRE_TLS,
+                requireTLS: TEST_ENV.SMTP_REQUIRE_TLS === 'true',
                 auth: {
                     user: TEST_ENV.MAIL_USER,
                     pass: TEST_ENV.MAIL_PASSWORD
