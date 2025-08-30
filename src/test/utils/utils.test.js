@@ -178,7 +178,7 @@ describe('utils.js', () => {
             { input: 'b'.repeat(MAX_BODY_LENGTH - 1), expected: 'b'.repeat(MAX_BODY_LENGTH - 1) },
             { input: 'b'.repeat(MAX_BODY_LENGTH + 5000), expected: 'b'.repeat(MAX_BODY_LENGTH) },
             { input: '   b'.repeat(MAX_BODY_LENGTH / 2), expected: ('   b'.repeat(MAX_BODY_LENGTH / 2)).trim().substring(0, MAX_BODY_LENGTH) },
-            { input: '   b'.repeat(MAX_BODY_LENGTH), expected: ('   b'.repeat(MAX_BODY_LENGTH / 2)).trim().substring(0, MAX_BODY_LENGTH) },
+            { input: '   b'.repeat(MAX_BODY_LENGTH), expected: ('   b'.repeat(MAX_BODY_LENGTH)).trim().substring(0, MAX_BODY_LENGTH) },
             { input: '\n'.repeat(10) + 'body' + '\n'.repeat(10), expected: 'body' },
             { input: '\t'.repeat(10) + 'body' + '\t'.repeat(10), expected: 'body' },
             { input: 'body\nwith\nnewlines', expected: 'body\nwith\nnewlines' },
