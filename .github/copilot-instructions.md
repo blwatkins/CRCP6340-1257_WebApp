@@ -12,7 +12,7 @@ Always reference these instructions first and fallback to search or bash command
 
 ### Setup and Dependencies
 - Install dependencies: `npm install` -- takes ~15 seconds (includes jest, nodemailer, dotenv, supertest)
-- Environment variables: Create `.env` file for email functionality (SMTP settings, see Environment Variables section)
+- Environment variables: Create `.env` file for email functionality (SMTP settings, see Environment Variables section). For enhanced security, consider using dotenvx encryption features to encrypt sensitive environment variables.
 - No build process required (static file server with API routes)
 
 ### Running the Application
@@ -165,11 +165,58 @@ MAIL_TO=recipient@example.com
 - **MAIL_FROM**: Email address to send from
 - **MAIL_TO**: Email address to send contact form submissions to
 
+### Environment File Encryption (Recommended)
+For enhanced security, you can encrypt your `.env` file using dotenvx encryption features:
+
+#### 1. Generate Encryption Keys
+```bash
+# Generate a keypair for your .env file
+npx @dotenvx/dotenvx keypair
+
+# Or generate for a specific file
+npx @dotenvx/dotenvx keypair -f .env
+```
+
+This creates a `.env.keys` file containing the private key needed for decryption.
+
+#### 2. Encrypt Your .env File
+```bash
+# Encrypt the .env file (creates .env.vault)
+npx @dotenvx/dotenvx encrypt
+
+# Or encrypt a specific file
+npx @dotenvx/dotenvx encrypt -f .env
+```
+
+This creates an encrypted `.env.vault` file and updates your `.env` file with a reference to the encrypted version.
+
+#### 3. Secure Key Management
+- **Keep `.env.keys` secure**: This file contains the private key needed to decrypt your environment variables
+- **Add to .gitignore**: Ensure `.env.keys` is in your `.gitignore` file (never commit encryption keys)
+- **Team sharing**: Share the `.env.keys` file securely with team members who need access
+- **Production deployment**: Use the encrypted `.env.vault` file in production with the appropriate decryption key
+
+#### 4. Decryption (if needed)
+```bash
+# Decrypt back to plain .env file
+npx @dotenvx/dotenvx decrypt
+
+# Or decrypt a specific file
+npx @dotenvx/dotenvx decrypt -f .env.vault
+```
+
+#### Benefits of Encryption
+- **Security**: Sensitive data like passwords and API keys are encrypted at rest
+- **Version control safe**: Encrypted `.env.vault` files can be safely committed to repositories
+- **Team collaboration**: Share encrypted environment files without exposing sensitive data
+- **Runtime decryption**: dotenvx automatically decrypts variables when running the application
+
 ### Important Notes
 - Environment variables are loaded using `@dotenvx/dotenvx`
 - Contact form will return errors if environment variables are not properly configured
 - For Gmail, use app-specific passwords rather than regular account passwords
 - The application will show "[MISSING_ENV_FILE]" warning if `.env` file is missing (this is normal for static-only usage)
+- **Encryption is optional but recommended** for enhanced security, especially in team environments
 
 ## Common Commands Output Reference
 
