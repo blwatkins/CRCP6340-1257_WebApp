@@ -21,7 +21,7 @@
     "start": "dotenvx run -- node ./src/main/server.js",
     "dev": "dotenvx run -- nodemon ./src/main/server.js",
     "lint": "eslint ./eslint.config.js ./jest.config.js ./public/scripts ./src",
-    "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest"
+    "test": "jest"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.49.0",

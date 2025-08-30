@@ -9,7 +9,7 @@ const config = {
     collectCoverage: true,
     coverageDirectory: './out/tests-coverage',
     coverageReporters: ['text', 'lcov', 'json', 'json-summary', 'clover'],
-    coverageProvider: 'v8',
+    coverageProvider: 'babel',
 
     errorOnDeprecated: true,
 
