@@ -13,7 +13,10 @@ const config = {
 
     errorOnDeprecated: true,
 
-    verbose: true
+    verbose: true,
+
+    forceExit: true,
+    detectOpenHandles: true
 };
 
 export default config;
