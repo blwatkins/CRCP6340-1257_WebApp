@@ -1,6 +1,6 @@
 {
   "name": "crcp6340-1257_webapp",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "description": "Brittni's implementation of the web application project for CRCP 6340; Fall 2025 term.",
   "repository": {
@@ -15,16 +15,18 @@
     "name": "brittni watkins",
     "url": "https://blwatkins.github.io/"
   },
-  "type": "module",
-  "main": "app.js",
+  "type": "commonjs",
+  "main": "./src/main/app.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js",
-    "lint": "eslint ./eslint.config.js ./app.js ./public/scripts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "dotenvx run -- node ./src/main/server.js",
+    "dev": "dotenvx run -- nodemon ./src/main/server.js",
+    "lint": "eslint ./eslint.config.mjs ./jest.config.js ./public/scripts ./src",
+    "test": "jest"
   },
   "dependencies": {
-    "express": "^5.1.0"
+    "@dotenvx/dotenvx": "^1.49.0",
+    "express": "^5.1.0",
+    "nodemailer": "^7.0.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.34.0",
@@ -33,6 +35,8 @@
     "eslint-plugin-es-x": "^9.1.0",
     "eslint-plugin-n": "^17.21.3",
     "eslint-plugin-security": "^3.0.1",
-    "nodemon": "^3.1.10"
+    "jest": "^30.1.1",
+    "nodemon": "^3.1.10",
+    "supertest": "^7.1.4"
   }
 }

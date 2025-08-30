@@ -20,45 +20,27 @@
  * SOFTWARE.
  */
 
-/* source: https://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/ */
+/**
+ * For a detailed explanation regarding each configuration property, visit:
+ * https://jestjs.io/docs/configuration
+ */
 
-html {
-  box-sizing: border-box;
-}
+const config = {
+    clearMocks: true,
 
-*, *:before, *:after {
-  box-sizing: inherit;
-}
+    collectCoverage: true,
+    coverageDirectory: './out/tests-coverage',
+    coverageReporters: ['text', 'lcov', 'json', 'json-summary', 'clover'],
+    coverageProvider: 'babel',
 
-h1, h2, h3, h4, h5, h6, .jetbrains {
-  font-family: "JetBrains Mono", monospace;
-}
+    errorOnDeprecated: true,
 
-.btn-primary, .bg-primary {
-  background-color: #4B0082 !important;
-  border-color: #4B0082 !important;
-}
+    verbose: true,
 
-.text-primary {
-  color: #4B0082 !important;
-}
+    forceExit: true,
+    detectOpenHandles: true,
 
-/* Splash image styles */
-.splash-container {
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
+    testEnvironment: 'node'
+};
 
-.splash-canvas {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-div#content {
-  min-height: 100vh;
-}
+module.exports = config;

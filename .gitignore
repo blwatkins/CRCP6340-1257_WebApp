@@ -5,3 +5,14 @@ node_modules/
 
 # Visual Studio Code
 .vscode/
+
+# JetBrains IDEs
+.idea/
+
+# environment variables
+.env
+.env.keys
+.env.*
+
+# build output
+out/

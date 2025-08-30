@@ -20,45 +20,10 @@
  * SOFTWARE.
  */
 
-/* source: https://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/ */
+const { app } = require('./app');
 
-html {
-  box-sizing: border-box;
-}
+const port = 3000;
 
-*, *:before, *:after {
-  box-sizing: inherit;
-}
-
-h1, h2, h3, h4, h5, h6, .jetbrains {
-  font-family: "JetBrains Mono", monospace;
-}
-
-.btn-primary, .bg-primary {
-  background-color: #4B0082 !important;
-  border-color: #4B0082 !important;
-}
-
-.text-primary {
-  color: #4B0082 !important;
-}
-
-/* Splash image styles */
-.splash-container {
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.splash-canvas {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-div#content {
-  min-height: 100vh;
-}
+app.listen(port, () => {
+    console.log(`CRCP 6340 (1257) WebApp listening at http://localhost:${port}`);
+});
