@@ -46,6 +46,7 @@ After making any changes, ALWAYS validate the application by:
    - Navigation links ("home", "about", "projects", "contact") are clickable and functional
    - **Splash screen displays** with animated p5.js canvas showing:
      - Animated colorful circles appearing and fading (both filled circles and outline circles)
+     - Circles distributed evenly across the canvas using poisson disc sampling algorithm
      - "brittni watkins" text centered on screen (64px JetBrains Mono)
      - "Fall 2025 NFTs" text below (32px JetBrains Mono)
      - Full viewport height canvas (100vh)
@@ -54,7 +55,8 @@ After making any changes, ALWAYS validate the application by:
    - Footer displays copyright notice and navigation links
 6. **Contact form testing**: Navigate to `/contact.html` and verify:
    - Contact form loads with proper Bootstrap styling
-   - Form validation works (required fields, email format)
+   - Form validation works (required fields, email format, custom validation)
+   - Custom validation prevents empty strings and whitespace-only strings for name and message fields
    - Form disables submit button during processing
    - Form shows appropriate success/error messages
    - Form clears on successful submission, retains data on error
@@ -67,6 +69,7 @@ After making any changes, ALWAYS validate the application by:
 - ESLint passes without errors on all configured files
 - Jest tests pass with 100% code coverage
 - Contact form validates input and submits via POST /mail endpoint
+- Custom client-side validation prevents empty strings and whitespace-only strings
 - Email notifications sent when SMTP environment variables are properly configured
 
 ### Known Issues
@@ -114,8 +117,9 @@ After making any changes, ALWAYS validate the application by:
 ├── .env                     # Environment variables (not in repo, required for email functionality)
 ├── .github/
 │   ├── workflows/
-│   │   └── codeql.yml       # CodeQL security scanning
-│   ├── dependabot.yml      # Dependency update automation
+│   │   ├── nodejs.yml        # Node.js lint and test workflow
+│   │   └── codeql.yml        # CodeQL security scanning
+│   ├── dependabot.yml       # Dependency update automation
 │   ├── CODEOWNERS           # Code ownership
 │   └── copilot-instructions.md # This file
 ├── .gitignore               # Git ignore rules
@@ -132,8 +136,8 @@ After making any changes, ALWAYS validate the application by:
 - **Main webpage**: `public/index.html` (homepage with navigation, p5.js splash screen, featured project, and about sections)
 - **Contact page**: `public/contact.html` (contact page with working form, validation, Bootstrap styling)
 - **Projects page**: `public/projects.html` (full projects page with header, footer, and navigation)
-- **Splash animation**: `public/scripts/splash.js` (p5.js animated canvas with both fill and outline circles)
-- **Contact form script**: `public/scripts/contact-email.js` (form validation, submission, and UI feedback)
+- **Splash animation**: `public/scripts/splash.js` (p5.js animated canvas with Circle and CirclePoissonDiscSampler classes)
+- **Contact form script**: `public/scripts/contact-email.js` (form validation, submission, UI feedback, and custom validation methods)
 - **Styling**: `public/style/style.css` (custom purple theme, JetBrains Mono font, splash styles)
 - **Static assets**: `public/images/` (favicon, coming soon poster, and other images)
 - **Test files**: `src/test/` (Jest unit tests for app routes, utilities, and static serving)
@@ -300,6 +304,7 @@ velocity-copyright-template.txt
 - Favor async/await syntax over Promise chains
 
 ### CI/CD
+- Node.js lint and test workflow configured in `.github/workflows/nodejs.yml`
 - CodeQL security scanning configured in `.github/workflows/codeql.yml`
 - Jest test suite provides comprehensive test coverage
 - Dependabot configured for npm and GitHub Actions dependency updates
@@ -310,7 +315,7 @@ velocity-copyright-template.txt
 - **Modify styling**: Edit `public/style/style.css`
 - **Add images**: Place in `public/images/` directory
 - **Update navigation**: Modify nav sections in HTML files (header and footer)
-- **Modify splash animation**: Edit `public/scripts/splash.js` (p5.js sketch with Circle class)
+- **Modify splash animation**: Edit `public/scripts/splash.js` (p5.js sketch with Circle class and CirclePoissonDiscSampler for even distribution)
 - **Add client-side JavaScript**: Create files in `public/scripts/` directory with copyright headers
 - **Add server routes**: Edit `src/main/app.js` (Express routes and middleware)
 - **Add utility functions**: Edit `src/main/utils/utils.js` (Validation class, EmailClient class)
