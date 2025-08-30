@@ -93,8 +93,8 @@
                 formResponse.innerHTML = 'Error sending message. Please try again later.';
             }
         }).then(async () => {
-            await new Promise((f) => {
-                setTimeout(f, FORM_TIMEOUT_MILLIS);
+            await new Promise((resolve) => {
+                setTimeout(resolve, FORM_TIMEOUT_MILLIS);
             });
         }).then(() => {
             clearFormIfSuccess(success);

@@ -121,10 +121,11 @@ class EmailClient {
             text: messageText
         };
 
-        await transport.sendMail(message)
-            .catch((error) => {
-                throw new Error(`Email send failed: ${error}`);
-            });
+        try {
+            await transport.sendMail(message);
+        } catch (error) {
+            throw new Error(`Email send failed: ${error}`);
+        }
     }
 }
 
