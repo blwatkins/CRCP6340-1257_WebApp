@@ -191,7 +191,7 @@ describe('utils.js', () => {
 
     describe('verifyEmailSettings()', () => {
         beforeEach(() => {
-            process.env = { ...ORIGINAL_ENV };
+            process.env = { ...TEST_ENV };
         });
 
         afterEach(() => {
@@ -199,14 +199,12 @@ describe('utils.js', () => {
         });
 
         test('verifyEmailSettings() - all required variables set', () => {
-            process.env = { ...TEST_ENV };
             expect(verifyEmailSettings()).toBeTruthy();
         });
 
         test.each(
             REQUIRED_EMAIL_VARS
         )('verifyEmailSettings() - %s is missing', (missingVar) => {
-            process.env = { ...TEST_ENV };
             delete process.env[missingVar];
 
             expect(verifyEmailSettings()).toBeFalsy();
@@ -215,7 +213,6 @@ describe('utils.js', () => {
         test.each(
             REQUIRED_EMAIL_VARS
         )('verifyEmailSettings() - %s is empty string', (missingVar) => {
-            process.env = { ...TEST_ENV };
             process.env[missingVar] = '';
 
             expect(verifyEmailSettings()).toBeFalsy();
@@ -224,7 +221,6 @@ describe('utils.js', () => {
         test.each(
             REQUIRED_EMAIL_VARS
         )('verifyEmailSettings() - %s is undefined', (missingVar) => {
-            process.env = { ...TEST_ENV };
             process.env[missingVar] = undefined;
 
             expect(verifyEmailSettings()).toBeFalsy();
@@ -233,14 +229,13 @@ describe('utils.js', () => {
 
     describe('sendEmail()', () => {
         beforeEach(() => {
-            process.env = {
-                ...TEST_ENV
-            };
+            process.env = { ...TEST_ENV };
             nodemailer.createTransport.mockClear();
         });
 
         afterEach(() => {
             process.env = ORIGINAL_ENV;
+            nodemailer.createTransport.mockClear();
         });
 
         test('sendEmail() - sends email successfully', async () => {

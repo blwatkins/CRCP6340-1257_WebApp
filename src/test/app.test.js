@@ -2,20 +2,19 @@ import request from 'supertest';
 
 import { afterAll, afterEach, jest } from '@jest/globals';
 
+let nodemailer;
+let app;
+
 jest.unstable_mockModule('nodemailer', () => ({
     createTransport: jest.fn()
 }));
-
-let nodemailer;
-
-let app;
 
 beforeAll(async () => {
     app = (await import('../main/app.js')).app;
     nodemailer = await import('nodemailer');
 });
 
-afterAll(async () => {
+afterAll(() => {
     jest.clearAllMocks();
     jest.resetModules();
 });
@@ -34,19 +33,18 @@ const TEST_ENV = {
 
 describe('POST /mail', () => {
     beforeEach(() => {
-        process.env = { ...ORIGINAL_ENV };
+        process.env = { ...TEST_ENV };
         nodemailer.createTransport.mockClear();
     });
 
     afterEach(() => {
         process.env = ORIGINAL_ENV;
+        nodemailer.createTransport.mockClear();
     });
 
     test('POST /mail - success', async () => {
         const sendMailMock = jest.fn().mockResolvedValue('success');
         nodemailer.createTransport.mockReturnValue({ sendMail: sendMailMock });
-
-        process.env = { ...TEST_ENV };
 
         const response = await request(app)
             .post('/mail')
@@ -62,7 +60,7 @@ describe('POST /mail', () => {
         });
     });
 
-    test('should respond with 400 if subject or message is invalid', async () => {
+    test('POST /mail - invalid subject or message', async () => {
         const response = await request(app)
             .post('/mail')
             .send({ subject: '', message: '' });
@@ -71,10 +69,9 @@ describe('POST /mail', () => {
         expect(response.text).toBe('Invalid request format.');
     });
 
-    test('should respond with 500 if sendEmail throws error', async () => {
+    test('POST /mail - sendEmail error', async () => {
         const sendMailMock = jest.fn().mockRejectedValue(new Error('SMTP error'));
         nodemailer.createTransport.mockReturnValue({ sendMail: sendMailMock });
-        process.env = { ...TEST_ENV };
 
         const response = await request(app)
             .post('/mail')
