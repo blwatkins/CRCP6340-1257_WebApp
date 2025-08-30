@@ -156,49 +156,50 @@ describe('utils.js', () => {
                 expect(EmailClient.sanitizeEmailSubject(input)).toBe(expected);
             });
 
-            describe('EmailClient.sanitizeEmailBody()', () => {
-                test.each([
-                    { input: 'value', expected: 'value' },
-                    { input: '    value', expected: 'value' },
-                    { input: 'value    ', expected: 'value' },
-                    { input: '    value    ', expected: 'value' },
-                    { input: '\nvalue\n', expected: 'value' },
-                    { input: '\tvalue\t', expected: 'value' },
-                    { input: ' \n \tvalue \n \t', expected: 'value' },
-                    { input: 'other value', expected: 'other value' },
-                    { input: '    other    value    ', expected: 'other    value' },
-                    { input: '', expected: undefined },
-                    { input: '        ', expected: undefined },
-                    { input: '\n', expected: undefined },
-                    { input: '\t', expected: undefined },
-                    { input: '\n\t', expected: undefined },
-                    { input: '   \n\t   ', expected: undefined },
-                    { input: null, expected: undefined },
-                    { input: undefined, expected: undefined },
-                    { input: 123, expected: undefined },
-                    { input: {}, expected: undefined },
-                    { input: [], expected: undefined },
-                    {
-                        input: () => {
-                            return 'test';
-                        },
-                        expected: undefined
+        });
+
+        describe('EmailClient.sanitizeEmailBody()', () => {
+            test.each([
+                { input: 'value', expected: 'value' },
+                { input: '    value', expected: 'value' },
+                { input: 'value    ', expected: 'value' },
+                { input: '    value    ', expected: 'value' },
+                { input: '\nvalue\n', expected: 'value' },
+                { input: '\tvalue\t', expected: 'value' },
+                { input: ' \n \tvalue \n \t', expected: 'value' },
+                { input: 'other value', expected: 'other value' },
+                { input: '    other    value    ', expected: 'other    value' },
+                { input: '', expected: undefined },
+                { input: '        ', expected: undefined },
+                { input: '\n', expected: undefined },
+                { input: '\t', expected: undefined },
+                { input: '\n\t', expected: undefined },
+                { input: '   \n\t   ', expected: undefined },
+                { input: null, expected: undefined },
+                { input: undefined, expected: undefined },
+                { input: 123, expected: undefined },
+                { input: {}, expected: undefined },
+                { input: [], expected: undefined },
+                {
+                    input: () => {
+                        return 'test';
                     },
-                    { input: 'b'.repeat(EmailClient.MAX_BODY_LENGTH), expected: 'b'.repeat(EmailClient.MAX_BODY_LENGTH) },
-                    { input: 'b'.repeat(EmailClient.MAX_BODY_LENGTH + 1), expected: 'b'.repeat(EmailClient.MAX_BODY_LENGTH) },
-                    { input: 'b'.repeat(EmailClient.MAX_BODY_LENGTH + 100), expected: 'b'.repeat(EmailClient.MAX_BODY_LENGTH) },
-                    { input: 'b'.repeat(EmailClient.MAX_BODY_LENGTH - 1), expected: 'b'.repeat(EmailClient.MAX_BODY_LENGTH - 1) },
-                    { input: 'b'.repeat(EmailClient.MAX_BODY_LENGTH + 5000), expected: 'b'.repeat(EmailClient.MAX_BODY_LENGTH) },
-                    { input: '   b'.repeat(EmailClient.MAX_BODY_LENGTH / 2), expected: ('   b'.repeat(EmailClient.MAX_BODY_LENGTH / 2)).trim().substring(0, EmailClient.MAX_BODY_LENGTH) },
-                    { input: '   b'.repeat(EmailClient.MAX_BODY_LENGTH), expected: ('   b'.repeat(EmailClient.MAX_BODY_LENGTH)).trim().substring(0, EmailClient.MAX_BODY_LENGTH) },
-                    { input: '\n'.repeat(10) + 'body' + '\n'.repeat(10), expected: 'body' },
-                    { input: '\t'.repeat(10) + 'body' + '\t'.repeat(10), expected: 'body' },
-                    { input: 'body\nwith\nnewlines', expected: 'body\nwith\nnewlines' },
-                    { input: 'body\twith\ttabs', expected: 'body\twith\ttabs' },
-                    { input: 'body with special chars !@#$%^&*()', expected: 'body with special chars !@#$%^&*()' }
-                ])('EmailClient.sanitizeEmailBody() - $#', ({ input, expected }) => {
-                    expect(EmailClient.sanitizeEmailBody(input)).toBe(expected);
-                });
+                    expected: undefined
+                },
+                { input: 'b'.repeat(EmailClient.MAX_BODY_LENGTH), expected: 'b'.repeat(EmailClient.MAX_BODY_LENGTH) },
+                { input: 'b'.repeat(EmailClient.MAX_BODY_LENGTH + 1), expected: 'b'.repeat(EmailClient.MAX_BODY_LENGTH) },
+                { input: 'b'.repeat(EmailClient.MAX_BODY_LENGTH + 100), expected: 'b'.repeat(EmailClient.MAX_BODY_LENGTH) },
+                { input: 'b'.repeat(EmailClient.MAX_BODY_LENGTH - 1), expected: 'b'.repeat(EmailClient.MAX_BODY_LENGTH - 1) },
+                { input: 'b'.repeat(EmailClient.MAX_BODY_LENGTH + 5000), expected: 'b'.repeat(EmailClient.MAX_BODY_LENGTH) },
+                { input: '   b'.repeat(EmailClient.MAX_BODY_LENGTH / 2), expected: ('   b'.repeat(EmailClient.MAX_BODY_LENGTH / 2)).trim().substring(0, EmailClient.MAX_BODY_LENGTH) },
+                { input: '   b'.repeat(EmailClient.MAX_BODY_LENGTH), expected: ('   b'.repeat(EmailClient.MAX_BODY_LENGTH)).trim().substring(0, EmailClient.MAX_BODY_LENGTH) },
+                { input: '\n'.repeat(10) + 'body' + '\n'.repeat(10), expected: 'body' },
+                { input: '\t'.repeat(10) + 'body' + '\t'.repeat(10), expected: 'body' },
+                { input: 'body\nwith\nnewlines', expected: 'body\nwith\nnewlines' },
+                { input: 'body\twith\ttabs', expected: 'body\twith\ttabs' },
+                { input: 'body with special chars !@#$%^&*()', expected: 'body with special chars !@#$%^&*()' }
+            ])('EmailClient.sanitizeEmailBody() - $#', ({ input, expected }) => {
+                expect(EmailClient.sanitizeEmailBody(input)).toBe(expected);
             });
         });
 
