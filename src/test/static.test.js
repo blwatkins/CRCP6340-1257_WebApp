@@ -1,10 +1,6 @@
-import request from 'supertest';
+const request = require('supertest');
 
-let app;
-
-beforeAll(async () => {
-    app = (await import('../main/app.js')).app;
-});
+const { app } = require('../main/app.js');
 
 describe('static file serving', () => {
     test('GET / - serves index.html', async () => {
