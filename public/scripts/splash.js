@@ -160,7 +160,7 @@ class Circle {
         this.strokeWeight = random(this.#MIN_STROKE_WEIGHT, this.#MAX_STROKE_WEIGHT);
         this.state = this.#STATE_START;
         this.timer = new Timer(Math.ceil(random(1, 1000)));
-        this.poissionGridIndex = gridIndex;
+        this.poissonGridIndex = gridIndex;
         this.setRandomType();
     }
 
