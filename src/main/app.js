@@ -22,7 +22,7 @@
 
 const express = require('express');
 
-const { isValidString, sanitizeString, sendEmail } = require('./utils/utils.js');
+const { Validation, EmailClient } = require('./utils/utils.js');
 
 const app = express();
 
@@ -38,16 +38,16 @@ app.post('/mail', async (request, response) => {
         let subject;
         let message;
 
-        if (isValidString(requestSubject)) {
-            subject = sanitizeString(requestSubject);
+        if (Validation.isValidString(requestSubject)) {
+            subject = Validation.sanitizeString(requestSubject);
         }
 
-        if (isValidString(requestMessage)) {
-            message = sanitizeString(requestMessage);
+        if (Validation.isValidString(requestMessage)) {
+            message = Validation.sanitizeString(requestMessage);
         }
 
         if (subject && message) {
-            await sendEmail(subject, message)
+            await EmailClient.sendEmail(subject, message)
                 .then(() => {
                     const successMessage = 'Email sent successfully.';
                     console.debug(successMessage);
