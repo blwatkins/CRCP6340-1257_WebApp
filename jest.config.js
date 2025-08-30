@@ -16,7 +16,9 @@ const config = {
     verbose: true,
 
     forceExit: true,
-    detectOpenHandles: true
+    detectOpenHandles: true,
+
+    testEnvironment: 'node'
 };
 
 export default config;
