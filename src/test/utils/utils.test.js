@@ -2,15 +2,41 @@ import { jest } from '@jest/globals';
 
 import { isValidString, sanitizeEmailBody, sanitizeEmailSubject, sanitizeString, sendEmail, verifyEmailSettings } from '../../main/utils/utils.js';
 
+let nodemailer;
+
 jest.unstable_mockModule('nodemailer', () => ({
     createTransport: jest.fn()
 }));
 
-let nodemailer;
-
 beforeAll(async () => {
     nodemailer = await import('nodemailer');
 });
+
+afterAll(() => {
+    jest.clearAllMocks();
+    jest.resetModules();
+});
+
+const ORIGINAL_ENV = process.env;
+
+const TEST_ENV = {
+    ...ORIGINAL_ENV,
+    SMTP_SERVICE: 'fake',
+    SMTP_REQUIRE_TLS: 'true',
+    MAIL_USER: 'user@fake-website.fake',
+    MAIL_PASSWORD: 'password',
+    MAIL_FROM: 'from@fake-website.fake',
+    MAIL_TO: 'to@fake-website.fake'
+};
+
+const REQUIRED_EMAIL_VARS = [
+    ['SMTP_SERVICE'],
+    ['SMTP_REQUIRE_TLS'],
+    ['MAIL_USER'],
+    ['MAIL_PASSWORD'],
+    ['MAIL_FROM'],
+    ['MAIL_TO']
+];
 
 describe('utils.js', () => {
     describe('isValidString()', () => {
@@ -164,72 +190,41 @@ describe('utils.js', () => {
     });
 
     describe('verifyEmailSettings()', () => {
-        const ORIGINAL_ENV = process.env;
-        const REQUIRED_VARS = [
-            ['SMTP_SERVICE'],
-            ['SMTP_REQUIRE_TLS'],
-            ['MAIL_USER'],
-            ['MAIL_PASSWORD'],
-            ['MAIL_FROM'],
-            ['MAIL_TO']
-        ];
-
         beforeEach(() => {
             process.env = { ...ORIGINAL_ENV };
         });
 
-        afterAll(() => {
+        afterEach(() => {
             process.env = ORIGINAL_ENV;
         });
 
         test('verifyEmailSettings() - all required variables set', () => {
-            process.env.SMTP_SERVICE = 'gmail';
-            process.env.SMTP_REQUIRE_TLS = 'true';
-            process.env.MAIL_USER = 'user@example.com';
-            process.env.MAIL_PASSWORD = 'password';
-            process.env.MAIL_FROM = 'from@example.com';
-            process.env.MAIL_TO = 'to@example.com';
-
+            process.env = { ...TEST_ENV };
             expect(verifyEmailSettings()).toBeTruthy();
         });
 
         test.each(
-            REQUIRED_VARS
+            REQUIRED_EMAIL_VARS
         )('verifyEmailSettings() - %s is missing', (missingVar) => {
-            process.env.SMTP_SERVICE = 'gmail';
-            process.env.SMTP_REQUIRE_TLS = 'true';
-            process.env.MAIL_USER = 'user@example.com';
-            process.env.MAIL_PASSWORD = 'password';
-            process.env.MAIL_FROM = 'from@example.com';
-            process.env.MAIL_TO = 'to@example.com';
+            process.env = { ...TEST_ENV };
             delete process.env[missingVar];
 
             expect(verifyEmailSettings()).toBeFalsy();
         });
 
         test.each(
-            REQUIRED_VARS
+            REQUIRED_EMAIL_VARS
         )('verifyEmailSettings() - %s is empty string', (missingVar) => {
-            process.env.SMTP_SERVICE = 'gmail';
-            process.env.SMTP_REQUIRE_TLS = 'true';
-            process.env.MAIL_USER = 'user@example.com';
-            process.env.MAIL_PASSWORD = 'password';
-            process.env.MAIL_FROM = 'from@example.com';
-            process.env.MAIL_TO = 'to@example.com';
+            process.env = { ...TEST_ENV };
             process.env[missingVar] = '';
 
             expect(verifyEmailSettings()).toBeFalsy();
         });
 
         test.each(
-            REQUIRED_VARS
+            REQUIRED_EMAIL_VARS
         )('verifyEmailSettings() - %s is undefined', (missingVar) => {
-            process.env.SMTP_SERVICE = 'gmail';
-            process.env.SMTP_REQUIRE_TLS = 'true';
-            process.env.MAIL_USER = 'user@example.com';
-            process.env.MAIL_PASSWORD = 'password';
-            process.env.MAIL_FROM = 'from@example.com';
-            process.env.MAIL_TO = 'to@example.com';
+            process.env = { ...TEST_ENV };
             process.env[missingVar] = undefined;
 
             expect(verifyEmailSettings()).toBeFalsy();
@@ -237,22 +232,14 @@ describe('utils.js', () => {
     });
 
     describe('sendEmail()', () => {
-        const ORIGINAL_ENV = process.env;
-
         beforeEach(() => {
             process.env = {
-                ...ORIGINAL_ENV,
-                SMTP_SERVICE: 'gmail',
-                SMTP_REQUIRE_TLS: 'true',
-                MAIL_USER: 'user@example.com',
-                MAIL_PASSWORD: 'password',
-                MAIL_FROM: 'from@example.com',
-                MAIL_TO: 'to@example.com'
+                ...TEST_ENV
             };
             nodemailer.createTransport.mockClear();
         });
 
-        afterAll(() => {
+        afterEach(() => {
             process.env = ORIGINAL_ENV;
         });
 
@@ -263,17 +250,17 @@ describe('utils.js', () => {
             await expect(sendEmail('Test Subject', 'Test Body')).resolves.toBeUndefined();
 
             expect(nodemailer.createTransport).toHaveBeenCalledWith({
-                service: 'gmail',
-                requireTLS: 'true',
+                service: TEST_ENV.SMTP_SERVICE,
+                requireTLS: TEST_ENV.SMTP_REQUIRE_TLS,
                 auth: {
-                    user: 'user@example.com',
-                    pass: 'password'
+                    user: TEST_ENV.MAIL_USER,
+                    pass: TEST_ENV.MAIL_PASSWORD
                 }
             });
 
             expect(sendMailMock).toHaveBeenCalledWith({
-                from: 'from@example.com',
-                to: 'to@example.com',
+                from: TEST_ENV.MAIL_FROM,
+                to: TEST_ENV.MAIL_TO,
                 subject: 'Test Subject',
                 text: 'Test Body'
             });
