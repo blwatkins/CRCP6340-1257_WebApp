@@ -74,7 +74,7 @@ function removeCircles() {
     const activeCircles = circles.filter(circle => !circle.isDone());
 
     fadedCircles.forEach((circle) => {
-        CirclePoissonDiscSampler.removeGridPosition(circle.poissionGridIndex);
+        CirclePoissonDiscSampler.removeGridPosition(circle.poissonGridIndex);
     });
 
     circles = activeCircles;
