@@ -61,7 +61,7 @@
         }
     }
 
-    function validateFormFields() {
+    function checkCustomFormValidity() {
         const nameElement = document.getElementById(NAME_INPUT_ID);
         const emailElement = document.getElementById(EMAIL_INPUT_ID);
         const messageElement = document.getElementById(MESSAGE_INPUT_ID);
@@ -70,9 +70,9 @@
         const emailValid = isValidString(emailElement.value);
         const messageValid = isValidString(messageElement.value);
 
-        setCustomValidation(nameElement, nameValid, 'Please enter a valid name (whitespace-only names are not allowed).');
-        setCustomValidation(emailElement, emailValid, 'Please enter a valid email address (whitespace-only emails are not allowed).');
-        setCustomValidation(messageElement, messageValid, 'Please enter a valid message (whitespace-only messages are not allowed).');
+        setCustomValidation(nameElement, nameValid, 'Please enter your name.');
+        setCustomValidation(emailElement, emailValid, 'Please enter a valid email address.');
+        setCustomValidation(messageElement, messageValid, 'Please enter a message.');
 
         return nameValid && emailValid && messageValid;
     }
@@ -111,7 +111,6 @@
         const emailValue = document.getElementById(EMAIL_INPUT_ID).value;
         const messageValue = document.getElementById(MESSAGE_INPUT_ID).value;
 
-        // Sanitize the input values
         const name = sanitizeString(nameValue);
         const email = sanitizeString(emailValue);
         const message = sanitizeString(messageValue);
@@ -155,15 +154,18 @@
         event.preventDefault();
         event.stopPropagation();
 
-        // Perform custom validation for trimmed strings
-        const customValidationPassed = validateFormFields();
-
-        // Check both HTML5 validation and custom validation
-        if (form.checkValidity() && customValidationPassed) {
+        if (form.checkValidity() && checkCustomFormValidity()) {
             disableForm();
             await sendContactEmail();
         }
 
         form.classList.add(WAS_VALIDATED_CLASS);
     }, false);
+
+    form.addEventListener('input', () => {
+        form.classList.remove(WAS_VALIDATED_CLASS);
+        form.checkValidity();
+        checkCustomFormValidity();
+        form.classList.add(WAS_VALIDATED_CLASS);
+    });
 })();

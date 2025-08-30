@@ -20,10 +20,16 @@
  * SOFTWARE.
  */
 
+// The Coding Train: Coding Challenge #33 Poisson-disc Sampling
+// https://youtu.be/flQgnCUxHlw?si=TXz26cnfWBCbReyu
+
 const CANVAS_ID = 'splashCanvas';
 const MAX_CIRCLES = 100;
-const MIN_DURATION_MILLIS = 500;
-const MAX_DURATION_MILLIS = 5000;
+const MIN_DURATION_MILLIS = 250;
+const MAX_DURATION_MILLIS = 2000;
+
+const MIN_CIRCLE_RADIUS = 25;
+const MAX_CIRCLE_RADIUS = 100;
 
 let circles = [];
 let circleTimer;
@@ -33,6 +39,7 @@ function setup() {
     createCanvas(canvas.offsetWidth, canvas.offsetHeight, canvas);
     updateCanvasSize();
     circleTimer = new Timer(MIN_DURATION_MILLIS);
+    CirclePoissonDiscSampler.init(MIN_CIRCLE_RADIUS, MAX_CIRCLE_RADIUS * 2);
 }
 
 function draw() {
@@ -52,22 +59,50 @@ function draw() {
 
 function addCircles() {
     if (circles.length < MAX_CIRCLES && circleTimer.isDone()) {
-        circles.push(buildCircle());
-        circleTimer.reset();
-        circleTimer.setDuration(Math.ceil(random(MIN_DURATION_MILLIS, MAX_DURATION_MILLIS)));
+        const circle = buildPoissonCircle();
+
+        if (circle) {
+            circles.push(circle);
+            circleTimer.reset();
+            circleTimer.setDuration(Math.ceil(random(MIN_DURATION_MILLIS, MAX_DURATION_MILLIS)));
+        }
     }
 }
 
 function removeCircles() {
-    let activeCircles = circles.filter(circle => !circle.isDone());
+    const fadedCircles = circles.filter(circle => circle.isDone());
+    const activeCircles = circles.filter(circle => !circle.isDone());
+
+    fadedCircles.forEach((circle) => {
+        CirclePoissonDiscSampler.removeGridPosition(circle.poissonGridIndex);
+    });
+
     circles = activeCircles;
 }
 
 function buildCircle() {
     const position = createVector(random(width), random(height));
-    const diameter = random(50, 150);
+    const diameter = random(MIN_CIRCLE_RADIUS * 2, MAX_CIRCLE_RADIUS * 2);
     const c = color(random(255), random(255), random(255));
     return (new Circle(position, diameter, c));
+}
+
+function buildPoissonCircle() {
+    const index = CirclePoissonDiscSampler.buildNewRandomPoint();
+
+    if (CirclePoissonDiscSampler.isValidGridIndex(index)) {
+        const position = CirclePoissonDiscSampler.getGridPosition(index);
+
+        if (position) {
+            const diameter = random(MIN_CIRCLE_RADIUS * 2, MAX_CIRCLE_RADIUS * 2);
+            const c = color(random(255), random(255), random(255));
+            return (new Circle(position, diameter, c, index));
+        } else {
+            return null;
+        }
+    } else {
+        return null;
+    }
 }
 
 function h1(textContent, textColor, x, y) {
@@ -116,7 +151,7 @@ class Circle {
     #MIN_STROKE_WEIGHT = 2;
     #MAX_STROKE_WEIGHT = 10;
 
-    constructor(position, diameter, c) {
+    constructor(position, diameter, c, gridIndex = -1) {
         this.position = position;
         this.diameter = diameter;
         this.color = c;
@@ -124,7 +159,8 @@ class Circle {
         this.color.setAlpha(this.alpha);
         this.strokeWeight = random(this.#MIN_STROKE_WEIGHT, this.#MAX_STROKE_WEIGHT);
         this.state = this.#STATE_START;
-        this.timer = new Timer(Math.ceil(random(25, 1000)));
+        this.timer = new Timer(Math.ceil(random(1, 1000)));
+        this.poissonGridIndex = gridIndex;
         this.setRandomType();
     }
 
@@ -205,5 +241,131 @@ class Timer {
 
     setDuration(durationMillis) {
         this.durationMillis = durationMillis;
+    }
+}
+
+class CirclePoissonDiscSampler {
+    static GRID = [];
+    static N = 2;
+    static GRID_DEFAULT = -1;
+
+    static R;
+    static W;
+    static COLS;
+    static ROWS;
+
+    static initialized = false;
+
+    static init(minR, maxR) {
+        CirclePoissonDiscSampler.R = random(minR, maxR);
+        CirclePoissonDiscSampler.W = CirclePoissonDiscSampler.R / Math.sqrt(CirclePoissonDiscSampler.N);
+        CirclePoissonDiscSampler.COLS = Math.floor(width / CirclePoissonDiscSampler.W);
+        CirclePoissonDiscSampler.ROWS = Math.floor(height / CirclePoissonDiscSampler.W);
+        for (let i = 0; i < CirclePoissonDiscSampler.COLS * CirclePoissonDiscSampler.ROWS; i++) {
+            CirclePoissonDiscSampler.GRID.push(CirclePoissonDiscSampler.GRID_DEFAULT);
+        }
+
+        CirclePoissonDiscSampler.initialized = true;
+    }
+
+    static buildNewRandomPoint() {
+        if (CirclePoissonDiscSampler.initialized) {
+            const x = random(width);
+            const y = random(height);
+            const position = createVector(x, y);
+
+            const col = CirclePoissonDiscSampler.getGridColumn(x);
+            const row = CirclePoissonDiscSampler.getGridRow(y);
+
+            if (CirclePoissonDiscSampler.isValidSamplePosition(position)) {
+                const index = CirclePoissonDiscSampler.getGridIndex(col, row);
+                CirclePoissonDiscSampler.GRID[index] = position;
+                return index;
+            } else {
+                return -1;
+            }
+        } else {
+            return -1;
+        }
+    }
+
+    /**
+     * @param index
+     * @returns {p5.Vector|null}
+     */
+    static getGridPosition(index) {
+        if (CirclePoissonDiscSampler.isValidGridIndex(index) && CirclePoissonDiscSampler.isGridOccupied(index)) {
+            return CirclePoissonDiscSampler.GRID[index];
+        } else {
+            return null;
+        }
+    }
+
+    static removeGridPosition(index) {
+        if (CirclePoissonDiscSampler.isValidGridIndex(index)) {
+            CirclePoissonDiscSampler.GRID[index] = CirclePoissonDiscSampler.GRID_DEFAULT;
+        }
+    }
+
+    static getGridColumn(x) {
+        return Math.floor(x / CirclePoissonDiscSampler.W);
+    }
+
+    static getGridRow(y) {
+        return Math.floor(y / CirclePoissonDiscSampler.W);
+    }
+
+    static getGridIndex(col, row) {
+        return (col + (row * CirclePoissonDiscSampler.COLS));
+    }
+
+    static isValidGridIndex(index) {
+        return (index >= 0 && index < CirclePoissonDiscSampler.GRID.length);
+    }
+
+    /**
+     * @param index
+     * @returns {boolean} - True if the grid index is occupied, false otherwise.
+     * This method also returns false if the index is invalid.
+     */
+    static isGridOccupied(index) {
+        if (CirclePoissonDiscSampler.isValidGridIndex(index)) {
+            return (CirclePoissonDiscSampler.GRID[index] instanceof p5.Vector);
+        } else {
+            return false;
+        }
+    }
+
+    static isValidSamplePosition(samplePosition) {
+        if (!samplePosition) {
+            return false;
+        }
+
+        const sampleCol = CirclePoissonDiscSampler.getGridColumn(samplePosition.x);
+        const sampleRow = CirclePoissonDiscSampler.getGridRow(samplePosition.y);
+        const gridIndex = CirclePoissonDiscSampler.getGridIndex(sampleCol, sampleRow);
+
+        if (CirclePoissonDiscSampler.isValidGridIndex(gridIndex) && !CirclePoissonDiscSampler.isGridOccupied(gridIndex)) {
+            let isValidPoint = true;
+
+            for (let i = -1; i <= 1; i++) {
+                for (let j = -1; j <= 1; j++) {
+                    const neighborIndex = CirclePoissonDiscSampler.getGridIndex(sampleCol + i, sampleRow + j);
+
+                    if (CirclePoissonDiscSampler.isValidGridIndex(neighborIndex) && CirclePoissonDiscSampler.isGridOccupied(neighborIndex)) {
+                        const neighborPosition = CirclePoissonDiscSampler.getGridPosition(neighborIndex);
+                        const distance = p5.Vector.dist(samplePosition, neighborPosition);
+
+                        if (distance < CirclePoissonDiscSampler.R) {
+                            isValidPoint = false;
+                        }
+                    }
+                }
+            }
+
+            return isValidPoint;
+        } else {
+            return false;
+        }
     }
 }
