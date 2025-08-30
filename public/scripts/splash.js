@@ -350,7 +350,7 @@ class CirclePoissonDiscSampler {
 
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
-                    const neighborIndex = this.getGridIndex(sampleCol + i, sampleRow + j);
+                    const neighborIndex = CirclePoissonDiscSampler.getGridIndex(sampleCol + i, sampleRow + j);
 
                     if (CirclePoissonDiscSampler.isValidGridIndex(neighborIndex) && CirclePoissonDiscSampler.isGridOccupied(neighborIndex)) {
                         const neighborPosition = CirclePoissonDiscSampler.getGridPosition(neighborIndex);
