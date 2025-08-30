@@ -91,12 +91,12 @@ function buildPoissonCircle() {
     const index = CirclePoissonDiscSampler.buildNewRandomPoint();
 
     if (CirclePoissonDiscSampler.isValidGridIndex(index)) {
-        const poisition = CirclePoissonDiscSampler.getGridPosition(index);
+        const position = CirclePoissonDiscSampler.getGridPosition(index);
 
-        if (poisition) {
+        if (position) {
             const diameter = random(MIN_CIRCLE_RADIUS * 2, MAX_CIRCLE_RADIUS * 2);
             const c = color(random(255), random(255), random(255));
-            return (new Circle(poisition, diameter, c, index));
+            return (new Circle(position, diameter, c, index));
         } else {
             return null;
         }
