@@ -1,6 +1,6 @@
 import request from 'supertest';
 
-import { afterAll, afterEach, jest } from '@jest/globals';
+import { jest } from '@jest/globals';
 
 let nodemailer;
 let app;
@@ -31,53 +31,79 @@ const TEST_ENV = {
     MAIL_TO: 'to@fake-website.fake'
 };
 
-describe('POST /mail', () => {
-    beforeEach(() => {
-        process.env = { ...TEST_ENV };
-        nodemailer.createTransport.mockClear();
-    });
-
-    afterEach(() => {
-        process.env = ORIGINAL_ENV;
-        nodemailer.createTransport.mockClear();
-    });
-
-    test('POST /mail - success', async () => {
-        const sendMailMock = jest.fn().mockResolvedValue('success');
-        nodemailer.createTransport.mockReturnValue({ sendMail: sendMailMock });
-
-        const response = await request(app)
-            .post('/mail')
-            .send({ subject: 'Test Subject', message: 'Test Body' });
-
-        expect(response.statusCode).toBe(200);
-        expect(response.text).toBe('Email sent successfully.');
-        expect(sendMailMock).toHaveBeenCalledWith({
-            from: TEST_ENV.MAIL_FROM,
-            to: TEST_ENV.MAIL_TO,
-            subject: 'Test Subject',
-            text: 'Test Body'
+describe('app routing', () => {
+    describe('general routes', () => {
+        test('GET /nonexistent - returns 404', async () => {
+            const response = await request(app).get('/nonexistent');
+            expect(response.statusCode).toBe(404);
         });
     });
 
-    test('POST /mail - invalid subject or message', async () => {
-        const response = await request(app)
-            .post('/mail')
-            .send({ subject: '', message: '' });
+    describe('POST /mail', () => {
+        beforeEach(() => {
+            process.env = { ...TEST_ENV };
+            nodemailer.createTransport.mockClear();
+        });
 
-        expect(response.statusCode).toBe(400);
-        expect(response.text).toBe('Invalid request format.');
-    });
+        afterEach(() => {
+            process.env = ORIGINAL_ENV;
+            nodemailer.createTransport.mockClear();
+        });
 
-    test('POST /mail - sendEmail error', async () => {
-        const sendMailMock = jest.fn().mockRejectedValue(new Error('SMTP error'));
-        nodemailer.createTransport.mockReturnValue({ sendMail: sendMailMock });
+        test('POST /mail - success', async () => {
+            const sendMailMock = jest.fn().mockResolvedValue('success');
+            nodemailer.createTransport.mockReturnValue({ sendMail: sendMailMock });
 
-        const response = await request(app)
-            .post('/mail')
-            .send({ subject: 'Test Subject', message: 'Test Body' });
+            const response = await request(app)
+                .post('/mail')
+                .send({ subject: 'Test Subject', message: 'Test Body' });
 
-        expect(response.statusCode).toBe(500);
-        expect(response.text).toBe('Error sending email.');
+            expect(response.statusCode).toBe(200);
+            expect(response.text).toBe('Email sent successfully.');
+            expect(sendMailMock).toHaveBeenCalledWith({
+                from: TEST_ENV.MAIL_FROM,
+                to: TEST_ENV.MAIL_TO,
+                subject: 'Test Subject',
+                text: 'Test Body'
+            });
+        });
+
+        test('POST /mail - invalid subject or message', async () => {
+            const response = await request(app)
+                .post('/mail')
+                .send({ subject: '', message: '' });
+
+            expect(response.statusCode).toBe(400);
+            expect(response.text).toBe('Invalid request format.');
+        });
+
+        test('POST /mail - missing required fields', async () => {
+            const response = await request(app)
+                .post('/mail')
+                .send({ subject: 'Test Subject' });
+
+            expect(response.statusCode).toBe(400);
+            expect(response.text).toBe('Invalid request format.');
+        });
+
+        test('POST /mail - malformed JSON', async () => {
+            const response = await request(app)
+                .post('/mail')
+                .send('invalid json');
+
+            expect(response.statusCode).toBe(400);
+        });
+
+        test('POST /mail - sendEmail error', async () => {
+            const sendMailMock = jest.fn().mockRejectedValue(new Error('SMTP error'));
+            nodemailer.createTransport.mockReturnValue({ sendMail: sendMailMock });
+
+            const response = await request(app)
+                .post('/mail')
+                .send({ subject: 'Test Subject', message: 'Test Body' });
+
+            expect(response.statusCode).toBe(500);
+            expect(response.text).toBe('Error sending email.');
+        });
     });
 });
