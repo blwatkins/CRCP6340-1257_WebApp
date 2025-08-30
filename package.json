@@ -18,8 +18,8 @@
   "type": "commonjs",
   "main": "./src/main/app.js",
   "scripts": {
-    "start": "dotenvx run -- node ./src/main/app.js",
-    "dev": "dotenvx run -- nodemon ./src/main/app.js",
+    "start": "dotenvx run -- node ./src/main/server.js",
+    "dev": "dotenvx run -- nodemon ./src/main/server.js",
     "lint": "eslint ./eslint.config.js ./jest.config.js ./public/scripts ./src",
     "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest"
   },
