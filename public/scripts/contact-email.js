@@ -103,13 +103,13 @@
     }
 
     const form = document.getElementById(CONTACT_FORM_ID);
-    form.addEventListener('submit', (event) => {
+    form.addEventListener('submit', async (event) => {
         event.preventDefault();
         event.stopPropagation();
 
         if (form.checkValidity()) {
             disableForm();
-            sendContactEmail();
+            await sendContactEmail();
         }
 
         form.classList.add(WAS_VALIDATED_CLASS);

@@ -154,7 +154,7 @@ export default [
 
             /* eslint-plugin-n */
 
-            'n/no-extraneous-import': 'off',
+            'n/no-extraneous-import': 'error',
 
             'n/no-missing-import': 'error',
 

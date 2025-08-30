@@ -155,7 +155,6 @@ describe('utils.js', () => {
             ])('EmailClient.sanitizeEmailSubject() - $#', ({ input, expected }) => {
                 expect(EmailClient.sanitizeEmailSubject(input)).toBe(expected);
             });
-
         });
 
         describe('EmailClient.sanitizeEmailBody()', () => {

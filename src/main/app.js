@@ -47,16 +47,15 @@ app.post('/mail', async (request, response) => {
         }
 
         if (subject && message) {
-            await EmailClient.sendEmail(subject, message)
-                .then(() => {
-                    const successMessage = 'Email sent successfully.';
-                    console.debug(successMessage);
-                    response.send(successMessage);
-                })
-                .catch((error) => {
-                    console.error(`Error sending email: ${error}`);
-                    response.status(500).send('Error sending email.');
-                });
+            try {
+                await EmailClient.sendEmail(subject, message);
+                const successMessage = 'Email sent successfully.';
+                console.debug(successMessage);
+                response.send(successMessage);
+            } catch (error) {
+                console.error(`Error sending email: ${error}`);
+                response.status(500).send('Error sending email.');
+            }
         } else {
             response.status(400).send('Invalid request format.');
         }
