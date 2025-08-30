@@ -55,7 +55,7 @@ app.post('/mail', async (request, response) => {
                 })
                 .catch((error) => {
                     console.error(`Error sending email: ${error}`);
-                    response.status(500).send(`Error sending email.`);
+                    response.status(500).send('Error sending email.');
                 });
         } else {
             response.status(400).send('Invalid request format.');
