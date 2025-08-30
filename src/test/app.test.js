@@ -1,18 +1,9 @@
-import request from 'supertest';
+const request = require('supertest');
+const nodemailer = require('nodemailer');
 
-import { jest } from '@jest/globals';
+const { app } = require('../main/app.js');
 
-let nodemailer;
-let app;
-
-jest.unstable_mockModule('nodemailer', () => ({
-    createTransport: jest.fn()
-}));
-
-beforeAll(async () => {
-    app = (await import('../main/app.js')).app;
-    nodemailer = await import('nodemailer');
-});
+jest.mock('nodemailer');
 
 afterAll(() => {
     jest.clearAllMocks();
