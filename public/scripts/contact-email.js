@@ -75,32 +75,31 @@
 
         let success = false;
 
-        await fetch('/mail', {
+        const response = await fetch('/mail', {
             headers: {
                 'Content-Type': 'application/json'
             },
             method: 'POST',
             body: JSON.stringify(requestBody)
-        }).then((response) => {
-            const formResponse = document.getElementById(FORM_RESPONSE_ID);
-
-            if (response.ok) {
-                success = true;
-                formResponse.classList.add('text-success');
-                formResponse.innerHTML = 'Message sent successfully. Thank you for contacting us!';
-            } else {
-                formResponse.classList.add('text-danger');
-                formResponse.innerHTML = 'Error sending message. Please try again later.';
-            }
-        }).then(async () => {
-            await new Promise((resolve) => {
-                setTimeout(resolve, FORM_TIMEOUT_MILLIS);
-            });
-        }).then(() => {
-            clearFormIfSuccess(success);
-            clearFormResponse();
-            enableForm();
         });
+        const formResponse = document.getElementById(FORM_RESPONSE_ID);
+
+        if (response.ok) {
+            success = true;
+            formResponse.classList.add('text-success');
+            formResponse.innerHTML = 'Message sent successfully. Thank you for contacting us!';
+        } else {
+            formResponse.classList.add('text-danger');
+            formResponse.innerHTML = 'Error sending message. Please try again later.';
+        }
+
+        await new Promise((resolve) => {
+            setTimeout(resolve, FORM_TIMEOUT_MILLIS);
+        });
+
+        clearFormIfSuccess(success);
+        clearFormResponse();
+        enableForm();
     }
 
     const form = document.getElementById(CONTACT_FORM_ID);
