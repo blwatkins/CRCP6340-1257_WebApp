@@ -55,7 +55,14 @@ class EmailClient {
         const password = process.env.MAIL_PASSWORD;
         const mailFrom = process.env.MAIL_FROM;
         const mailTo = process.env.MAIL_TO;
-        return service && requireTLS && user && password && mailFrom && mailTo;
+        return (
+            Validation.isValidString(service) &&
+            Validation.isValidString(requireTLS) &&
+            Validation.isValidString(user) &&
+            Validation.isValidString(password) &&
+            Validation.isValidString(mailFrom) &&
+            Validation.isValidString(mailTo)
+        );
     }
 
     static sanitizeEmailSubject(subject) {
