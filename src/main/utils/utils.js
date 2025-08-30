@@ -36,8 +36,7 @@ class Validation {
 
     static sanitizeString(input) {
         if (Validation.isValidString(input)) {
-            const trimmed = input.trim();
-            return trimmed;
+            return input.trim();
         } else {
             return undefined;
         }
