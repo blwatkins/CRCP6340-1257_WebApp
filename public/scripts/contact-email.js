@@ -34,6 +34,49 @@
     const DISABLE_TOGGLE_CLASS = 'disable-toggle';
     const WAS_VALIDATED_CLASS = 'was-validated';
 
+    function isValidString(input) {
+        const validType = typeof input === 'string';
+        let validContent = false;
+
+        if (validType) {
+            validContent = input.trim().length > 0;
+        }
+
+        return validType && validContent;
+    }
+
+    function sanitizeString(input) {
+        if (isValidString(input)) {
+            return input.trim();
+        } else {
+            return undefined;
+        }
+    }
+
+    function setCustomValidation(element, isValid, message) {
+        if (isValid) {
+            element.setCustomValidity('');
+        } else {
+            element.setCustomValidity(message);
+        }
+    }
+
+    function validateFormFields() {
+        const nameElement = document.getElementById(NAME_INPUT_ID);
+        const emailElement = document.getElementById(EMAIL_INPUT_ID);
+        const messageElement = document.getElementById(MESSAGE_INPUT_ID);
+
+        const nameValid = isValidString(nameElement.value);
+        const emailValid = isValidString(emailElement.value);
+        const messageValid = isValidString(messageElement.value);
+
+        setCustomValidation(nameElement, nameValid, 'Please enter a valid name (whitespace-only names are not allowed).');
+        setCustomValidation(emailElement, emailValid, 'Please enter a valid email address (whitespace-only emails are not allowed).');
+        setCustomValidation(messageElement, messageValid, 'Please enter a valid message (whitespace-only messages are not allowed).');
+
+        return nameValid && emailValid && messageValid;
+    }
+
     function disableForm() {
         const elements = document.getElementsByClassName(DISABLE_TOGGLE_CLASS);
 
@@ -64,9 +107,14 @@
     }
 
     async function sendContactEmail() {
-        const name = document.getElementById(NAME_INPUT_ID).value;
-        const email = document.getElementById(EMAIL_INPUT_ID).value;
-        const message = document.getElementById(MESSAGE_INPUT_ID).value;
+        const nameValue = document.getElementById(NAME_INPUT_ID).value;
+        const emailValue = document.getElementById(EMAIL_INPUT_ID).value;
+        const messageValue = document.getElementById(MESSAGE_INPUT_ID).value;
+
+        // Sanitize the input values
+        const name = sanitizeString(nameValue);
+        const email = sanitizeString(emailValue);
+        const message = sanitizeString(messageValue);
 
         const requestBody = {
             subject: `CRCP6340-1257 - Contact Form Submission from ${name} <${email}>`,
@@ -107,7 +155,11 @@
         event.preventDefault();
         event.stopPropagation();
 
-        if (form.checkValidity()) {
+        // Perform custom validation for trimmed strings
+        const customValidationPassed = validateFormFields();
+
+        // Check both HTML5 validation and custom validation
+        if (form.checkValidity() && customValidationPassed) {
             disableForm();
             await sendContactEmail();
         }
