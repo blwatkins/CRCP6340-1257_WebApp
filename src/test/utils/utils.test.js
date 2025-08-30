@@ -157,8 +157,6 @@ describe('utils.js', () => {
             });
 
             describe('EmailClient.sanitizeEmailBody()', () => {
-                const MAX_BODY_LENGTH = 16384;
-
                 test.each([
                     { input: 'value', expected: 'value' },
                     { input: '    value', expected: 'value' },
