@@ -20,7 +20,9 @@
  * SOFTWARE.
  */
 
-export function verifyEmailSettings() {
+const nodemailer = require('nodemailer');
+
+exports.verifyEmailSettings = () => {
     const service = process.env.SMTP_SERVICE;
     const requireTLS = process.env.SMTP_REQUIRE_TLS;
     const user = process.env.MAIL_USER;
@@ -28,13 +30,13 @@ export function verifyEmailSettings() {
     const mailFrom = process.env.MAIL_FROM;
     const mailTo = process.env.MAIL_TO;
     return service && requireTLS && user && password && mailFrom && mailTo;
-}
+};
 
-export function sanitizeEmailSubject(subject) {
+exports.sanitizeEmailSubject = (subject) => {
     const MAX_SUBJECT_LENGTH = 256;
 
-    if (isValidString(subject)) {
-        let sanitized = sanitizeString(subject);
+    if (exports.isValidString(subject)) {
+        let sanitized = exports.sanitizeString(subject);
 
         if (sanitized && sanitized.length > MAX_SUBJECT_LENGTH) {
             sanitized = sanitized.substring(0, MAX_SUBJECT_LENGTH);
@@ -44,13 +46,13 @@ export function sanitizeEmailSubject(subject) {
     } else {
         return undefined;
     }
-}
+};
 
-export function sanitizeEmailBody(body) {
+exports.sanitizeEmailBody = (body) => {
     const MAX_BODY_LENGTH = 16384;
 
-    if (isValidString(body)) {
-        let sanitized = sanitizeString(body);
+    if (exports.isValidString(body)) {
+        let sanitized = exports.sanitizeString(body);
 
         if (sanitized && sanitized.length > MAX_BODY_LENGTH) {
             sanitized = sanitized.substring(0, MAX_BODY_LENGTH);
@@ -60,9 +62,9 @@ export function sanitizeEmailBody(body) {
     } else {
         return undefined;
     }
-}
+};
 
-export function isValidString(input) {
+exports.isValidString = (input) => {
     const validType = typeof input === 'string';
     let validContent = false;
 
@@ -71,16 +73,16 @@ export function isValidString(input) {
     }
 
     return validType && validContent;
-}
+};
 
-export function sanitizeString(input) {
-    if (isValidString(input)) {
+exports.sanitizeString = (input) => {
+    if (exports.isValidString(input)) {
         const trimmed = input.trim();
         return trimmed;
     } else {
         return undefined;
     }
-}
+};
 
 /**
  * Sends an email from the configured email address to the configured recipient.
@@ -90,24 +92,22 @@ export function sanitizeString(input) {
  * @param {*} subject - The subject of the email
  * @param {*} body - The body of the email
  */
-export async function sendEmail(subject, body) {
-    if (!verifyEmailSettings()) {
+exports.sendEmail = async (subject, body) => {
+    if (!exports.verifyEmailSettings()) {
         throw new Error('Email settings not properly configured.');
     }
 
-    const nodemailer = await import('nodemailer');
-
     const transport = nodemailer.createTransport({
         service: process.env.SMTP_SERVICE,
-        requireTLS: process.env.SMTP_REQUIRE_TLS,
+        requireTLS: process.env.SMTP_REQUIRE_TLS === 'true',
         auth: {
             user: process.env.MAIL_USER,
             pass: process.env.MAIL_PASSWORD
         }
     });
 
-    const messageSubject = sanitizeEmailSubject(subject);
-    const messageText = sanitizeEmailBody(body);
+    const messageSubject = exports.sanitizeEmailSubject(subject);
+    const messageText = exports.sanitizeEmailBody(body);
 
     if (!messageSubject || !messageText) {
         throw new Error('Email subject or body is invalid.');
@@ -124,4 +124,4 @@ export async function sendEmail(subject, body) {
         .catch((error) => {
             throw new Error(`Email send failed: ${error}`);
         });
-}
+};

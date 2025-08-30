@@ -20,11 +20,11 @@
  * SOFTWARE.
  */
 
-import express from 'express';
+const express = require('express');
 
-import { isValidString, sanitizeString, sendEmail } from './utils/utils.js';
+const { isValidString, sanitizeString, sendEmail } = require('./utils/utils.js');
 
-export const app = express();
+const app = express();
 const port = 3000;
 
 app.use(express.json());
