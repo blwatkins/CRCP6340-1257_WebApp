@@ -26,8 +26,25 @@ const { Validation, EmailClient } = require('./utils/utils.js');
 
 const app = express();
 
+app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.static('public'));
+
+app.get('/', (request, response) => {
+    response.render('index.ejs');
+});
+
+app.get('/acknowledgements', (request, response) => {
+    response.render('acknowledgements.ejs');
+});
+
+app.get('/contact', (request, response) => {
+    response.render('contact.ejs');
+});
+
+app.get('/projects', (request, response) => {
+    response.render('projects.ejs');
+});
 
 app.post('/mail', async (request, response) => {
     console.debug('Mail request received.');
