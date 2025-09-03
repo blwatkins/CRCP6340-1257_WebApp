@@ -26,6 +26,8 @@ const { Validation, EmailClient } = require('./utils/utils.js');
 
 const app = express();
 
+const MAX_PROJECT_ID = 5;
+
 app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.static('public'));
@@ -43,7 +45,24 @@ app.get('/contact', (request, response) => {
 });
 
 app.get('/projects', (request, response) => {
-    response.render('projects.ejs');
+    response.render('projects.ejs', { projects: [{ id: 1, name: 'Project 1' }, { id: 2, name: 'Project 2' }, { id: 3, name: 'Project 3' }, { id: 4, name: 'Project 4' }, { id: 5, name: 'Project 5' }] });
+});
+
+app.get('/projects/:id', (request, response) => {
+    const id = request.params.id;
+    let projectId;
+
+    if (id) {
+        projectId = parseInt(id);
+        // TODO - replace with isValidInteger() function
+        if (typeof projectId === 'number' && !isNaN(projectId) && projectId > 0 && projectId <= MAX_PROJECT_ID) {
+            response.render('project.ejs', { projectId: projectId });
+        } else {
+            response.status(404).send('Project not found.');
+        }
+    } else {
+        response.status(404).send('Project not found.');
+    }
 });
 
 app.post('/mail', async (request, response) => {
