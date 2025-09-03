@@ -32,6 +32,12 @@ app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.static('public'));
 
+app.use((error, request, response, next) => {
+    console.log(error);
+    // TODO - replace with 500.ejs render
+    response.status(500).send('Internal Server Error');
+});
+
 app.get('/', (request, response) => {
     response.render('index.ejs');
 });
@@ -58,9 +64,11 @@ app.get('/projects/:id', (request, response) => {
         if (typeof projectId === 'number' && !isNaN(projectId) && projectId > 0 && projectId <= MAX_PROJECT_ID) {
             response.render('project.ejs', { projectId: projectId });
         } else {
+            // TODO - replace with 404.ejs render
             response.status(404).send('Project not found.');
         }
     } else {
+        // TODO - replace with 404.ejs render
         response.status(404).send('Project not found.');
     }
 });
