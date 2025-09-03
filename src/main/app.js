@@ -32,12 +32,6 @@ app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.static('public'));
 
-app.use((error, request, response, next) => {
-    console.log(error);
-    // TODO - replace with 500.ejs render
-    response.status(500).send('Internal Server Error');
-});
-
 app.get('/', (request, response) => {
     response.render('index.ejs');
 });
@@ -71,6 +65,12 @@ app.get('/projects/:id', (request, response) => {
         // TODO - replace with 404.ejs render
         response.status(404).send('Project not found.');
     }
+});
+
+app.use((error, request, response, next) => {
+    console.log(error);
+    // TODO - replace with 500.ejs render
+    response.status(500).send('Internal Server Error');
 });
 
 app.post('/mail', async (request, response) => {
