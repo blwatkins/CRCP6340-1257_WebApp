@@ -42,8 +42,8 @@ After making any changes, ALWAYS validate the application by:
 4. **Test contact form API**: Run `curl -X POST -H "Content-Type: application/json" -d '{"subject":"Test","message":"Test message"}' http://localhost:3000/mail` and verify appropriate response (success requires .env configuration)
 5. **Manual UI testing**: Open `http://localhost:3000` in a browser and verify:
    - Page loads with purple navigation bar
-   - "brittni's fall 2025 nfts" branding displays
-   - Navigation links ("home", "about", "projects", "contact") are clickable and functional
+   - "brittni's fall 2025 nfts" branding displays and links to index.html
+   - Navigation links ("home", "about", "projects", "contact", "acknowledgements") are clickable and functional
    - **Splash screen displays** with animated p5.js canvas showing:
      - Animated colorful circles appearing and fading (both filled circles and outline circles)
      - Circles distributed evenly across the canvas using poisson disc sampling algorithm
@@ -52,7 +52,7 @@ After making any changes, ALWAYS validate the application by:
      - Full viewport height canvas (100vh)
    - **Featured project section** displays with coming soon card and "view all projects" button
    - "about brittni" section displays with real biographical content
-   - Footer displays copyright notice and navigation links
+   - Footer displays copyright notice, social media links with FontAwesome icons, and navigation links
 6. **Contact form testing**: Navigate to `/contact.html` and verify:
    - Contact form loads with proper Bootstrap styling
    - Form validation works (required fields, email format, custom validation)
@@ -60,23 +60,30 @@ After making any changes, ALWAYS validate the application by:
    - Form disables submit button during processing
    - Form shows appropriate success/error messages
    - Form clears on successful submission, retains data on error
+7. **Acknowledgements page testing**: Navigate to `/acknowledgements.html` and verify:
+   - Page loads with proper header and footer structure
+   - Acknowledgements for Bootstrap and FontAwesome are displayed with icons
+   - Social media links work and open in new tabs with proper accessibility attributes
+   - Footer social media icons display correctly using FontAwesome
 
 ### Expected Behavior
 - Server starts immediately (within 1 second)
 - No compilation or build step required
 - Static assets serve correctly from `/public` directory
-- Navigation uses anchor links for single-page scrolling (home page) and page navigation (contact, projects)
+- Navigation uses anchor links for single-page scrolling (home page) and page navigation (contact, projects, acknowledgements)
 - ESLint passes without errors on all configured files
 - Jest tests pass with 100% code coverage
 - Contact form validates input and submits via POST /mail endpoint
 - Custom client-side validation prevents empty strings and whitespace-only strings
 - Email notifications sent when SMTP environment variables are properly configured
+- Social media links in footer open in new tabs with proper accessibility attributes
 
 ### Known Issues
-- External resources (Google Fonts, Bootstrap CDN, p5.js CDN) may be blocked in some environments - this is normal and doesn't affect core functionality
+- External resources (Google Fonts, Bootstrap CDN, p5.js CDN, FontAwesome CDN) may be blocked in some environments - this is normal and doesn't affect core functionality
 - Contact form email functionality requires proper SMTP environment configuration in `.env` file
 - Server will show "[MISSING_ENV_FILE]" warning if `.env` file is not present (this is normal for static-only usage)
 - Splash screen animation requires JavaScript to be enabled
+- Social media links require FontAwesome to load for icons to display properly
 
 ## Project Structure
 
@@ -98,6 +105,7 @@ After making any changes, ALWAYS validate the application by:
 │   ├── index.html           # Main homepage with navigation, splash, featured project, and about sections
 │   ├── contact.html         # Contact page with working contact form
 │   ├── projects.html        # Projects page with full header and footer
+│   ├── acknowledgements.html # Acknowledgements page crediting Bootstrap and FontAwesome
 │   ├── scripts/
 │   │   ├── splash.js        # p5.js animated splash screen with fill and outline circles
 │   │   └── contact-email.js # Contact form validation and submission handling
@@ -136,6 +144,7 @@ After making any changes, ALWAYS validate the application by:
 - **Main webpage**: `public/index.html` (homepage with navigation, p5.js splash screen, featured project, and about sections)
 - **Contact page**: `public/contact.html` (contact page with working form, validation, Bootstrap styling)
 - **Projects page**: `public/projects.html` (full projects page with header, footer, and navigation)
+- **Acknowledgements page**: `public/acknowledgements.html` (credits page for Bootstrap and FontAwesome with social media links)
 - **Splash animation**: `public/scripts/splash.js` (p5.js animated canvas with Circle and CirclePoissonDiscSampler classes)
 - **Contact form script**: `public/scripts/contact-email.js` (form validation, submission, UI feedback, and custom validation methods)
 - **Styling**: `public/style/style.css` (custom purple theme, JetBrains Mono font, splash styles)
@@ -281,6 +290,7 @@ velocity-copyright-template.txt
 - **p5.js**: `https://cdn.jsdelivr.net/npm/p5@1.11.10/lib/p5.min.js` (for splash screen animation)
 - **Bootstrap CSS**: `https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css`
 - **Bootstrap JS**: `https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js`
+- **FontAwesome**: `https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css` (for social media icons)
 - **Google Fonts**: JetBrains Mono font family
 
 ## Development Guidelines
@@ -314,7 +324,8 @@ velocity-copyright-template.txt
 - **Add new static page**: Create HTML file in `public/` directory with proper header/footer structure and copyright header
 - **Modify styling**: Edit `public/style/style.css`
 - **Add images**: Place in `public/images/` directory
-- **Update navigation**: Modify nav sections in HTML files (header and footer)
+- **Update navigation**: Modify nav sections in HTML files (header and footer) - remember to include acknowledgements link in footer
+- **Update social media links**: Edit footer sections in all HTML files (index.html, contact.html, projects.html, acknowledgements.html)
 - **Modify splash animation**: Edit `public/scripts/splash.js` (p5.js sketch with Circle class and CirclePoissonDiscSampler for even distribution)
 - **Add client-side JavaScript**: Create files in `public/scripts/` directory with copyright headers
 - **Add server routes**: Edit `src/main/app.js` (Express routes and middleware)
@@ -353,6 +364,8 @@ velocity-copyright-template.txt
 ### External Resources Blocked
 - Google Fonts and Bootstrap CDN may be blocked in some environments
 - p5.js CDN may be blocked in some environments
+- FontAwesome CDN may be blocked in some environments
 - This is normal and doesn't affect core site functionality
 - Custom CSS in `public/style/style.css` provides fallback styling
 - Splash screen will not animate if p5.js fails to load
+- Social media icons will not display if FontAwesome fails to load
