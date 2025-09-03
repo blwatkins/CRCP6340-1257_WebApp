@@ -37,7 +37,34 @@ app.get('/', (request, response) => {
 });
 
 app.get('/acknowledgements', (request, response) => {
-    response.render('acknowledgements.ejs');
+    response.render('acknowledgements.ejs', {
+        credits: [
+            {
+                fontAwesomeIcon: 'fa-solid fa-server',
+                introText: 'Built with',
+                linkText: 'Express',
+                linkURL: 'https://expressjs.com/'
+            },
+            {
+                fontAwesomeIcon: 'fa-solid fa-envelope',
+                introText: 'Built with',
+                linkText: 'Nodemailer',
+                linkURL: 'https://nodemailer.com/'
+            },
+            {
+                fontAwesomeIcon: 'fa-brands fa-css',
+                introText: 'Built with',
+                linkText: 'Bootstrap',
+                linkURL: 'https://getbootstrap.com/'
+            },
+            {
+                fontAwesomeIcon: 'fa-solid fa-trophy',
+                introText: 'Icons provided by',
+                linkText: 'Font Awesome',
+                linkURL: 'https://fontawesome.com/'
+            }
+        ]
+    });
 });
 
 app.get('/contact', (request, response) => {
