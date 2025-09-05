@@ -96,8 +96,7 @@ app.get('/projects/:id', (request, response) => {
 
 app.use((error, request, response, next) => {
     console.log(error);
-    // TODO - replace with 500.ejs render
-    response.status(500).send('Internal Server Error');
+    response.status(500).render('errors/500.ejs');
 });
 
 app.post('/mail', async (request, response) => {
