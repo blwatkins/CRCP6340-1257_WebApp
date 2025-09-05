@@ -81,16 +81,14 @@ app.get('/projects/:id', (request, response) => {
 
     if (id) {
         projectId = parseInt(id);
-        // TODO - replace with isValidInteger() function
+        // TODO - replace with isValidProjectId()
         if (typeof projectId === 'number' && !isNaN(projectId) && projectId > 0 && projectId <= MAX_PROJECT_ID) {
             response.render('project.ejs', { projectId: projectId });
         } else {
-            // TODO - replace with 404.ejs render
-            response.status(404).send('Project not found.');
+            response.status(404).render('errors/404.ejs');
         }
     } else {
-        // TODO - replace with 404.ejs render
-        response.status(404).send('Project not found.');
+        response.status(404).render('errors/404.ejs');
     }
 });
 
