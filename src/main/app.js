@@ -92,11 +92,6 @@ app.get('/projects/:id', (request, response) => {
     }
 });
 
-app.use((error, request, response, next) => {
-    console.log(error);
-    response.status(500).render('errors/500.ejs');
-});
-
 app.post('/mail', async (request, response) => {
     console.debug('Mail request received.');
 
@@ -130,6 +125,15 @@ app.post('/mail', async (request, response) => {
     } else {
         response.status(400).send('Invalid request format.');
     }
+});
+
+app.use((error, request, response, next) => {
+    console.log(error);
+    response.status(500).render('errors/500.ejs');
+});
+
+app.use((request, response, next) => {
+    response.status(404).render('errors/404.ejs');
 });
 
 exports.app = app;
