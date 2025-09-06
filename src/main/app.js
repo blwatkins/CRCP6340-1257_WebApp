@@ -26,8 +26,71 @@ const { Validation, EmailClient } = require('./utils/utils.js');
 
 const app = express();
 
+const MAX_PROJECT_ID = 5;
+
+app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.static('public'));
+
+app.get('/', (request, response) => {
+    response.render('index.ejs');
+});
+
+app.get('/acknowledgements', (request, response) => {
+    response.render('acknowledgements.ejs', {
+        credits: [
+            {
+                fontAwesomeIcon: 'fa-solid fa-server',
+                introText: 'Built with',
+                linkText: 'Express',
+                linkURL: 'https://expressjs.com/'
+            },
+            {
+                fontAwesomeIcon: 'fa-solid fa-envelope',
+                introText: 'Built with',
+                linkText: 'Nodemailer',
+                linkURL: 'https://nodemailer.com/'
+            },
+            {
+                fontAwesomeIcon: 'fa-brands fa-css',
+                introText: 'Built with',
+                linkText: 'Bootstrap',
+                linkURL: 'https://getbootstrap.com/'
+            },
+            {
+                fontAwesomeIcon: 'fa-solid fa-trophy',
+                introText: 'Icons provided by',
+                linkText: 'Font Awesome',
+                linkURL: 'https://fontawesome.com/'
+            }
+        ]
+    });
+});
+
+app.get('/contact', (request, response) => {
+    response.render('contact.ejs');
+});
+
+app.get('/projects', (request, response) => {
+    response.render('projects.ejs', { projects: [{ id: 1, name: 'Project 1' }, { id: 2, name: 'Project 2' }, { id: 3, name: 'Project 3' }, { id: 4, name: 'Project 4' }, { id: 5, name: 'Project 5' }] });
+});
+
+app.get('/projects/:id', (request, response) => {
+    const id = request.params.id;
+    let projectId;
+
+    if (id) {
+        projectId = parseInt(id);
+        // TODO - replace with isValidProjectId()
+        if (typeof projectId === 'number' && !isNaN(projectId) && projectId > 0 && projectId <= MAX_PROJECT_ID) {
+            response.render('project.ejs', { projectId: projectId });
+        } else {
+            response.status(404).render('errors/404.ejs');
+        }
+    } else {
+        response.status(404).render('errors/404.ejs');
+    }
+});
 
 app.post('/mail', async (request, response) => {
     console.debug('Mail request received.');
@@ -62,6 +125,15 @@ app.post('/mail', async (request, response) => {
     } else {
         response.status(400).send('Invalid request format.');
     }
+});
+
+app.use((error, request, response, next) => {
+    console.log(error);
+    response.status(500).render('errors/500.ejs');
+});
+
+app.use((request, response, next) => {
+    response.status(404).render('errors/404.ejs');
 });
 
 exports.app = app;
