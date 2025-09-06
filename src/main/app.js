@@ -22,7 +22,7 @@
 
 const express = require('express');
 
-const { Validation, EmailClient } = require('./utils/utils.js');
+const { EmailClient, ProjectsCollection, Validation } = require('./utils/utils.js');
 
 const app = express();
 
@@ -77,13 +77,15 @@ app.get('/projects', (request, response) => {
 
 app.get('/projects/:id', (request, response) => {
     const id = request.params.id;
-    let projectId;
 
     if (id) {
-        projectId = parseInt(id);
-        // TODO - replace with isValidProjectId()
-        if (typeof projectId === 'number' && !isNaN(projectId) && projectId > 0 && projectId <= MAX_PROJECT_ID) {
-            response.render('project.ejs', { projectId: projectId });
+        let projectId = parseInt(id);
+        let projectData = ProjectsCollection.getProjectById(projectId);
+
+        if (ProjectsCollection.isValidProjectId(projectId) && projectData !== undefined) {
+            response.render('project.ejs', {
+                project: projectData
+            });
         } else {
             response.status(404).render('errors/404.ejs');
         }
