@@ -131,6 +131,15 @@ class ProjectsCollection {
             return undefined;
         }
     }
+
+    static getAllProjects() {
+        return ProjectsCollection.#projectIds.map((projectId) => {
+            return {
+                id: projectId,
+                title: `Project ${projectId}`
+            };
+        });
+    }
 }
 
 class Validation {
