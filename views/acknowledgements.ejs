@@ -10,19 +10,19 @@
             <%- include('includes/header-navigation'); %>
         </header>
         <div id="content" class="container">
-            <div class="row py-3">
-                <h2 id="acknowledgements" class="text-center">acknowledgements</h2>
+            <div class="row pt-4">
+                <h1 id="acknowledgements" class="text-center">acknowledgements</h1>
             </div>
             <div class="row py-3">
                 <div class="col"></div>
                 <div class="col-8">
                     <% credits.forEach((credit) => { %>
                         <% if (credit.fontAwesomeIcon && credit.introText && credit.linkText && credit.linkURL) { %>
-                        <h6 class="my-3">
+                        <p class="my-3 fs-6">
                             <i class="<%= credit.fontAwesomeIcon %> fa-lg"></i>
                             <%= credit.introText %>
                             <a href="<%= credit.linkURL %>" target="_blank" rel="noopener noreferrer"><%= credit.linkText %></a>.
-                        </h6>
+                        </p>
                         <% } %>
                     <% }); %>
                 </div>
