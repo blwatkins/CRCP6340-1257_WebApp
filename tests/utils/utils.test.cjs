@@ -93,7 +93,7 @@ describe('utils.js', () => {
                 { input: 'body\nwith\nnewlines', expected: 'body\nwith\nnewlines' },
                 { input: 'body\twith\ttabs', expected: 'body\twith\ttabs' },
                 { input: 'body with special chars !@#$%^&*()', expected: 'body with special chars !@#$%^&*()' }
-            ])('EmailClient.sanitizeEmailSubject() - $#', ({ input, expected }) => {
+            ])('EmailClient.sanitizeEmailSubject() - %#', ({ input, expected }) => {
                 expect(EmailClient.sanitizeEmailSubject(input)).toBe(expected);
             });
         });
@@ -138,7 +138,7 @@ describe('utils.js', () => {
                 { input: 'body\nwith\nnewlines', expected: 'body\nwith\nnewlines' },
                 { input: 'body\twith\ttabs', expected: 'body\twith\ttabs' },
                 { input: 'body with special chars !@#$%^&*()', expected: 'body with special chars !@#$%^&*()' }
-            ])('EmailClient.sanitizeEmailBody() - $#', ({ input, expected }) => {
+            ])('EmailClient.sanitizeEmailBody() - %#', ({ input, expected }) => {
                 expect(EmailClient.sanitizeEmailBody(input)).toBe(expected);
             });
         });

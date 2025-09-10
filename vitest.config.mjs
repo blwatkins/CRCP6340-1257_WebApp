@@ -27,8 +27,14 @@ export default defineConfig({
         clearMocks: true,
         coverage: {
             provider: 'v8',
-            reportsDirectory: './out/tests-coverage',
-            reporter: ['text', 'lcov', 'json', 'json-summary', 'clover']
+            reportsDirectory: './_coverage',
+            reporter: ['text', 'lcov', 'json', 'json-summary', 'clover', 'html'],
+            exclude: [
+                'node_modules/',
+                'public/',
+                'tests/',
+                '**/*.config.{js,mjs,cjs}'
+            ]
         },
         environment: 'node',
         forceRerunTriggers: ['**/package.json/**', '**/vitest.config.*/**'],
