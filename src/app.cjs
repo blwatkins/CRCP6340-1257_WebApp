@@ -26,8 +26,6 @@ const { EmailClient, ProjectsCollection, Validation } = require('./utils/utils.c
 
 const app = express();
 
-const MAX_PROJECT_ID = 5;
-
 app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.static('public'));
@@ -72,7 +70,7 @@ app.get('/contact', (request, response) => {
 });
 
 app.get('/projects', (request, response) => {
-    response.render('projects.ejs', { projects: ProjectsCollection.getAllProjects() });
+    response.render('projects.ejs', { projects: ProjectsCollection.getAllProjects(), maxCols: 3 });
 });
 
 app.get('/projects/:id', (request, response) => {

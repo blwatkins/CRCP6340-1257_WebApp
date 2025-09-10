@@ -13,7 +13,7 @@
             <div class="row pt-4">
                 <h1 id="projects" class="text-center">projects</h1>
             </div>
-            <div class="row row-cols-auto row-cols-lg-3 py-3">
+            <div class="row row-cols-auto row-cols-lg-<%= maxCols %> py-3">
                 <% projects.forEach((project, index) => { %>
                     <div class="col text-center mx-auto">
                         <div class="card mx-auto my-2" style="width: 15rem; max-width: 90%;">
@@ -28,7 +28,7 @@
                 <% }); %>
 
                 <% let n = projects.length %>
-                <% while (n % 3 !== 0) { %>
+                <% while (n % maxCols !== 0) { %>
                     <div class="col text-center mx-auto">
                         <div class="mx-auto my-2" style="width: 15rem; max-width: 90%;">
                             &nbsp;
