@@ -22,7 +22,7 @@
 
 const express = require('express');
 
-const { EmailClient, ProjectsCollection, Validation } = require('./utils/utils.js');
+const { EmailClient, ProjectsCollection, Validation } = require('./utils/utils.cjs');
 
 const app = express();
 
