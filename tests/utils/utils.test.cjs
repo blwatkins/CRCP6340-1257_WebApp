@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-const { Validation, EmailClient } = require('../../src/utils/utils.cjs');
+const { Validation, EmailClient, ProjectsCollection } = require('../../src/utils/utils.cjs');
 
 vi.mock('nodemailer');
 const nodemailer = require('nodemailer');
@@ -52,64 +52,6 @@ const REQUIRED_EMAIL_VARS = [
 ];
 
 describe('utils.js', () => {
-    describe('Validation', () => {
-        describe('Validation.isValidString()', () => {
-            test.each([
-                { input: 'value', expected: true },
-                { input: '', expected: false },
-                { input: '        ', expected: false },
-                { input: '\n', expected: false },
-                { input: '\t', expected: false },
-                { input: '\n\t', expected: false },
-                { input: null, expected: false },
-                { input: undefined, expected: false },
-                { input: 123, expected: false },
-                { input: {}, expected: false },
-                { input: [], expected: false },
-                {
-                    input: () => {
-                        return 'test';
-                    },
-                    expected: false
-                }
-            ])('Validation.isValidString($input)', ({ input, expected }) => {
-                expect(Validation.isValidString(input)).toBe(expected);
-            });
-        });
-
-        describe('Validation.sanitizeString()', () => {
-            test.each([
-                { input: 'value', expected: 'value' },
-                { input: '    value', expected: 'value' },
-                { input: 'value    ', expected: 'value' },
-                { input: '    value    ', expected: 'value' },
-                { input: '\nvalue\n', expected: 'value' },
-                { input: '\tvalue\t', expected: 'value' },
-                { input: ' \n \tvalue \n \t', expected: 'value' },
-                { input: 'other value', expected: 'other value' },
-                { input: '    other    value    ', expected: 'other    value' },
-                { input: '', expected: undefined },
-                { input: '        ', expected: undefined },
-                { input: '\n', expected: undefined },
-                { input: '\t', expected: undefined },
-                { input: '\n\t', expected: undefined },
-                { input: null, expected: undefined },
-                { input: undefined, expected: undefined },
-                { input: 123, expected: undefined },
-                { input: {}, expected: undefined },
-                { input: [], expected: undefined },
-                {
-                    input: () => {
-                        return 'test';
-                    },
-                    expected: undefined
-                }
-            ])('Validation.sanitizeString($input)', ({ input, expected }) => {
-                expect(Validation.sanitizeString(input)).toBe(expected);
-            });
-        });
-    });
-
     describe('EmailClient', () => {
         describe('EmailClient.sanitizeEmailSubject()', () => {
             test.each([
@@ -293,6 +235,105 @@ describe('utils.js', () => {
                 nodemailer.createTransport = createTransportMock;
 
                 await expect(EmailClient.sendEmail('Test Subject', 'Test Body')).rejects.toThrow('Email send failed: Error: SMTP error');
+            });
+        });
+    });
+
+    describe('ProjectsCollection', () => {
+        describe('ProjectsCollection.getAllProjects()', () => {
+            test('ProjectsCollection.getAllProjects() - returns an array', () => {
+                const projects = ProjectsCollection.getAllProjects();
+                expect(projects).toBeInstanceOf(Array);
+                expect(projects.length).toBeGreaterThan(0);
+            });
+        });
+
+        describe('ProjectsCollection.getProjectById()', () => {
+            test.each([
+                {
+                    id: 1,
+                    expected: {
+                        id: 1,
+                        title: 'Project 1'
+                    }
+                },
+                { id: 0, expected: undefined },
+                { id: Number.MAX_SAFE_INTEGER, expected: undefined },
+                { id: NaN, expected: undefined },
+                { id: undefined, expected: undefined },
+                { id: null, expected: undefined },
+                { id: '', expected: undefined },
+                { id: '1', expected: undefined },
+                { id: 'cat', expected: undefined },
+                { id: {}, expected: undefined },
+                { id: [], expected: undefined },
+                {
+                    id: () => {
+                        return 'test';
+                    },
+                    expected: undefined
+                }
+            ])('ProjectsCollection.getProjectById($id)', ({ id, expected }) => {
+                const project = ProjectsCollection.getProjectById(id);
+                expect(project).toEqual(expected);
+            });
+        });
+    });
+
+    describe('Validation', () => {
+        describe('Validation.isValidString()', () => {
+            test.each([
+                { input: 'value', expected: true },
+                { input: '', expected: false },
+                { input: '        ', expected: false },
+                { input: '\n', expected: false },
+                { input: '\t', expected: false },
+                { input: '\n\t', expected: false },
+                { input: null, expected: false },
+                { input: undefined, expected: false },
+                { input: 123, expected: false },
+                { input: {}, expected: false },
+                { input: [], expected: false },
+                {
+                    input: () => {
+                        return 'test';
+                    },
+                    expected: false
+                }
+            ])('Validation.isValidString($input)', ({ input, expected }) => {
+                expect(Validation.isValidString(input)).toBe(expected);
+            });
+        });
+
+        describe('Validation.sanitizeString()', () => {
+            test.each([
+                { input: 'value', expected: 'value' },
+                { input: '    value', expected: 'value' },
+                { input: 'value    ', expected: 'value' },
+                { input: '    value    ', expected: 'value' },
+                { input: '\nvalue\n', expected: 'value' },
+                { input: '\tvalue\t', expected: 'value' },
+                { input: ' \n \tvalue \n \t', expected: 'value' },
+                { input: 'other value', expected: 'other value' },
+                { input: '    other    value    ', expected: 'other    value' },
+                { input: '', expected: undefined },
+                { input: '        ', expected: undefined },
+                { input: '\n', expected: undefined },
+                { input: '\t', expected: undefined },
+                { input: '\n\t', expected: undefined },
+                { input: null, expected: undefined },
+                { input: undefined, expected: undefined },
+                { input: 123, expected: undefined },
+                { input: {}, expected: undefined },
+                { input: [], expected: undefined },
+                {
+                    input: () => {
+                        return 'test';
+                    },
+                    expected: undefined
+                }
+            ])('Validation.sanitizeString($input)', ({ input, expected }) => {
+                expect(Validation.sanitizeString(input)).toBe(expected);
             });
         });
     });
