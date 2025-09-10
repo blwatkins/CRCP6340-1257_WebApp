@@ -21,15 +21,15 @@
  */
 
 const request = require('supertest');
-const nodemailer = require('nodemailer');
 
 const { app } = require('../src/app.cjs');
 
-jest.mock('nodemailer');
+vi.mock('nodemailer');
+const nodemailer = require('nodemailer');
 
 afterAll(() => {
-    jest.clearAllMocks();
-    jest.resetModules();
+    vi.clearAllMocks();
+    vi.resetModules();
 });
 
 const ORIGINAL_ENV = process.env;
@@ -52,20 +52,21 @@ describe('app routing', () => {
         });
     });
 
-    describe.skip('POST /mail', () => {
+    describe('POST /mail', () => {
         beforeEach(() => {
             process.env = { ...TEST_ENV };
-            nodemailer.createTransport.mockClear();
+            vi.clearAllMocks();
         });
 
         afterEach(() => {
             process.env = ORIGINAL_ENV;
-            nodemailer.createTransport.mockClear();
+            vi.clearAllMocks();
         });
 
         test('POST /mail - success', async () => {
-            const sendMailMock = jest.fn().mockResolvedValue('success');
-            nodemailer.createTransport.mockReturnValue({ sendMail: sendMailMock });
+            const sendMailMock = vi.fn().mockResolvedValue('success');
+            const createTransportMock = vi.fn().mockReturnValue({ sendMail: sendMailMock });
+            nodemailer.createTransport = createTransportMock;
 
             const response = await request(app)
                 .post('/mail')
@@ -108,8 +109,9 @@ describe('app routing', () => {
         });
 
         test('POST /mail - sendEmail error', async () => {
-            const sendMailMock = jest.fn().mockRejectedValue(new Error('SMTP error'));
-            nodemailer.createTransport.mockReturnValue({ sendMail: sendMailMock });
+            const sendMailMock = vi.fn().mockRejectedValue(new Error('SMTP error'));
+            const createTransportMock = vi.fn().mockReturnValue({ sendMail: sendMailMock });
+            nodemailer.createTransport = createTransportMock;
 
             const response = await request(app)
                 .post('/mail')

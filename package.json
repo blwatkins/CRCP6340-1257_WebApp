@@ -20,8 +20,8 @@
   "scripts": {
     "start": "dotenvx run -- node src/server.cjs",
     "dev": "dotenvx run -- nodemon src/server.cjs",
-    "lint": "eslint ./eslint.config.mjs ./jest.config.cjs ./public/scripts ./src ./tests",
-    "test": "jest"
+    "lint": "eslint ./eslint.config.mjs ./vitest.config.js ./public/scripts ./src ./tests",
+    "test": "vitest run"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.49.0",
@@ -32,12 +32,13 @@
   "devDependencies": {
     "@eslint/js": "^9.35.0",
     "@stylistic/eslint-plugin": "^5.3.1",
+    "@vitest/coverage-v8": "^2.1.8",
     "eslint": "^9.35.0",
     "eslint-plugin-es-x": "^9.1.0",
     "eslint-plugin-n": "^17.21.3",
     "eslint-plugin-security": "^3.0.1",
-    "jest": "^30.1.3",
     "nodemon": "^3.1.10",
-    "supertest": "^7.1.4"
+    "supertest": "^7.1.4",
+    "vitest": "^2.1.8"
   }
 }

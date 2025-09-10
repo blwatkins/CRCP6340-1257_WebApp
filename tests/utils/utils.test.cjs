@@ -20,15 +20,14 @@
  * SOFTWARE.
  */
 
-const nodemailer = require('nodemailer');
-
 const { Validation, EmailClient } = require('../../src/utils/utils.cjs');
 
-jest.mock('nodemailer');
+vi.mock('nodemailer');
+const nodemailer = require('nodemailer');
 
 afterAll(() => {
-    jest.clearAllMocks();
-    jest.resetModules();
+    vi.clearAllMocks();
+    vi.resetModules();
 });
 
 const ORIGINAL_ENV = process.env;
@@ -111,7 +110,7 @@ describe('utils.js', () => {
         });
     });
 
-    describe.skip('EmailClient', () => {
+    describe('EmailClient', () => {
         describe('EmailClient.sanitizeEmailSubject()', () => {
             test.each([
                 { input: 'value', expected: 'value' },
@@ -243,23 +242,18 @@ describe('utils.js', () => {
         describe('EmailClient.sendEmail()', () => {
             beforeEach(() => {
                 process.env = { ...TEST_ENV };
-
-                if (nodemailer.createTransport) {
-                    nodemailer.createTransport.mockClear();
-                }
+                vi.clearAllMocks();
             });
 
             afterEach(() => {
                 process.env = ORIGINAL_ENV;
-
-                if (nodemailer.createTransport) {
-                    nodemailer.createTransport.mockClear();
-                }
+                vi.clearAllMocks();
             });
 
             test('EmailClient.sendEmail() - sends email successfully', async () => {
-                const sendMailMock = jest.fn().mockResolvedValue('success');
-                nodemailer.createTransport.mockReturnValue({ sendMail: sendMailMock });
+                const sendMailMock = vi.fn().mockResolvedValue('success');
+                const createTransportMock = vi.fn().mockReturnValue({ sendMail: sendMailMock });
+                nodemailer.createTransport = createTransportMock;
 
                 await expect(EmailClient.sendEmail('Test Subject', 'Test Body')).resolves.toBeUndefined();
 
@@ -294,8 +288,9 @@ describe('utils.js', () => {
             });
 
             test('EmailClient.sendEmail() - sendMail fails', async () => {
-                const sendMailMock = jest.fn().mockRejectedValue(new Error('SMTP error'));
-                nodemailer.createTransport.mockReturnValue({ sendMail: sendMailMock });
+                const sendMailMock = vi.fn().mockRejectedValue(new Error('SMTP error'));
+                const createTransportMock = vi.fn().mockReturnValue({ sendMail: sendMailMock });
+                nodemailer.createTransport = createTransportMock;
 
                 await expect(EmailClient.sendEmail('Test Subject', 'Test Body')).rejects.toThrow('Email send failed: Error: SMTP error');
             });
