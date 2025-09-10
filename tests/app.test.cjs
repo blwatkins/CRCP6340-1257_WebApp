@@ -59,6 +59,13 @@ describe('app routing', () => {
         });
     });
 
+    describe('GET /acknowledgements', () => {
+        test('GET /acknowledgements - returns 200', async () => {
+            const response = await request(app).get('/acknowledgements');
+            expect(response.statusCode).toBe(200);
+        });
+    });
+
     describe('POST /mail', () => {
         beforeEach(() => {
             process.env = { ...TEST_ENV };
