@@ -11,7 +11,7 @@ Always reference these instructions first and fallback to search or bash command
 - No additional SDK installations required
 
 ### Setup and Dependencies
-- Install dependencies: `npm install` -- takes ~15 seconds (includes ejs, jest, nodemailer, dotenv, supertest)
+- Install dependencies: `npm install` -- takes ~15 seconds (includes ejs, vitest, nodemailer, dotenv, supertest)
 - Environment variables: Create `.env` file for email functionality (SMTP settings, see Environment Variables section). For enhanced security, consider using dotenvx encryption features to encrypt sensitive environment variables.
 - No build process required (Express app with EJS templating and API routes)
 
@@ -22,7 +22,7 @@ Always reference these instructions first and fallback to search or bash command
 - Contact form requires environment variables for email functionality
 
 ### Testing
-- Test command: `npm test` -- runs Jest test suite with 130+ tests and coverage reporting
+- Test command: `npm test` -- runs Vitest test suite with 131 tests and coverage reporting
 - Unit tests implemented for:
   - Express app routes (including GET routes for /, /projects, /contact, /acknowledgements, /projects/:id and POST /mail endpoint)
   - Express app utility functions (string validation, email send with mocked nodemailer, ProjectsCollection class)
@@ -81,7 +81,7 @@ After making any changes, ALWAYS validate the application by:
 - EJS templates render correctly with dynamic content
 - Navigation uses Express routes for page navigation (/, /projects, /contact, /acknowledgements) and anchor links for single-page scrolling (/#about)
 - ESLint passes without errors on all configured files
-- Jest tests pass with 100% code coverage
+- Vitest tests pass with 100% code coverage
 - Contact form validates input and submits via POST /mail endpoint
 - Custom client-side validation prevents empty strings and whitespace-only strings
 - Email notifications sent when SMTP environment variables are properly configured
@@ -120,7 +120,7 @@ After making any changes, ALWAYS validate the application by:
 │   ├── projects.ejs         # Projects page template with dynamic project cards
 │   ├── project.ejs          # Individual project page template
 │   └── acknowledgements.ejs # Acknowledgements page template crediting Express, Nodemailer, Bootstrap, and FontAwesome
-├── tests/                    # Jest test files
+├── tests/                    # Vitest test files
 │   ├── app.test.cjs         # Express app route tests
 │   ├── public.test.cjs      # Static file serving tests
 │   └── utils/
@@ -136,9 +136,9 @@ After making any changes, ALWAYS validate the application by:
 │       └── icons/
 │           └── favicon-32x32.png  # Site favicon
 ├── out/                      # Generated files (test coverage, etc.)
-│   └── tests-coverage/      # Jest coverage reports (generated)
+│   └── tests-coverage/      # Vitest coverage reports (generated)
 ├── eslint.config.mjs         # ESLint configuration with comprehensive rules (ES modules)
-├── jest.config.cjs          # Jest testing configuration with coverage
+├── vitest.config.js         # Vitest testing configuration with coverage
 ├── package.json             # Node.js dependencies and scripts
 ├── package-lock.json        # Dependency lock file
 ├── velocity-copyright-template.txt # Copyright header template
@@ -160,7 +160,7 @@ After making any changes, ALWAYS validate the application by:
 - **Express app**: `src/app.cjs` (routes, middleware, EJS view engine, GET and POST endpoints)
 - **Utility functions**: `src/utils/utils.cjs` (Validation class, EmailClient class with nodemailer, ProjectsCollection class)
 - **ESLint configuration**: `eslint.config.mjs` (comprehensive linting rules for code quality, ES modules)
-- **Jest configuration**: `jest.config.cjs` (test configuration with coverage reporting)
+- **Vitest configuration**: `vitest.config.js` (test configuration with coverage reporting)
 - **Main webpage**: `views/index.ejs` (homepage template with navigation, p5.js splash screen, featured project, and about sections)
 - **Contact page**: `views/contact.ejs` (contact page template with working form, validation, Bootstrap styling)
 - **Projects page**: `views/projects.ejs` (projects page template with dynamic project cards)
@@ -172,7 +172,7 @@ After making any changes, ALWAYS validate the application by:
 - **Contact form script**: `public/scripts/contact-email.js` (form validation, submission, UI feedback, and custom validation methods)
 - **Styling**: `public/style/style.css` (custom purple theme, JetBrains Mono font, splash styles, bg-secondary-subtle override)
 - **Static assets**: `public/images/` (favicon, coming soon poster, and other images)
-- **Test files**: `tests/` (Jest unit tests for app routes, utilities, and static serving)
+- **Test files**: `tests/` (Vitest unit tests for app routes, utilities, and static serving)
 
 ## Environment Variables
 
@@ -265,14 +265,14 @@ $ ls -la
 LICENSE
 README.md
 eslint.config.mjs           # ESLint configuration (ES modules)
-jest.config.cjs             # Jest testing configuration
+vitest.config.js             # Vitest testing configuration
 node_modules/               # Created after npm install
 out/                        # Generated files (test coverage)
 package-lock.json
 package.json
 public/
 src/                        # Source code directory
-tests/                      # Jest test files
+tests/                      # Vitest test files
 velocity-copyright-template.txt
 views/                      # EJS template directory
 ```
@@ -283,8 +283,8 @@ views/                      # EJS template directory
   "scripts": {
     "start": "dotenvx run -- node src/server.cjs",
     "dev": "dotenvx run -- nodemon src/server.cjs",
-    "lint": "eslint ./eslint.config.mjs ./jest.config.cjs ./public/scripts ./src ./tests",
-    "test": "jest"
+    "lint": "eslint ./eslint.config.mjs ./vitest.config.js ./public/scripts ./src ./tests",
+    "test": "vitest run"
   }
 }
 ```
@@ -305,9 +305,10 @@ views/                      # EJS template directory
     "eslint-plugin-es-x": "^9.1.0",
     "eslint-plugin-n": "^17.21.3",
     "eslint-plugin-security": "^3.0.1",
-    "jest": "^30.1.3",
+    "@vitest/coverage-v8": "^2.1.8",
     "nodemon": "^3.1.10",
-    "supertest": "^7.1.4"
+    "supertest": "^7.1.4",
+    "vitest": "^2.1.8"
   }
 }
 ```
@@ -343,7 +344,7 @@ views/                      # EJS template directory
 ### CI/CD
 - Node.js lint and test workflow configured in `.github/workflows/nodejs.yml`
 - CodeQL security scanning configured in `.github/workflows/codeql.yml`
-- Jest test suite provides comprehensive test coverage
+- Vitest test suite provides comprehensive test coverage
 - Dependabot configured for npm and GitHub Actions dependency updates
 - All tests must pass before merging changes
 
@@ -359,7 +360,7 @@ views/                      # EJS template directory
 - **Add server routes**: Edit `src/app.cjs` (Express routes and middleware)
 - **Add utility functions**: Edit `src/utils/utils.cjs` (Validation class, EmailClient class, ProjectsCollection class)
 - **Server configuration**: Edit `src/server.cjs` (port, startup logic)
-- **Add unit tests**: Create test files in `tests/` directory (Jest format)
+- **Add unit tests**: Create test files in `tests/` directory (Vitest format)
 - **Environment setup**: Edit `.env` file for email configuration (not committed to repo)
 - **Code quality**: Run `npm run lint` and `npm test` to check for issues and maintain standards
 - **Update project data**: Modify `ProjectsCollection` class in `src/utils/utils.cjs` to add/modify project information
@@ -382,7 +383,7 @@ views/                      # EJS template directory
 ### Test Failures
 - Run `npm test` to see specific test failures
 - Check for linting issues: `npm run lint`
-- Verify Jest configuration in `jest.config.cjs`
+- Verify Vitest configuration in `vitest.config.js`
 - Ensure all dependencies are installed: `npm install`
 
 ### Content Not Loading
