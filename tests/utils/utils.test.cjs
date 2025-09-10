@@ -278,6 +278,30 @@ describe('utils.js', () => {
                 expect(project).toEqual(expected);
             });
         });
+
+        describe('ProjectsCollection.isValidProjectId()', () => {
+            test.each([
+                { id: 1, expected: true },
+                { id: 0, expected: false },
+                { id: Number.MAX_SAFE_INTEGER, expected: false },
+                { id: NaN, expected: false },
+                { id: undefined, expected: false },
+                { id: null, expected: false },
+                { id: '', expected: false },
+                { id: '1', expected: false },
+                { id: 'cat', expected: false },
+                { id: {}, expected: false },
+                { id: [], expected: false },
+                {
+                    id: () => {
+                        return 'test';
+                    },
+                    expected: false
+                }
+            ])('ProjectsCollection.isValidProjectId($id)', ({ id, expected }) => {
+                expect(ProjectsCollection.isValidProjectId(id)).toBe(expected);
+            });
+        });
     });
 
     describe('Validation', () => {
