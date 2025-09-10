@@ -66,6 +66,20 @@ describe('app routing', () => {
         });
     });
 
+    describe('GET /contact', () => {
+        test('GET /contact - returns 200', async () => {
+            const response = await request(app).get('/contact');
+            expect(response.statusCode).toBe(200);
+        });
+    });
+
+    describe('GET /projects', () => {
+        test('GET /projects - returns 200', async () => {
+            const response = await request(app).get('/projects');
+            expect(response.statusCode).toBe(200);
+        });
+    });
+
     describe('POST /mail', () => {
         beforeEach(() => {
             process.env = { ...TEST_ENV };
