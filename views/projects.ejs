@@ -28,13 +28,15 @@
                 <% }); %>
 
                 <% let n = projects.length %>
-                <% while (n % maxCols !== 0) { %>
-                    <div class="col text-center mx-auto">
-                        <div class="mx-auto my-2" style="width: 15rem; max-width: 90%;">
-                            &nbsp;
+                <% if (typeof maxCols === 'number' && maxCols > 0) { %>
+                    <% while (n % maxCols !== 0) { %>
+                        <div class="col text-center mx-auto">
+                            <div class="mx-auto my-2" style="width: 15rem; max-width: 90%;">
+                                &nbsp;
+                            </div>
                         </div>
-                    </div>
-                    <% n++; %>
+                        <% n++; %>
+                    <% } %>
                 <% } %>
             </div>
         </div>
