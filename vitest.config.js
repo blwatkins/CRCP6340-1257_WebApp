@@ -20,27 +20,20 @@
  * SOFTWARE.
  */
 
-/**
- * For a detailed explanation regarding each configuration property, visit:
- * https://jestjs.io/docs/configuration
- */
+import { defineConfig } from 'vitest/config';
 
-const config = {
-    clearMocks: true,
-
-    collectCoverage: true,
-    coverageDirectory: './out/tests-coverage',
-    coverageReporters: ['text', 'lcov', 'json', 'json-summary', 'clover'],
-    coverageProvider: 'babel',
-
-    errorOnDeprecated: true,
-
-    verbose: true,
-
-    forceExit: true,
-    detectOpenHandles: true,
-
-    testEnvironment: 'node'
-};
-
-module.exports = config;
+export default defineConfig({
+    test: {
+        clearMocks: true,
+        coverage: {
+            provider: 'v8',
+            reportsDirectory: './out/tests-coverage',
+            reporter: ['text', 'lcov', 'json', 'json-summary', 'clover']
+        },
+        environment: 'node',
+        forceRerunTriggers: ['**/package.json/**', '**/vitest.config.*/**'],
+        globals: true,
+        mockReset: true,
+        restoreMocks: true
+    }
+});
