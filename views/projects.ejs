@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <%- include('includes/head'); %>
+        <title>brittni's fall 2025 nfts | projects</title>
+        <meta name="description" content="Projects page in Brittni's implementation of the web application project for CRCP 6340; SMU Fall 2025 term.">
+    </head>
+    <body>
+        <header>
+            <%- include('includes/header-navigation'); %>
+        </header>
+        <div id="content" class="container">
+            <div class="row pt-4">
+                <h1 id="projects" class="text-center">projects</h1>
+            </div>
+            <div class="row row-cols-auto row-cols-lg-<%= maxCols %> py-3">
+                <% projects.forEach((project, index) => { %>
+                    <div class="col text-center mx-auto">
+                        <div class="card mx-auto my-2" style="width: 15rem; max-width: 90%;">
+                            <a href="/projects/<%= project.id %>">
+                                <img src="./images/coming-soon-poster.png" class="card-img-top px-3 pt-3" alt="coming soon poster with light bulbs and a purple and blue butterfly on a purple background.">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title m-0"><%= project.title %></h5>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                <% }); %>
+
+                <% let n = projects.length %>
+                <% if (typeof maxCols === 'number' && maxCols > 0) { %>
+                    <% while (n % maxCols !== 0) { %>
+                        <div class="col text-center mx-auto">
+                            <div class="mx-auto my-2" style="width: 15rem; max-width: 90%;">
+                                &nbsp;
+                            </div>
+                        </div>
+                        <% n++; %>
+                    <% } %>
+                <% } %>
+            </div>
+        </div>
+        <footer>
+            <%- include('includes/footer-navigation'); %>
+        </footer>
+        <%- include('includes/closing-scripts'); %>
+    </body>
+</html>

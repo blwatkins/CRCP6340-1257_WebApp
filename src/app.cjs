@@ -22,12 +22,75 @@
 
 const express = require('express');
 
-const { Validation, EmailClient } = require('./utils/utils.js');
+const { EmailClient, ProjectsCollection, Validation } = require('./utils/utils.cjs');
 
 const app = express();
 
+app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.static('public'));
+
+app.get('/', (request, response) => {
+    response.render('index.ejs');
+});
+
+app.get('/acknowledgements', (request, response) => {
+    response.render('acknowledgements.ejs', {
+        credits: [
+            {
+                fontAwesomeIcon: 'fa-solid fa-server',
+                introText: 'Built with',
+                linkText: 'Express',
+                linkURL: 'https://expressjs.com/'
+            },
+            {
+                fontAwesomeIcon: 'fa-solid fa-envelope',
+                introText: 'Built with',
+                linkText: 'Nodemailer',
+                linkURL: 'https://nodemailer.com/'
+            },
+            {
+                fontAwesomeIcon: 'fa-brands fa-css',
+                introText: 'Built with',
+                linkText: 'Bootstrap',
+                linkURL: 'https://getbootstrap.com/'
+            },
+            {
+                fontAwesomeIcon: 'fa-solid fa-trophy',
+                introText: 'Icons provided by',
+                linkText: 'Font Awesome',
+                linkURL: 'https://fontawesome.com/'
+            }
+        ]
+    });
+});
+
+app.get('/contact', (request, response) => {
+    response.render('contact.ejs');
+});
+
+app.get('/projects', (request, response) => {
+    response.render('projects.ejs', { projects: ProjectsCollection.getAllProjects(), maxCols: 3 });
+});
+
+app.get('/projects/:id', (request, response) => {
+    const id = request.params.id;
+
+    if (id) {
+        let projectId = parseInt(id);
+        let projectData = ProjectsCollection.getProjectById(projectId);
+
+        if (ProjectsCollection.isValidProjectId(projectId) && projectData !== undefined) {
+            response.render('project.ejs', {
+                project: projectData
+            });
+        } else {
+            response.status(404).render('errors/404.ejs');
+        }
+    } else {
+        response.status(404).render('errors/404.ejs');
+    }
+});
 
 app.post('/mail', async (request, response) => {
     console.debug('Mail request received.');
@@ -62,6 +125,15 @@ app.post('/mail', async (request, response) => {
     } else {
         response.status(400).send('Invalid request format.');
     }
+});
+
+app.use((error, request, response, next) => {
+    console.log(error);
+    response.status(500).render('errors/500.ejs');
+});
+
+app.use((request, response, next) => {
+    response.status(404).render('errors/404.ejs');
 });
 
 exports.app = app;

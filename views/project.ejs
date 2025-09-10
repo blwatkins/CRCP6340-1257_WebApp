@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <%- include('includes/head'); %>
+        <title>brittni's fall 2025 nfts | <%= project.title %></title>
+        <meta name="description" content="<%= project.title %> project page in Brittni's implementation of the web application project for CRCP 6340; SMU Fall 2025 term.">
+    </head>
+    <body>
+        <header>
+            <%- include('includes/header-navigation'); %>
+        </header>
+        <div id="content" class="container">
+            <div class="row py-4">
+                <div class="col"></div>
+                <div class="col-10">
+                    <h1 id="project-title"><%= project.title %></h1>
+                    <p class="text-body-tertiary"><small>project id: <%= project.id %></small></p>
+                </div>
+                <div class="col"></div>
+            </div>
+            <div class="row py-2">
+                <div class="col"></div>
+                <div class="col-10 text-center">
+                    <p class="fs-4">This project doesn't exist yet, but come back soon for some really cool stuff!</p>
+                </div>
+                <div class="col"></div>
+            </div>
+        </div>
+        <footer>
+            <%- include('includes/footer-navigation'); %>
+        </footer>
+        <%- include('includes/closing-scripts'); %>
+    </body>
+</html>

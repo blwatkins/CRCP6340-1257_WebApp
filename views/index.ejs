@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <%- include('includes/head'); %>
+        <title>brittni's fall 2025 nfts | home</title>
+        <meta name="description" content="Brittni's implementation of the web application project for CRCP 6340; SMU Fall 2025 term.">
+    </head>
+    <body>
+        <header>
+            <%- include('includes/header-navigation'); %>
+        </header>
+        <!-- splash image -->
+        <script src="https://cdn.jsdelivr.net/npm/p5@1.11.10/lib/p5.min.js"></script>
+        <script src="./scripts/splash.js"></script>
+        <div id="splash" class="splash-container">
+            <canvas id="splashCanvas" class="splash-canvas"></canvas>
+        </div>
+        <!-- main content -->
+        <div class="fluid-container bg-secondary-subtle">
+        <div id="content" class="container">
+            <div class="row py-3 align-items-center">
+                <div class="col text-center m-2">
+                    <h2 class="text-center">featured project</h2>
+                    <div class="card mx-auto my-2 bg-secondary-subtle" style="width: 20rem; max-width: 90%;">
+                        <img src="./images/coming-soon-poster.png" class="card-img-top px-3 pt-3" alt="coming soon poster with light bulbs and a purple and blue butterfly on a purple background.">
+                        <div class="card-body text-center">
+                            <h5 class="card-title m-0">coming soon!</h5>
+                        </div>
+                    </div>
+                    <a href="./projects" class="btn btn-primary mx-auto my-2" role="button">
+                        view all projects
+                    </a>
+                </div>
+                <div class="col m-2" id="about">
+                    <h2 class="text-center">about brittni</h2>
+                    <p>
+                        Brittni is an educator, software developer, and algorithmic artist. She is passionate about teaching people from all backgrounds how to code. Her current research interests include algorithmic art, blockchain development, web application development, and DevSecOps. The applications of computer programming are numerous and varied; there is space for everyone.
+                    </p>
+                    <p>
+                        Brittni creates algorithmic art, photography, and music under her pseudonym,
+                        <a href="https://azurepolarbear.github.io/" target="_blank" rel="noopener noreferrer">azurepolarbear</a>.
+                        As an artist, she strives to discover striking visuals that can be created from logic and logical forms, such as geometric shapes and mathematical equations. She takes as much pride in the quality of her code as she does in the output it produces.
+                    </p>
+                    <p>
+                        With a bachelor's degree in creative computation, brittni has been creating art with code for more than a decade. She is a perpetual student, constantly exploring and learning about the intersection of creative practice, technical application, and technological innovation.
+                    </p>
+                    <p>
+                        Through her work as an artist, programmer, and educator, brittni hopes to inspire and encourage others to learn how to program and explore the amazing capabilities of code. Her philosophy is that art, art education, and computer science education should be available and accessible to all.
+                    </p>
+                    <p>
+                        <b>
+                            There is beauty in code, and code can make beautiful things.
+                        </b>
+                    </p>
+                </div>
+            </div>
+        </div>
+        </div>
+        <footer>
+            <%- include('includes/footer-navigation'); %>
+        </footer>
+        <%- include('includes/closing-scripts'); %>
+    </body>
+</html>

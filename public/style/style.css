@@ -43,6 +43,10 @@ h1, h2, h3, h4, h5, h6, .jetbrains {
   color: #4B0082 !important;
 }
 
+.bg-secondary-subtle {
+    background-color: #FCEEF3 !important;
+}
+
 /* Splash image styles */
 .splash-container {
   width: 100%;

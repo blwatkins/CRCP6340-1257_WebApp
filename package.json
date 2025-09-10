@@ -1,6 +1,6 @@
 {
   "name": "crcp6340-1257_webapp",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "description": "Brittni's implementation of the web application project for CRCP 6340; Fall 2025 term.",
   "repository": {
@@ -16,15 +16,16 @@
     "url": "https://blwatkins.github.io/"
   },
   "type": "commonjs",
-  "main": "./src/main/app.js",
+  "main": "src/app.cjs",
   "scripts": {
-    "start": "dotenvx run -- node ./src/main/server.js",
-    "dev": "dotenvx run -- nodemon ./src/main/server.js",
-    "lint": "eslint ./eslint.config.mjs ./jest.config.js ./public/scripts ./src",
+    "start": "dotenvx run -- node src/server.cjs",
+    "dev": "dotenvx run -- nodemon src/server.cjs",
+    "lint": "eslint ./eslint.config.mjs ./jest.config.cjs ./public/scripts ./src ./tests",
     "test": "jest"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.49.0",
+    "ejs": "^3.1.10",
     "express": "^5.1.0",
     "nodemailer": "^7.0.6"
   },
