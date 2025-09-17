@@ -18,10 +18,13 @@
   "type": "commonjs",
   "main": "src/app.cjs",
   "scripts": {
-    "start": "dotenvx run -- node src/server.cjs",
-    "dev": "dotenvx run -- nodemon src/server.cjs",
-    "lint": "eslint ./eslint.config.mjs ./vitest.config.js ./public/scripts ./src ./tests",
-    "test": "vitest run"
+    "start": "dotenvx run -- node ./src/server.cjs",
+    "dev": "dotenvx run -- nodemon ./src/server.cjs",
+    "lint": "eslint ./eslint.config.mjs ./vitest.config.mjs ./public/scripts ./src ./tests",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.49.0",
@@ -33,6 +36,7 @@
     "@eslint/js": "^9.35.0",
     "@stylistic/eslint-plugin": "^5.3.1",
     "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/ui": "^3.2.4",
     "eslint": "^9.35.0",
     "eslint-plugin-es-x": "^9.1.0",
     "eslint-plugin-n": "^17.23.0",

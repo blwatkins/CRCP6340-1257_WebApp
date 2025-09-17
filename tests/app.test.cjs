@@ -52,6 +52,46 @@ describe('app routing', () => {
         });
     });
 
+    describe('GET /', () => {
+        test('GET / - returns 200', async () => {
+            const response = await request(app).get('/');
+            expect(response.statusCode).toBe(200);
+        });
+    });
+
+    describe('GET /acknowledgements', () => {
+        test('GET /acknowledgements - returns 200', async () => {
+            const response = await request(app).get('/acknowledgements');
+            expect(response.statusCode).toBe(200);
+        });
+    });
+
+    describe('GET /contact', () => {
+        test('GET /contact - returns 200', async () => {
+            const response = await request(app).get('/contact');
+            expect(response.statusCode).toBe(200);
+        });
+    });
+
+    describe('GET /projects', () => {
+        test('GET /projects - returns 200', async () => {
+            const response = await request(app).get('/projects');
+            expect(response.statusCode).toBe(200);
+        });
+    });
+
+    describe('GET /project/:id', () => {
+        test.each([
+            { id: '1', expectedStatus: 200 },
+            { id: '2', expectedStatus: 200 },
+            { id: '50000', expectedStatus: 404 },
+            { id: 'cat', expectedStatus: 404 }
+        ])('GET /projects/$id', async ({ id, expectedStatus }) => {
+            const response = await request(app).get(`/projects/${id}`);
+            expect(response.statusCode).toBe(expectedStatus);
+        });
+    });
+
     describe('POST /mail', () => {
         beforeEach(() => {
             process.env = { ...TEST_ENV };
