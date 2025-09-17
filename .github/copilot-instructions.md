@@ -11,7 +11,7 @@ Always reference these instructions first and fallback to search or bash command
 - No additional SDK installations required
 
 ### Setup and Dependencies
-- Install dependencies: `npm install` -- takes ~15 seconds (includes ejs, vitest, nodemailer, dotenv, supertest)
+- Install dependencies: `npm install` -- takes ~15 seconds (includes ejs, vitest, nodemailer, dotenv, supertest, @vitest/ui)
 - Environment variables: Create `.env` file for email functionality (SMTP settings, see Environment Variables section). For enhanced security, consider using dotenvx encryption features to encrypt sensitive environment variables.
 - No build process required (Express app with EJS templating and API routes)
 
@@ -22,13 +22,17 @@ Always reference these instructions first and fallback to search or bash command
 - Contact form requires environment variables for email functionality
 
 ### Testing
-- Test command: `npm test` -- runs Vitest test suite with 131 tests and coverage reporting
+- Test command: `npm test` -- runs Vitest test suite with 164 tests and coverage reporting
+- Additional test scripts available:
+  - `npm run test:watch` -- runs Vitest in watch mode for development
+  - `npm run test:ui` -- runs Vitest with UI interface for interactive testing
+  - `npm run test:coverage` -- runs tests with coverage reporting
 - Unit tests implemented for:
   - Express app routes (including GET routes for /, /projects, /contact, /acknowledgements, /projects/:id and POST /mail endpoint)
   - Express app utility functions (string validation, email send with mocked nodemailer, ProjectsCollection class)
   - Static file serving
 - Lint command: `npm run lint` -- runs ESLint on configuration, server, scripts, src, and tests directories
-- Test coverage reports generated in `./out/tests-coverage/`
+- Test coverage reports generated in `./_coverage/`
 - All tests should pass with 100% code coverage
 
 ## Validation
@@ -133,12 +137,18 @@ After making any changes, ALWAYS validate the application by:
 │   │   └── style.css        # Custom CSS styles (includes bg-secondary-subtle override)
 │   └── images/
 │       ├── coming-soon-poster.png  # Featured project placeholder image
+│       ├── projects/
+│       │   └── gradient-graphs.png # Project image for gradient graphs NFT project
 │       └── icons/
 │           └── favicon-32x32.png  # Site favicon
-├── out/                      # Generated files (test coverage, etc.)
-│   └── tests-coverage/      # Vitest coverage reports (generated)
+├── schema/                     # Database schema and test data files
+│   ├── schema.sql              # Database table creation script
+│   ├── projects.sql            # Sample project data insertion script
+│   └── queries.sql             # Example database queries
+├── _coverage/                  # Generated files (test coverage, etc.)
+│   └── [generated files]      # Vitest coverage reports (generated)
 ├── eslint.config.mjs         # ESLint configuration with comprehensive rules (ES modules)
-├── vitest.config.js         # Vitest testing configuration with coverage
+├── vitest.config.mjs           # Vitest testing configuration with coverage
 ├── package.json             # Node.js dependencies and scripts
 ├── package-lock.json        # Dependency lock file
 ├── velocity-copyright-template.txt # Copyright header template
@@ -160,7 +170,7 @@ After making any changes, ALWAYS validate the application by:
 - **Express app**: `src/app.cjs` (routes, middleware, EJS view engine, GET and POST endpoints)
 - **Utility functions**: `src/utils/utils.cjs` (Validation class, EmailClient class with nodemailer, ProjectsCollection class)
 - **ESLint configuration**: `eslint.config.mjs` (comprehensive linting rules for code quality, ES modules)
-- **Vitest configuration**: `vitest.config.js` (test configuration with coverage reporting)
+- **Vitest configuration**: `vitest.config.mjs` (test configuration with coverage reporting)
 - **Main webpage**: `views/index.ejs` (homepage template with navigation, p5.js splash screen, featured project, and about sections)
 - **Contact page**: `views/contact.ejs` (contact page template with working form, validation, Bootstrap styling)
 - **Projects page**: `views/projects.ejs` (projects page template with dynamic project cards)
@@ -171,7 +181,8 @@ After making any changes, ALWAYS validate the application by:
 - **Splash animation**: `public/scripts/splash.js` (p5.js animated canvas with Circle and CirclePoissonDiscSampler classes)
 - **Contact form script**: `public/scripts/contact-email.js` (form validation, submission, UI feedback, and custom validation methods)
 - **Styling**: `public/style/style.css` (custom purple theme, JetBrains Mono font, splash styles, bg-secondary-subtle override)
-- **Static assets**: `public/images/` (favicon, coming soon poster, and other images)
+- **Static assets**: `public/images/` (favicon, coming soon poster, project images, and other images)
+- **Database schema**: `schema/` (SQL files for database creation, sample data, and queries)
 - **Test files**: `tests/` (Vitest unit tests for app routes, utilities, and static serving)
 
 ## Environment Variables
@@ -265,9 +276,10 @@ $ ls -la
 LICENSE
 README.md
 eslint.config.mjs           # ESLint configuration (ES modules)
-vitest.config.js             # Vitest testing configuration
+vitest.config.mjs             # Vitest testing configuration
 node_modules/               # Created after npm install
-out/                        # Generated files (test coverage)
+_coverage/                  # Generated files (test coverage)
+schema/                     # Database schema and SQL files
 package-lock.json
 package.json
 public/
@@ -283,8 +295,11 @@ views/                      # EJS template directory
   "scripts": {
     "start": "dotenvx run -- node src/server.cjs",
     "dev": "dotenvx run -- nodemon src/server.cjs",
-    "lint": "eslint ./eslint.config.mjs ./vitest.config.js ./public/scripts ./src ./tests",
-    "test": "vitest run"
+    "lint": "eslint ./eslint.config.mjs ./vitest.config.mjs ./public/scripts ./src ./tests",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage"
   }
 }
 ```
@@ -305,10 +320,11 @@ views/                      # EJS template directory
     "eslint-plugin-es-x": "^9.1.0",
     "eslint-plugin-n": "^17.21.3",
     "eslint-plugin-security": "^3.0.1",
-    "@vitest/coverage-v8": "^2.1.8",
+    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/ui": "^3.2.4",
     "nodemon": "^3.1.10",
     "supertest": "^7.1.4",
-    "vitest": "^2.1.8"
+    "vitest": "^3.2.4"
   }
 }
 ```
@@ -343,7 +359,7 @@ views/                      # EJS template directory
 
 ### CI/CD
 - Node.js lint and test workflow configured in `.github/workflows/nodejs.yml`
-- CodeQL security scanning configured in `.github/workflows/codeql.yml`
+- CodeQL security scanning configured in `.github/workflows/codeql.yml` for JavaScript/TypeScript and GitHub Actions
 - Vitest test suite provides comprehensive test coverage
 - Dependabot configured for npm and GitHub Actions dependency updates
 - All tests must pass before merging changes
@@ -363,8 +379,11 @@ views/                      # EJS template directory
 - **Add unit tests**: Create test files in `tests/` directory (Vitest format)
 - **Environment setup**: Edit `.env` file for email configuration (not committed to repo)
 - **Code quality**: Run `npm run lint` and `npm test` to check for issues and maintain standards
+- **Interactive testing**: Use `npm run test:ui` for interactive test running and debugging
+- **Test development**: Use `npm run test:watch` for continuous testing during development
 - **Update project data**: Modify `ProjectsCollection` class in `src/utils/utils.cjs` to add/modify project information
 - **Create error pages**: Add custom error templates in `views/errors/` directory
+- **Database development**: Reference `schema/` directory for database structure, sample data, and example queries
 
 ## Troubleshooting
 
