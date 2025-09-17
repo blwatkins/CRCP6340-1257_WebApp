@@ -20,6 +20,4 @@
  * SOFTWARE.
  */
 
-USE crcp6340_1257;
-
 SELECT * FROM projects;
