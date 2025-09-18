@@ -20,12 +20,12 @@
  * SOFTWARE.
  */
 
-const request = require('supertest');
-
-const { app } = require('../src/app.cjs');
-
 vi.mock('nodemailer');
-const nodemailer = require('nodemailer');
+
+import nodemailer from 'nodemailer';
+import request from 'supertest';
+
+import { app } from '../src/app.mjs';
 
 afterAll(() => {
     vi.clearAllMocks();
