@@ -20,11 +20,11 @@
  * SOFTWARE.
  */
 
-const express = require('express');
+import express from 'express';
 
-const { EmailClient, ProjectsCollection, Validation } = require('./utils/utils.cjs');
+import { EmailClient, ProjectsCollection, Validation } from './utils/utils.mjs';
 
-const app = express();
+export const app = express();
 
 app.set('view engine', 'ejs');
 app.use(express.json());
@@ -135,5 +135,3 @@ app.use((error, request, response, next) => {
 app.use((request, response, next) => {
     response.status(404).render('errors/404.ejs');
 });
-
-exports.app = app;
