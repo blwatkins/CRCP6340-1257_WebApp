@@ -15,11 +15,11 @@
     "name": "brittni watkins",
     "url": "https://blwatkins.github.io/"
   },
-  "type": "commonjs",
-  "main": "src/app.cjs",
+  "type": "module",
+  "main": "src/app.mjs",
   "scripts": {
-    "start": "dotenvx run -- node ./src/server.cjs",
-    "dev": "dotenvx run -- nodemon ./src/server.cjs",
+    "start": "dotenvx run -- node ./src/server.mjs",
+    "dev": "dotenvx run -- nodemon ./src/server.mjs",
     "lint": "eslint ./eslint.config.mjs ./vitest.config.mjs ./public/scripts ./src ./tests",
     "test": "vitest run",
     "test:watch": "vitest",
