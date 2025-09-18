@@ -20,9 +20,9 @@
  * SOFTWARE.
  */
 
-const request = require('supertest');
+import request from 'supertest';
 
-const { app } = require('../src/app.cjs');
+import { app } from '../src/app.mjs';
 
 describe('static file serving from public', () => {
     test('GET /style/style.css - serves CSS files', async () => {
