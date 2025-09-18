@@ -20,8 +20,6 @@
  * SOFTWARE.
  */
 
-USE crcp6340_1257;
-
 INSERT INTO projects (
     project_name,
     img_url,

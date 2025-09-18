@@ -20,8 +20,6 @@
  * SOFTWARE.
  */
 
-USE crcp6340_1257;
-
 CREATE TABLE projects (
     id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     project_name VARCHAR(150) NOT NULL,

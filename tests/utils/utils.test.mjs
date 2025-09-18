@@ -20,10 +20,11 @@
  * SOFTWARE.
  */
 
-const { Validation, EmailClient, ProjectsCollection } = require('../../src/utils/utils.cjs');
-
 vi.mock('nodemailer');
-const nodemailer = require('nodemailer');
+
+import nodemailer from 'nodemailer';
+
+import { Validation, EmailClient, ProjectsCollection } from '../../src/utils/utils.mjs';
 
 afterAll(() => {
     vi.clearAllMocks();
