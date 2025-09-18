@@ -22,7 +22,7 @@
 
 import nodemailer from 'nodemailer';
 
-class EmailClient {
+export class EmailClient {
     static MAX_SUBJECT_LENGTH = 256;
     static MAX_BODY_LENGTH = 16384;
 
@@ -114,7 +114,7 @@ class EmailClient {
     }
 }
 
-class Validation {
+export class Validation {
     static isValidString(input) {
         const validType = typeof input === 'string';
         let validContent = false;
@@ -139,7 +139,7 @@ class Validation {
     }
 }
 
-class ProjectsCollection {
+export class ProjectsCollection {
     static #projectIds = [1, 2, 3, 4, 5];
 
     static isValidProjectId(projectId) {
@@ -166,7 +166,3 @@ class ProjectsCollection {
         });
     }
 }
-
-exports.EmailClient = EmailClient;
-exports.ProjectsCollection = ProjectsCollection;
-exports.Validation = Validation;
