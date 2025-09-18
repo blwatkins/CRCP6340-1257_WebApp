@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-const { app } = require('./app.cjs');
+import { app } from './app.mjs';
 
 const port = 3000;
 
