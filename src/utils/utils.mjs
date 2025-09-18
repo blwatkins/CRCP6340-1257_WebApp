@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
 class EmailClient {
     static MAX_SUBJECT_LENGTH = 256;
