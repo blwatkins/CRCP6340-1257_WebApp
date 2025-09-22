@@ -80,7 +80,7 @@ export class EmailClient {
      */
     static async sendEmail(subject, body) {
         if (!EmailClient.verifyEmailSettings()) {
-            throw new Error('Email settings not properly configured.');
+            throw new Error('Invalid email configuration settings.');
         }
 
         const transport = nodemailer.createTransport({

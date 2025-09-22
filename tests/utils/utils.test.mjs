@@ -219,7 +219,7 @@ describe('utils.js', () => {
 
             test('EmailClient.sendEmail() - email settings are missing', async () => {
                 process.env.SMTP_SERVICE = '';
-                await expect(EmailClient.sendEmail('Test Subject', 'Test Body')).rejects.toThrow('Email settings not properly configured.');
+                await expect(EmailClient.sendEmail('Test Subject', 'Test Body')).rejects.toThrow('Invalid email configuration settings.');
             });
 
             test('EmailClient.sendEmail() - subject is invalid', async () => {
