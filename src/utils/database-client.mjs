@@ -19,3 +19,98 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+import mysql from 'mysql2/promise';
+
+import { Validation } from './utils.mjs';
+
+export class DatabaseClient {
+    static #connectionPool = null;
+    static #initPromise = null;
+
+    constructor() {
+        throw new Error('DatabaseClient is a static class and cannot be instantiated.');
+    }
+
+    static verifyConnectionSettings() {
+        const host = process.env.MYSQL_HOST;
+        const port = process.env.MYSQL_PORT;
+        const user = process.env.MYSQL_USER;
+        const password = process.env.MYSQL_PASSWORD;
+        const database = process.env.MYSQL_DATABASE;
+
+        return (
+            Validation.isValidString(host) &&
+            Validation.isValidString(port) &&
+            Validation.isValidString(user) &&
+            Validation.isValidString(password) &&
+            Validation.isValidString(database)
+        );
+    }
+
+    static async init() {
+        if (DatabaseClient.#connectionPool) {
+            return;
+        }
+
+        if (DatabaseClient.#initPromise) {
+            await DatabaseClient.#initPromise;
+            return;
+        }
+
+        if (!DatabaseClient.verifyConnectionSettings()) {
+            throw new Error('Invalid database connection settings.');
+        }
+
+        const initPromise = DatabaseClient.#getConnectionPool();
+        DatabaseClient.#initPromise = initPromise;
+
+        try {
+            await initPromise;
+        } finally {
+            if (DatabaseClient.#initPromise === initPromise) {
+                DatabaseClient.#initPromise = null;
+            }
+        }
+    }
+
+    static async closeConnectionPool() {
+        if (DatabaseClient.#initPromise) {
+            await DatabaseClient.#initPromise;
+        }
+
+        const pool = DatabaseClient.#connectionPool;
+
+        if (pool) {
+            try {
+                await pool.end();
+            } catch (error) {
+                console.error('Error closing database connection pool: ' + error.message);
+            }
+
+            if (DatabaseClient.#connectionPool === pool) {
+                DatabaseClient.#connectionPool = null;
+            }
+        }
+    }
+
+    static async #getConnectionPool() {
+        try {
+            DatabaseClient.#connectionPool = await mysql.createPool({
+                host: process.env.MYSQL_HOST,
+                port: process.env.MYSQL_PORT,
+                user: process.env.MYSQL_USER,
+                password: process.env.MYSQL_PASSWORD,
+                database: process.env.MYSQL_DATABASE
+            });
+        } catch (error) {
+            DatabaseClient.#connectionPool = null;
+            throw error;
+        }
+    }
+
+    static async getAllProjects() {
+        const results = await DatabaseClient.#connectionPool.execute('SELECT * FROM projects;');
+        return results[0];
+    }
+}
