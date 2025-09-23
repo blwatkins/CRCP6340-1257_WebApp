@@ -20,10 +20,10 @@
  * SOFTWARE.
  */
 
-import { DatabaseClient } from '../utils/database-client.mjs';
+import { DatabaseClient } from '../db/database-client.mjs';
 
 export class Projects {
-    static #projects = [];
+    static #projects = null;
     static #initPromise = null;
 
     static async init() {
@@ -75,9 +75,9 @@ export class Projects {
     static #buildProject(projectData) {
         return {
             id: projectData.id,
-            project_title: projectData.project_title,
+            title: projectData.title,
             image_url: projectData.image_url,
-            project_description: projectData.project_description
+            description: projectData.description
         };
     }
 

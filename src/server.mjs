@@ -22,7 +22,7 @@
 
 import { app } from './app.mjs';
 
-import { DatabaseClient } from './utils/database-client.mjs';
+import { DatabaseClient } from './db/database-client.mjs';
 
 const port = 3000;
 

@@ -23,7 +23,7 @@
 import express from 'express';
 
 import { Projects } from './models/projects.mjs';
-import { DatabaseClient } from './utils/database-client.mjs';
+import { DatabaseClient } from './db/database-client.mjs';
 import { EmailClient, Validation } from './utils/utils.mjs';
 
 export const app = express();
