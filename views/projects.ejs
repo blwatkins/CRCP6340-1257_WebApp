@@ -16,14 +16,7 @@
             <div class="row row-cols-auto row-cols-lg-<%= maxCols %> py-3">
                 <% projects.forEach((project, index) => { %>
                     <div class="col text-center mx-auto">
-                        <div class="card mx-auto my-2" style="width: 15rem; max-width: 90%;">
-                            <a href="/projects/<%= project.id %>">
-                                <img src="./images/coming-soon-poster.png" class="card-img-top px-3 pt-3" alt="coming soon poster with light bulbs and a purple and blue butterfly on a purple background.">
-                                <div class="card-body text-center">
-                                    <h5 class="card-title m-0"><%= project.title %></h5>
-                                </div>
-                            </a>
-                        </div>
+                        <%- include('includes/project-card', { project: project }); %>
                     </div>
                 <% }); %>
 
