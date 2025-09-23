@@ -24,7 +24,7 @@ import express from 'express';
 
 import { Projects } from './models/projects.mjs';
 import { DatabaseClient } from './utils/database-client.mjs';
-import { EmailClient, ProjectsCollection, Validation } from './utils/utils.mjs';
+import { EmailClient, Validation } from './utils/utils.mjs';
 
 export const app = express();
 
@@ -79,7 +79,7 @@ app.get('/contact', (request, response) => {
 });
 
 app.get('/projects', (request, response) => {
-    response.render('projects.ejs', { projects: ProjectsCollection.getAllProjects(), maxCols: 3 });
+    response.render('projects.ejs', { projects: Projects.getAllProjects(), maxCols: 3 });
 });
 
 app.get('/projects/:id', (request, response) => {
@@ -87,9 +87,9 @@ app.get('/projects/:id', (request, response) => {
 
     if (id) {
         let projectId = parseInt(id);
-        let projectData = ProjectsCollection.getProjectById(projectId);
+        let projectData = Projects.getProjectById(projectId);
 
-        if (ProjectsCollection.isValidProjectId(projectId) && projectData !== undefined) {
+        if (projectData !== undefined) {
             response.render('project.ejs', {
                 project: projectData
             });
