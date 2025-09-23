@@ -22,7 +22,7 @@
 
 CREATE TABLE projects (
     id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-    project_name VARCHAR(150) NOT NULL,
+    project_title VARCHAR(150) NOT NULL,
     img_url VARCHAR(250) NOT NULL,
     project_description VARCHAR(2500) NOT NULL,
     quantity INTEGER NOT NULL,

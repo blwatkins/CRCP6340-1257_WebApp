@@ -21,7 +21,7 @@
  */
 
 INSERT INTO projects (
-    project_name,
+    project_title,
     img_url,
     project_description,
     quantity,
