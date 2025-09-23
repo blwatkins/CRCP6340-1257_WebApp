@@ -32,6 +32,10 @@ export class DatabaseClient {
         throw new Error('DatabaseClient is a static class and cannot be instantiated.');
     }
 
+    static get connectionPool() {
+        return DatabaseClient.#connectionPool;
+    }
+
     static verifyConnectionSettings() {
         const host = process.env.MYSQL_HOST;
         const port = process.env.MYSQL_PORT;
@@ -107,10 +111,5 @@ export class DatabaseClient {
             DatabaseClient.#connectionPool = null;
             throw error;
         }
-    }
-
-    static async getAllProjects() {
-        const results = await DatabaseClient.#connectionPool.execute('SELECT * FROM projects;');
-        return results[0];
     }
 }
