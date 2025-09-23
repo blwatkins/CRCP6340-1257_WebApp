@@ -138,31 +138,3 @@ export class Validation {
         }
     }
 }
-
-export class ProjectsCollection {
-    static #projectIds = [1, 2, 3, 4, 5];
-
-    static isValidProjectId(projectId) {
-        return Validation.isValidNumber(projectId) && ProjectsCollection.#projectIds.includes(projectId);
-    }
-
-    static getProjectById(projectId) {
-        if (ProjectsCollection.isValidProjectId(projectId)) {
-            return {
-                id: projectId,
-                title: `Project ${projectId}`
-            };
-        } else {
-            return undefined;
-        }
-    }
-
-    static getAllProjects() {
-        return ProjectsCollection.#projectIds.map((projectId) => {
-            return {
-                id: projectId,
-                title: `Project ${projectId}`
-            };
-        });
-    }
-}
