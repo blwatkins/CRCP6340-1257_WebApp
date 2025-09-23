@@ -22,9 +22,9 @@
 
 CREATE TABLE projects (
     id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-    project_title VARCHAR(150) NOT NULL,
-    img_url VARCHAR(250) NOT NULL,
-    project_description VARCHAR(2500) NOT NULL,
+    title VARCHAR(150) NOT NULL,
+    image_url VARCHAR(250) NOT NULL,
+    description VARCHAR(2500) NOT NULL,
     quantity INTEGER NOT NULL,
     price_eth DECIMAL(10, 5) NOT NULL,
     open_date_gmt DATETIME NOT NULL,
