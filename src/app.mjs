@@ -22,6 +22,7 @@
 
 import express from 'express';
 
+import { Projects } from './models/projects.mjs';
 import { DatabaseClient } from './utils/database-client.mjs';
 import { EmailClient, ProjectsCollection, Validation } from './utils/utils.mjs';
 
@@ -29,9 +30,9 @@ export const app = express();
 
 try {
     await DatabaseClient.init();
-    console.log(await DatabaseClient.getAllProjects());
+    await Projects.init();
 } catch (error) {
-    console.error('Error initializing database: ' + error.message);
+    console.error('Initialization error: ' + error);
 }
 
 app.set('view engine', 'ejs');
