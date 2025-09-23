@@ -20,5 +20,19 @@
  * SOFTWARE.
  */
 
-// TODO - move database client to db folder
-// TODO - subclass of database client for accessing projects data
+import { DatabaseClient } from './database-client.mjs';
+
+class ProjectsClient extends DatabaseClient {
+    static async queryAllProjects() {
+        const query = 'SELECT * FROM projects';
+
+        try {
+            const [rows] = await ProjectsClient.connectionPool.execute(query);
+            return rows;
+        } catch (error) {
+            console.error(error);
+        }
+
+        return [];
+    }
+}
