@@ -89,7 +89,7 @@ export class DatabaseClient {
             try {
                 await pool.end();
             } catch (error) {
-                console.error('Error closing database connection pool: ' + error.message);
+                console.error(error);
             }
 
             if (DatabaseClient.#connectionPool === pool) {

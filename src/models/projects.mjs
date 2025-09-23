@@ -20,56 +20,32 @@
  * SOFTWARE.
  */
 
-import { DatabaseClient } from '../db/database-client.mjs';
+import { ProjectsClient } from '../db/projects-client.mjs';
 
 export class Projects {
-    static #projects = null;
-    static #initPromise = null;
-
-    static async init() {
-        if (Projects.#projects) {
-            return;
-        }
-
-        if (Projects.#initPromise) {
-            await Projects.#initPromise;
-            return;
-        }
-
-        const initPromise = Projects.#queryAllProjects();
-        Projects.#initPromise = initPromise;
-
+    static async getAllProjects() {
         try {
-            await initPromise;
+            const projects = await ProjectsClient.queryAllProjects();
+            return projects.map(project => Projects.#buildProject(project));
         } catch (error) {
-            console.error('Projects initialization error: ' + error.message);
-        } finally {
-            if (Projects.#initPromise === initPromise) {
-                Projects.#initPromise = null;
+            console.error(error);
+        }
+
+        return [];
+    }
+
+    static async getProjectById(projectId) {
+        try {
+            const project = await ProjectsClient.queryProjectById(projectId);
+
+            if (project) {
+                return Projects.#buildProject(project);
             }
+        } catch (error) {
+            console.error(error);
         }
-    }
 
-    static getProjectIds() {
-        return Projects.#projects.map(project => project.id);
-    }
-
-    static getAllProjects() {
-        return Projects.#projects.map(project => Projects.#buildProject(project));
-    }
-
-    static getProjectById(projectId) {
-        const project = Projects.#projects.find(project => project.id === projectId);
-
-        if (project) {
-            return Projects.#buildProject(project);
-        } else {
-            return undefined;
-        }
-    }
-
-    static isValidProjectId(projectId) {
-        return Projects.getProjectIds().includes(projectId);
+        return undefined;
     }
 
     static #buildProject(projectData) {
@@ -79,16 +55,5 @@ export class Projects {
             image_url: projectData.image_url,
             description: projectData.description
         };
-    }
-
-    static async #queryAllProjects() {
-        const query = 'SELECT * FROM projects';
-
-        try {
-            const [rows] = await DatabaseClient.connectionPool.execute(query);
-            Projects.#projects = rows;
-        } catch (error) {
-            console.error(error);
-        }
     }
 }

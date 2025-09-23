@@ -30,9 +30,8 @@ export const app = express();
 
 try {
     await DatabaseClient.init();
-    await Projects.init();
 } catch (error) {
-    console.error('Initialization error: ' + error);
+    console.error(error);
 }
 
 app.set('view engine', 'ejs');
@@ -78,16 +77,17 @@ app.get('/contact', (request, response) => {
     response.render('contact.ejs');
 });
 
-app.get('/projects', (request, response) => {
-    response.render('projects.ejs', { projects: Projects.getAllProjects(), maxCols: 3 });
+app.get('/projects', async (request, response) => {
+    const projects = await Projects.getAllProjects();
+    response.render('projects.ejs', { projects: projects, maxCols: 3 });
 });
 
-app.get('/projects/:id', (request, response) => {
+app.get('/projects/:id', async (request, response) => {
     const id = request.params.id;
 
     if (id) {
         let projectId = parseInt(id);
-        let projectData = Projects.getProjectById(projectId);
+        let projectData = await Projects.getProjectById(projectId);
 
         if (projectData !== undefined) {
             response.render('project.ejs', {

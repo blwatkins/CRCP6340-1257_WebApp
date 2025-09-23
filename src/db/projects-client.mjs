@@ -22,7 +22,7 @@
 
 import { DatabaseClient } from './database-client.mjs';
 
-class ProjectsClient extends DatabaseClient {
+export class ProjectsClient extends DatabaseClient {
     static async queryAllProjects() {
         const query = 'SELECT * FROM projects';
 
@@ -34,5 +34,24 @@ class ProjectsClient extends DatabaseClient {
         }
 
         return [];
+    }
+
+    static async queryProjectById(projectId) {
+        const query = 'SELECT * FROM projects WHERE id = ?';
+        const values = [projectId];
+
+        try {
+            const [rows] = await ProjectsClient.connectionPool.execute(query, values);
+
+            if (rows.length > 0) {
+                return rows[0];
+            } else {
+                return undefined;
+            }
+        } catch (error) {
+            console.error(error);
+        }
+
+        return undefined;
     }
 }
