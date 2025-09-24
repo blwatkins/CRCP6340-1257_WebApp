@@ -22,6 +22,8 @@
 
 import nodemailer from 'nodemailer';
 
+import { Validation } from './validation.mjs';
+
 export class EmailClient {
     static MAX_SUBJECT_LENGTH = 256;
     static MAX_BODY_LENGTH = 16384;
@@ -110,31 +112,6 @@ export class EmailClient {
             await transport.sendMail(message);
         } catch (error) {
             throw new Error(`Email send failed: ${error}`);
-        }
-    }
-}
-
-export class Validation {
-    static isValidString(input) {
-        const validType = typeof input === 'string';
-        let validContent = false;
-
-        if (validType) {
-            validContent = input.trim().length > 0;
-        }
-
-        return validType && validContent;
-    }
-
-    static isValidNumber(input) {
-        return (typeof input === 'number') && !isNaN(input);
-    }
-
-    static sanitizeString(input) {
-        if (Validation.isValidString(input)) {
-            return input.trim();
-        } else {
-            return undefined;
         }
     }
 }
