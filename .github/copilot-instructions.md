@@ -11,13 +11,13 @@ Always reference these instructions first and fallback to search or bash command
 - No additional SDK installations required
 
 ### Setup and Dependencies
-- Install dependencies: `npm install` -- takes ~15 seconds (includes ejs, vitest, nodemailer, dotenv, supertest, @vitest/ui)
+- Install dependencies: `npm install` -- takes ~15 seconds (includes ejs, vitest, nodemailer, dotenvx, mysql2, html-entities, supertest, @vitest/ui)
 - Environment variables: Create `.env` file for email functionality (SMTP settings, see Environment Variables section). For enhanced security, consider using dotenvx encryption features to encrypt sensitive environment variables.
 - No build process required (Express app with EJS templating and API routes)
 
 ### Running the Application
-- Production server: `npm start` -- starts immediately on port 3000 (uses dotenvx and server.cjs)
-- Development server (with auto-reload): `npm run dev` -- starts immediately with nodemon (uses dotenvx and server.cjs)
+- Production server: `npm start` -- starts immediately on port 3000 (uses dotenvx and server.mjs)
+- Development server (with auto-reload): `npm run dev` -- starts immediately with nodemon (uses dotenvx and server.mjs)
 - Application serves content at: `http://localhost:3000`
 - Contact form requires environment variables for email functionality
 
@@ -29,7 +29,7 @@ Always reference these instructions first and fallback to search or bash command
   - `npm run test:coverage` -- runs tests with coverage reporting
 - Unit tests implemented for:
   - Express app routes (including GET routes for /, /projects, /contact, /acknowledgements, /projects/:id and POST /mail endpoint)
-  - Express app utility functions (string validation, email send with mocked nodemailer, ProjectsCollection class)
+  - Express app utility functions (string validation, email send with mocked nodemailer, Projects class)
   - Static file serving
 - Lint command: `npm run lint` -- runs ESLint on configuration, server, scripts, src, and tests directories
 - Test coverage reports generated in `./_coverage/`
@@ -90,7 +90,7 @@ After making any changes, ALWAYS validate the application by:
 - Custom client-side validation prevents empty strings and whitespace-only strings
 - Email notifications sent when SMTP environment variables are properly configured
 - Social media links in footer open in new tabs with proper accessibility attributes
-- Project pages are dynamically generated using ProjectsCollection data
+- Project pages are dynamically generated using Projects data
 - Error pages (404, 500) render correctly with proper styling
 
 ### Known Issues
@@ -105,17 +105,24 @@ After making any changes, ALWAYS validate the application by:
 ### Key Files and Directories
 ```
 /home/runner/work/CRCP6340-1257_WebApp/CRCP6340-1257_WebApp/
-├── src/                      # Source code directory (CommonJS modules)
-│   ├── app.cjs              # Express app configuration and routes (GET and POST routes)
-│   ├── server.cjs           # Server startup and initialization
-│   └── utils/
-│       └── utils.cjs        # Utility functions (Validation, EmailClient, ProjectsCollection)
+├── src/                      # Source code directory (ES modules)
+│   ├── app.mjs              # Express app configuration and routes (GET and POST routes)
+│   ├── server.mjs           # Server startup and initialization
+│   ├── db/                  # Database-related modules
+│   │   ├── database-client.mjs  # DatabaseClient class for MySQL connection
+│   │   └── projects-client.mjs  # ProjectsClient class for projects data access
+│   ├── models/              # Data model classes
+│   │   └── projects.mjs     # Projects class for project data processing
+│   └── utils/               # Utility functions
+│       ├── email-client.mjs # EmailClient class (refactored from utils.cjs)
+│       └── validation.mjs   # Validation class (refactored from utils.cjs)
 ├── views/                    # EJS template directory
 │   ├── includes/            # Reusable EJS partials
 │   │   ├── head.ejs         # Common HTML head content
 │   │   ├── header-navigation.ejs  # Navigation header
 │   │   ├── footer-navigation.ejs  # Footer with social links and navigation
-│   │   └── closing-scripts.ejs    # Bootstrap JS scripts
+│   │   ├── closing-scripts.ejs    # Bootstrap JS scripts
+│   │   └── project-card.ejs # Project card layout for project cards
 │   ├── errors/              # Error page templates
 │   │   ├── 404.ejs          # 404 error page
 │   │   └── 500.ejs          # 500 error page
@@ -125,10 +132,16 @@ After making any changes, ALWAYS validate the application by:
 │   ├── project.ejs          # Individual project page template
 │   └── acknowledgements.ejs # Acknowledgements page template crediting Express, Nodemailer, Bootstrap, and FontAwesome
 ├── tests/                    # Vitest test files
-│   ├── app.test.cjs         # Express app route tests
-│   ├── public.test.cjs      # Static file serving tests
-│   └── utils/
-│       └── utils.test.cjs   # Utility function tests
+│   ├── app.test.mjs         # Express app route tests
+│   ├── public.test.mjs      # Static file serving tests
+│   ├── db/                  # Database class tests
+│   │   ├── database-client.test.mjs  # DatabaseClient tests (TODO)
+│   │   └── projects-client.test.mjs  # ProjectsClient tests (TODO)
+│   ├── models/              # Model class tests
+│   │   └── projects.test.mjs # Projects class tests (TODO)
+│   └── utils/               # Utility function tests
+│       ├── email-client.test.mjs     # EmailClient tests (refactored from utils.test.cjs)
+│       └── validation.test.mjs       # Validation tests (refactored from utils.test.cjs)
 ├── public/                   # Static web content directory
 │   ├── scripts/
 │   │   ├── splash.js        # p5.js animated splash screen with fill and outline circles
@@ -166,9 +179,13 @@ After making any changes, ALWAYS validate the application by:
 ```
 
 ### Important Code Locations
-- **Server configuration**: `src/server.cjs` (Express server startup, port 3000)
-- **Express app**: `src/app.cjs` (routes, middleware, EJS view engine, GET and POST endpoints)
-- **Utility functions**: `src/utils/utils.cjs` (Validation class, EmailClient class with nodemailer, ProjectsCollection class)
+- **Server configuration**: `src/server.mjs` (Express server startup, port 3000, database shutdown logic)
+- **Express app**: `src/app.mjs` (routes, middleware, EJS view engine, GET and POST endpoints, DatabaseClient initialization)
+- **Database client**: `src/db/database-client.mjs` (DatabaseClient class for MySQL connection management)
+- **Projects client**: `src/db/projects-client.mjs` (ProjectsClient class for database queries)
+- **Projects model**: `src/models/projects.mjs` (Projects class for project data processing)
+- **Email client**: `src/utils/email-client.mjs` (EmailClient class with nodemailer, refactored from utils.cjs)
+- **Validation utilities**: `src/utils/validation.mjs` (Validation class, refactored from utils.cjs)
 - **ESLint configuration**: `eslint.config.mjs` (comprehensive linting rules for code quality, ES modules)
 - **Vitest configuration**: `vitest.config.mjs` (test configuration with coverage reporting)
 - **Main webpage**: `views/index.ejs` (homepage template with navigation, p5.js splash screen, featured project, and about sections)
@@ -178,12 +195,13 @@ After making any changes, ALWAYS validate the application by:
 - **Acknowledgements page**: `views/acknowledgements.ejs` (credits page template for Express, Nodemailer, Bootstrap, and FontAwesome with social media links)
 - **Error pages**: `views/errors/404.ejs` and `views/errors/500.ejs` (error page templates)
 - **EJS includes**: `views/includes/` (reusable EJS partials for head, header, footer, and scripts)
+- **Project card layout**: `views/includes/project-card.ejs` (reusable project card component)
 - **Splash animation**: `public/scripts/splash.js` (p5.js animated canvas with Circle and CirclePoissonDiscSampler classes)
 - **Contact form script**: `public/scripts/contact-email.js` (form validation, submission, UI feedback, and custom validation methods)
 - **Styling**: `public/style/style.css` (custom purple theme, JetBrains Mono font, splash styles, bg-secondary-subtle override)
 - **Static assets**: `public/images/` (favicon, coming soon poster, project images, and other images)
 - **Database schema**: `schema/` (SQL files for database creation, sample data, and queries)
-- **Test files**: `tests/` (Vitest unit tests for app routes, utilities, and static serving)
+- **Test files**: `tests/` (Vitest unit tests for app routes, utilities, database, models, and static serving)
 
 ## Environment Variables
 
@@ -204,13 +222,33 @@ MAIL_FROM=your-email@gmail.com
 MAIL_TO=recipient@example.com
 ```
 
+### Required for Database Functionality
+The following MySQL database environment variables must also be added to your `.env` file:
+
+```env
+# MySQL Database Configuration
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+MYSQL_USER=your-database-user
+MYSQL_PASSWORD=your-database-password
+MYSQL_DATABASE=your-database-name
+```
+
 ### Environment Variable Details
+**Email Configuration:**
 - **SMTP_SERVICE**: Email service provider (gmail, outlook, etc.)
 - **SMTP_REQUIRE_TLS**: Whether to require TLS encryption (true/false)
 - **MAIL_USER**: SMTP authentication username
 - **MAIL_PASSWORD**: SMTP authentication password (use app-specific passwords for Gmail)
 - **MAIL_FROM**: Email address to send from
 - **MAIL_TO**: Email address to send contact form submissions to
+
+**Database Configuration:**
+- **MYSQL_HOST**: MySQL server hostname or IP address
+- **MYSQL_PORT**: MySQL server port (typically 3306)
+- **MYSQL_USER**: MySQL database username
+- **MYSQL_PASSWORD**: MySQL database password
+- **MYSQL_DATABASE**: MySQL database name
 
 ### Environment File Encryption (Recommended)
 For enhanced security, you can encrypt your `.env` file using dotenvx encryption features:
@@ -260,9 +298,11 @@ npx @dotenvx/dotenvx decrypt -f .env.vault
 
 ### Important Notes
 - Environment variables are loaded using `@dotenvx/dotenvx`
-- Contact form will return errors if environment variables are not properly configured
+- Contact form will return errors if email environment variables are not properly configured
+- Database functionality will fail if MySQL environment variables are not properly configured
 - For Gmail, use app-specific passwords rather than regular account passwords
 - The application will show "[MISSING_ENV_FILE]" warning if `.env` file is missing (this is normal for static-only usage)
+- Database connection errors will appear in logs if MySQL environment variables are missing or incorrect
 - **Encryption is optional but recommended** for enhanced security, especially in team environments
 
 ## Common Commands Output Reference
@@ -293,8 +333,8 @@ views/                      # EJS template directory
 ```json
 {
   "scripts": {
-    "start": "dotenvx run -- node src/server.cjs",
-    "dev": "dotenvx run -- nodemon src/server.cjs",
+    "start": "dotenvx run -- node ./src/server.mjs",
+    "dev": "dotenvx run -- nodemon ./src/server.mjs",
     "lint": "eslint ./eslint.config.mjs ./vitest.config.mjs ./public/scripts ./src ./tests",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -308,20 +348,22 @@ views/                      # EJS template directory
 ```json
 {
   "dependencies": {
-    "@dotenvx/dotenvx": "^1.49.0",
+    "@dotenvx/dotenvx": "^1.51.0",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
+    "html-entities": "^2.6.0",
+    "mysql2": "^3.15.0",
     "nodemailer": "^7.0.6"
   },
   "devDependencies": {
-    "@eslint/js": "^9.35.0",
-    "@stylistic/eslint-plugin": "^5.3.1",
-    "eslint": "^9.35.0",
-    "eslint-plugin-es-x": "^9.1.0",
-    "eslint-plugin-n": "^17.21.3",
-    "eslint-plugin-security": "^3.0.1",
+    "@eslint/js": "^9.36.0",
+    "@stylistic/eslint-plugin": "^5.4.0",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
+    "eslint": "^9.36.0",
+    "eslint-plugin-es-x": "^9.1.0",
+    "eslint-plugin-n": "^17.23.1",
+    "eslint-plugin-security": "^3.0.1",
     "nodemon": "^3.1.10",
     "supertest": "^7.1.4",
     "vitest": "^3.2.4"
@@ -353,7 +395,7 @@ views/                      # EJS template directory
 - Includes rules for code quality, security, Node.js best practices, and stylistic consistency
 - Run `npm run lint` to check code style and quality
 - Follow existing code patterns in the repository
-- Use CommonJS modules (`require`/`module.exports`) in `src/` directory
+- Use ES modules (`import`/`export`) with `.mjs` extensions in `src/` and `tests/` directories
 - All source code files must include copyright headers (use `velocity-copyright-template.txt` as reference)
 - Favor async/await syntax over Promise chains
 
@@ -373,15 +415,18 @@ views/                      # EJS template directory
 - **Update social media links**: Edit footer section in `views/includes/footer-navigation.ejs`
 - **Modify splash animation**: Edit `public/scripts/splash.js` (p5.js sketch with Circle class and CirclePoissonDiscSampler for even distribution)
 - **Add client-side JavaScript**: Create files in `public/scripts/` directory with copyright headers
-- **Add server routes**: Edit `src/app.cjs` (Express routes and middleware)
-- **Add utility functions**: Edit `src/utils/utils.cjs` (Validation class, EmailClient class, ProjectsCollection class)
-- **Server configuration**: Edit `src/server.cjs` (port, startup logic)
-- **Add unit tests**: Create test files in `tests/` directory (Vitest format)
-- **Environment setup**: Edit `.env` file for email configuration (not committed to repo)
+- **Add server routes**: Edit `src/app.mjs` (Express routes and middleware)
+- **Add database functionality**: Edit `src/db/database-client.mjs` (DatabaseClient class) and `src/db/projects-client.mjs` (ProjectsClient class)
+- **Add data models**: Create classes in `src/models/` directory (e.g., Projects class)
+- **Add email functionality**: Edit `src/utils/email-client.mjs` (EmailClient class)
+- **Add validation**: Edit `src/utils/validation.mjs` (Validation class)
+- **Server configuration**: Edit `src/server.mjs` (port, startup logic, shutdown handling)
+- **Add unit tests**: Create test files in `tests/` directory (Vitest format, using .mjs extension)
+- **Environment setup**: Edit `.env` file for email and database configuration (not committed to repo)
 - **Code quality**: Run `npm run lint` and `npm test` to check for issues and maintain standards
 - **Interactive testing**: Use `npm run test:ui` for interactive test running and debugging
 - **Test development**: Use `npm run test:watch` for continuous testing during development
-- **Update project data**: Modify `ProjectsCollection` class in `src/utils/utils.cjs` to add/modify project information
+- **Update project data**: Modify `Projects` class in `src/models/projects.mjs` to add/modify project information
 - **Create error pages**: Add custom error templates in `views/errors/` directory
 - **Database development**: Reference `schema/` directory for database structure, sample data, and example queries
 
@@ -391,7 +436,8 @@ views/                      # EJS template directory
 - Check that port 3000 is not already in use: `lsof -i :3000`
 - Verify Node.js is available: `node --version`
 - Ensure dependencies are installed: `npm install`
-- Check for syntax errors in `src/server.cjs` or `src/app.cjs`
+- Check for syntax errors in `src/server.mjs` or `src/app.mjs`
+- Verify database environment variables are configured if using database features
 
 ### Contact Form Issues
 - Verify `.env` file exists with proper SMTP configuration
@@ -399,11 +445,19 @@ views/                      # EJS template directory
 - Test email configuration with external SMTP tool
 - Verify environment variables are loaded: check for "[MISSING_ENV_FILE]" warnings
 
+### Database Issues
+- Verify `.env` file contains proper MySQL configuration
+- Check that MySQL server is running and accessible
+- Verify database exists and user has proper permissions
+- Check server logs for database connection errors
+- Ensure DatabaseClient initialization doesn't throw errors
+
 ### Test Failures
 - Run `npm test` to see specific test failures
 - Check for linting issues: `npm run lint`
-- Verify Vitest configuration in `vitest.config.js`
+- Verify Vitest configuration in `vitest.config.mjs`
 - Ensure all dependencies are installed: `npm install`
+- Note that some tests are marked as TODO and will be skipped
 
 ### Content Not Loading
 - Verify EJS templates exist in `views/` directory
