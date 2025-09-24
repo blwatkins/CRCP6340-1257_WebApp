@@ -22,7 +22,7 @@
 
 import mysql from 'mysql2/promise';
 
-import { Validation } from '../utils/utils.mjs';
+import { Validation } from '../utils/validation.mjs';
 
 export class DatabaseClient {
     static #connectionPool = null;

@@ -22,9 +22,10 @@
 
 import express from 'express';
 
-import { Projects } from './models/projects.mjs';
 import { DatabaseClient } from './db/database-client.mjs';
-import { EmailClient, Validation } from './utils/utils.mjs';
+import { Projects } from './models/projects.mjs';
+import { EmailClient } from './utils/email-client.mjs';
+import { Validation } from './utils/validation.mjs';
 
 export const app = express();
 
