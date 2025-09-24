@@ -20,11 +20,20 @@
  * SOFTWARE.
  */
 
-const express = require('express');
+import express from 'express';
 
-const { EmailClient, ProjectsCollection, Validation } = require('./utils/utils.cjs');
+import { DatabaseClient } from './db/database-client.mjs';
+import { Projects } from './models/projects.mjs';
+import { EmailClient } from './utils/email-client.mjs';
+import { Validation } from './utils/validation.mjs';
 
-const app = express();
+export const app = express();
+
+try {
+    await DatabaseClient.init();
+} catch (error) {
+    console.error(error);
+}
 
 app.set('view engine', 'ejs');
 app.use(express.json());
@@ -69,18 +78,19 @@ app.get('/contact', (request, response) => {
     response.render('contact.ejs');
 });
 
-app.get('/projects', (request, response) => {
-    response.render('projects.ejs', { projects: ProjectsCollection.getAllProjects(), maxCols: 3 });
+app.get('/projects', async (request, response) => {
+    const projects = await Projects.getAllProjects();
+    response.render('projects.ejs', { projects: projects, maxCols: 3 });
 });
 
-app.get('/projects/:id', (request, response) => {
+app.get('/projects/:id', async (request, response) => {
     const id = request.params.id;
 
     if (id) {
         let projectId = parseInt(id);
-        let projectData = ProjectsCollection.getProjectById(projectId);
+        let projectData = await Projects.getProjectById(projectId);
 
-        if (ProjectsCollection.isValidProjectId(projectId) && projectData !== undefined) {
+        if (projectData !== undefined) {
             response.render('project.ejs', {
                 project: projectData
             });
@@ -135,5 +145,3 @@ app.use((error, request, response, next) => {
 app.use((request, response, next) => {
     response.status(404).render('errors/404.ejs');
 });
-
-exports.app = app;

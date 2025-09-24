@@ -20,4 +20,4 @@
  * SOFTWARE.
  */
 
-SELECT * FROM projects;
+test.todo('Projects');

@@ -20,10 +20,26 @@
  * SOFTWARE.
  */
 
-const { app } = require('./app.cjs');
+import request from 'supertest';
 
-const port = 3000;
+import { app } from '../src/app.mjs';
 
-app.listen(port, () => {
-    console.log(`CRCP 6340 (1257) WebApp listening at http://localhost:${port}`);
+describe('static file serving from public', () => {
+    test('GET /style/style.css - serves CSS files', async () => {
+        const response = await request(app).get('/style/style.css');
+        expect(response.statusCode).toBe(200);
+        expect(response.headers['content-type']).toMatch(/text\/css/);
+    });
+
+    test('GET /scripts/splash.js - serves JavaScript files', async () => {
+        const response = await request(app).get('/scripts/splash.js');
+        expect(response.statusCode).toBe(200);
+        expect(response.headers['content-type']).toMatch(/text\/javascript/);
+    });
+
+    test('GET /images/coming-soon-poster.png - serves image files', async () => {
+        const response = await request(app).get('/images/coming-soon-poster.png');
+        expect(response.statusCode).toBe(200);
+        expect(response.headers['content-type']).toMatch(/image\/png/);
+    });
 });

@@ -20,4 +20,27 @@
  * SOFTWARE.
  */
 
-SELECT * FROM projects;
+export class Validation {
+    static isValidString(input) {
+        const validType = typeof input === 'string';
+        let validContent = false;
+
+        if (validType) {
+            validContent = input.trim().length > 0;
+        }
+
+        return validType && validContent;
+    }
+
+    static isValidNumber(input) {
+        return (typeof input === 'number') && !isNaN(input);
+    }
+
+    static sanitizeString(input) {
+        if (Validation.isValidString(input)) {
+            return input.trim();
+        } else {
+            return undefined;
+        }
+    }
+}

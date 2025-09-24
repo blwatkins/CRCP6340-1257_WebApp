@@ -20,4 +20,42 @@
  * SOFTWARE.
  */
 
-SELECT * FROM projects;
+import { encode } from 'html-entities';
+
+import { ProjectsClient } from '../db/projects-client.mjs';
+
+export class Projects {
+    static async getAllProjects() {
+        try {
+            const projects = await ProjectsClient.queryAllProjects();
+            return projects.map(project => Projects.#buildProject(project));
+        } catch (error) {
+            console.error(error);
+        }
+
+        return [];
+    }
+
+    static async getProjectById(projectId) {
+        try {
+            const project = await ProjectsClient.queryProjectById(projectId);
+
+            if (project) {
+                return Projects.#buildProject(project);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+
+        return undefined;
+    }
+
+    static #buildProject(projectData) {
+        return {
+            id: projectData.id,
+            title: projectData.title,
+            image_url: encodeURIComponent(projectData.image_url),
+            description: projectData.description
+        };
+    }
+}

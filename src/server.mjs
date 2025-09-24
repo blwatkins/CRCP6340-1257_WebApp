@@ -20,4 +20,35 @@
  * SOFTWARE.
  */
 
-SELECT * FROM projects;
+import { app } from './app.mjs';
+
+import { DatabaseClient } from './db/database-client.mjs';
+
+const port = 3000;
+
+const server = app.listen(port, () => {
+    console.log(`CRCP 6340 (1257) WebApp listening at http://localhost:${port}`);
+});
+
+async function shutdown() {
+    try {
+        await DatabaseClient.closeConnectionPool();
+        console.log('Database connection pool closed');
+    } catch (error) {
+        console.error('Error closing database connection pool: ' + error.message);
+    }
+
+    server.close(() => {
+        console.log('HTTP server closed');
+    });
+}
+
+process.on('SIGTERM', async () => {
+    console.log('\nSIGTERM signal received: closing HTTP server');
+    await shutdown();
+});
+
+process.on('SIGINT', async () => {
+    console.log('\nSIGINT signal received: closing HTTP server');
+    await shutdown();
+});

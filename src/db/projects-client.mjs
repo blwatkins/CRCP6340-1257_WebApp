@@ -20,26 +20,38 @@
  * SOFTWARE.
  */
 
-const request = require('supertest');
+import { DatabaseClient } from './database-client.mjs';
 
-const { app } = require('../src/app.cjs');
+export class ProjectsClient extends DatabaseClient {
+    static async queryAllProjects() {
+        const query = 'SELECT * FROM projects';
 
-describe('static file serving from public', () => {
-    test('GET /style/style.css - serves CSS files', async () => {
-        const response = await request(app).get('/style/style.css');
-        expect(response.statusCode).toBe(200);
-        expect(response.headers['content-type']).toMatch(/text\/css/);
-    });
+        try {
+            const [rows] = await ProjectsClient.connectionPool.execute(query);
+            return rows;
+        } catch (error) {
+            console.error(error);
+        }
 
-    test('GET /scripts/splash.js - serves JavaScript files', async () => {
-        const response = await request(app).get('/scripts/splash.js');
-        expect(response.statusCode).toBe(200);
-        expect(response.headers['content-type']).toMatch(/text\/javascript/);
-    });
+        return [];
+    }
 
-    test('GET /images/coming-soon-poster.png - serves image files', async () => {
-        const response = await request(app).get('/images/coming-soon-poster.png');
-        expect(response.statusCode).toBe(200);
-        expect(response.headers['content-type']).toMatch(/image\/png/);
-    });
-});
+    static async queryProjectById(projectId) {
+        const query = 'SELECT * FROM projects WHERE id = ?';
+        const values = [projectId];
+
+        try {
+            const [rows] = await ProjectsClient.connectionPool.execute(query, values);
+
+            if (rows.length > 0) {
+                return rows[0];
+            } else {
+                return undefined;
+            }
+        } catch (error) {
+            console.error(error);
+        }
+
+        return undefined;
+    }
+}

@@ -20,12 +20,10 @@
  * SOFTWARE.
  */
 
-USE crcp6340_1257;
-
 INSERT INTO projects (
-    project_name,
-    img_url,
-    project_description,
+    title,
+    image_url,
+    description,
     quantity,
     price_eth,
     open_date_gmt,
@@ -33,8 +31,28 @@ INSERT INTO projects (
     active
 ) VALUES (
     "gradient graphs (fall 2025)",
-    "./public/images/projects/gradient-graphs.png",
+    "./images/projects/gradient-graphs.png",
     "A version of brittni's gradient graphs project created for the web application project for CRCP 6340; SMU Fall 2025 term.",
+    32,
+    0.001,
+    "2025-12-16 23:00:00",
+    10,
+    false
+);
+
+INSERT INTO projects (
+    title,
+    image_url,
+    description,
+    quantity,
+    price_eth,
+    open_date_gmt,
+    royalty_percent,
+    active
+) VALUES (
+    "TEST",
+    "./images/coming-soon-poster.png",
+    "A TEST.",
     32,
     0.001,
     "2025-12-16 23:00:00",

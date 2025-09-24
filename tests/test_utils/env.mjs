@@ -20,4 +20,23 @@
  * SOFTWARE.
  */
 
-SELECT * FROM projects;
+export const ORIGINAL_ENV = process.env;
+
+export const TEST_ENV = {
+    ...ORIGINAL_ENV,
+    SMTP_SERVICE: 'fake',
+    SMTP_REQUIRE_TLS: 'true',
+    MAIL_USER: 'user@fake-website.fake',
+    MAIL_PASSWORD: 'password',
+    MAIL_FROM: 'from@fake-website.fake',
+    MAIL_TO: 'to@fake-website.fake'
+};
+
+export const REQUIRED_EMAIL_VARS = [
+    ['SMTP_SERVICE'],
+    ['SMTP_REQUIRE_TLS'],
+    ['MAIL_USER'],
+    ['MAIL_PASSWORD'],
+    ['MAIL_FROM'],
+    ['MAIL_TO']
+];
