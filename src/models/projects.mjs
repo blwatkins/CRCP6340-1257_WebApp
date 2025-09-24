@@ -20,6 +20,8 @@
  * SOFTWARE.
  */
 
+import { encode } from 'html-entities';
+
 import { ProjectsClient } from '../db/projects-client.mjs';
 
 export class Projects {
@@ -52,7 +54,7 @@ export class Projects {
         return {
             id: projectData.id,
             title: projectData.title,
-            image_url: projectData.image_url,
+            image_url: encodeURIComponent(encode(projectData.image_url)),
             description: projectData.description
         };
     }
