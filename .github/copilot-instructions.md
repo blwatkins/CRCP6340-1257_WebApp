@@ -22,7 +22,7 @@ Always reference these instructions first and fallback to search or bash command
 - Contact form requires environment variables for email functionality
 
 ### Testing
-- Test command: `npm test` -- runs Vitest test suite with 164 tests and coverage reporting
+- Test command: `npm test` -- runs Vitest test suite with 135 tests (plus 4 TODO tests) and coverage reporting
 - Additional test scripts available:
   - `npm run test:watch` -- runs Vitest in watch mode for development
   - `npm run test:ui` -- runs Vitest with UI interface for interactive testing
@@ -34,6 +34,11 @@ Always reference these instructions first and fallback to search or bash command
 - Lint command: `npm run lint` -- runs ESLint on configuration, server, scripts, src, and tests directories
 - Test coverage reports generated in `./_coverage/`
 - All tests should pass with 100% code coverage
+- **TODO Tests**: The following tests are marked as `test.todo()` and will be implemented in future iterations:
+  - `DatabaseClient` class tests (`tests/db/database-client.test.mjs`)
+  - `ProjectsClient` class tests (`tests/db/projects-client.test.mjs`) 
+  - `Projects` class tests (`tests/models/projects.test.mjs`)
+  - `GET /projects/$id` route tests (`tests/app.test.mjs`)
 
 ## Validation
 
@@ -43,7 +48,7 @@ After making any changes, ALWAYS validate the application by:
 1. **Start the server**: Run `npm start` and verify it shows "CRCP 6340 (1257) WebApp listening at http://localhost:3000"
 2. **Test HTTP response**: Run `curl -I http://localhost:3000` and verify you get "HTTP/1.1 200 OK"
 3. **Test content delivery**: Run `curl -s http://localhost:3000 | head -20` and verify HTML content is returned
-4. **Test contact form API**: Run `curl -X POST -H "Content-Type: application/json" -d '{"subject":"Test","message":"Test message"}' http://localhost:3000/mail` and verify appropriate response (success requires .env configuration)
+4. **Test contact form API**: Run `curl -X POST -H "Content-Type: application/json" -d '{"subject":"Test","message":"Test message"}' http://localhost:3000/mail` and verify appropriate response (success requires .env email configuration)
 5. **Manual UI testing**: Open `http://localhost:3000` in a browser and verify:
    - Page loads with purple navigation bar
    - "brittni's fall 2025 nfts" branding displays and links to index.html
@@ -71,9 +76,10 @@ After making any changes, ALWAYS validate the application by:
    - Footer social media icons display correctly using FontAwesome
 8. **Projects page testing**: Navigate to `/projects` and verify:
    - Page loads with proper header and footer structure
-   - Project cards are displayed in a grid layout (up to 3 columns)
+   - Project cards are displayed in a grid layout (up to 3 columns) using `project-card.ejs` layout
    - Each project card links to individual project pages (`/projects/1`, `/projects/2`, etc.)
    - Individual project pages load with project title and placeholder content
+   - Project data is dynamically loaded from database (requires MySQL configuration)
 9. **Error page testing**: 
    - Navigate to `/nonexistent` and verify 404 error page displays with proper styling
    - Test server error handling (500 error page should display for server errors)
@@ -96,7 +102,10 @@ After making any changes, ALWAYS validate the application by:
 ### Known Issues
 - External resources (Google Fonts, Bootstrap CDN, p5.js CDN, FontAwesome CDN) may be blocked in some environments - this is normal and doesn't affect core functionality
 - Contact form email functionality requires proper SMTP environment configuration in `.env` file
+- Database functionality requires proper MySQL environment configuration in `.env` file
 - Server will show "[MISSING_ENV_FILE]" warning if `.env` file is not present (this is normal for static-only usage)
+- Database connection errors will appear if MySQL environment variables are missing or incorrect
+- Projects page functionality depends on database connectivity for displaying dynamic project data
 - Splash screen animation requires JavaScript to be enabled
 - Social media links require FontAwesome to load for icons to display properly
 
@@ -190,7 +199,7 @@ After making any changes, ALWAYS validate the application by:
 - **Vitest configuration**: `vitest.config.mjs` (test configuration with coverage reporting)
 - **Main webpage**: `views/index.ejs` (homepage template with navigation, p5.js splash screen, featured project, and about sections)
 - **Contact page**: `views/contact.ejs` (contact page template with working form, validation, Bootstrap styling)
-- **Projects page**: `views/projects.ejs` (projects page template with dynamic project cards)
+- **Projects page**: `views/projects.ejs` (projects page template with dynamic project cards using `project-card.ejs` layout)
 - **Individual project page**: `views/project.ejs` (template for individual project pages)
 - **Acknowledgements page**: `views/acknowledgements.ejs` (credits page template for Express, Nodemailer, Bootstrap, and FontAwesome with social media links)
 - **Error pages**: `views/errors/404.ejs` and `views/errors/500.ejs` (error page templates)
