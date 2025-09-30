@@ -40,3 +40,20 @@ export const REQUIRED_EMAIL_VARS = [
     ['MAIL_FROM'],
     ['MAIL_TO']
 ];
+
+export const TEST_DATABASE_ENV = {
+    ...ORIGINAL_ENV,
+    MYSQL_HOST: 'localhost',
+    MYSQL_PORT: '3306',
+    MYSQL_USER: 'test_user',
+    MYSQL_PASSWORD: 'test_password',
+    MYSQL_DATABASE: 'test_database'
+};
+
+export const REQUIRED_DATABASE_VARS = [
+    ['MYSQL_HOST'],
+    ['MYSQL_PORT'],
+    ['MYSQL_USER'],
+    ['MYSQL_PASSWORD'],
+    ['MYSQL_DATABASE']
+];
