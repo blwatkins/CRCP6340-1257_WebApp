@@ -20,4 +20,279 @@
  * SOFTWARE.
  */
 
-test.todo('DatabaseClient');
+vi.mock('mysql2/promise');
+
+import mysql from 'mysql2/promise';
+
+import { DatabaseClient } from '../../src/db/database-client.mjs';
+
+import { ORIGINAL_ENV, TEST_DATABASE_ENV, REQUIRED_DATABASE_VARS } from '../test_utils/env.mjs';
+
+describe('DatabaseClient', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    afterEach(() => {
+        process.env = ORIGINAL_ENV;
+        vi.clearAllMocks();
+        // Clean up any existing connections
+        return DatabaseClient.closeConnectionPool();
+    });
+
+    afterAll(() => {
+        vi.clearAllMocks();
+        vi.resetModules();
+    });
+
+    describe('constructor', () => {
+        test('should throw error when attempting to instantiate', () => {
+            expect(() => new DatabaseClient()).toThrow('DatabaseClient is a static class and cannot be instantiated.');
+        });
+    });
+
+    describe('connectionPool getter', () => {
+        test('should return null initially', () => {
+            expect(DatabaseClient.connectionPool).toBeNull();
+        });
+
+        test('should return connection pool after initialization', async () => {
+            process.env = { ...TEST_DATABASE_ENV };
+
+            const mockPool = { execute: vi.fn(), end: vi.fn().mockResolvedValue(undefined) };
+            mysql.createPool = vi.fn().mockResolvedValue(mockPool);
+
+            await DatabaseClient.init();
+
+            expect(DatabaseClient.connectionPool).toBe(mockPool);
+
+            // Clean up
+            await DatabaseClient.closeConnectionPool();
+        });
+    });
+
+    describe('verifyConnectionSettings()', () => {
+        beforeEach(() => {
+            process.env = { ...TEST_DATABASE_ENV };
+        });
+
+        afterEach(() => {
+            process.env = ORIGINAL_ENV;
+        });
+
+        test('verifyConnectionSettings() - all required variables set', () => {
+            expect(DatabaseClient.verifyConnectionSettings()).toBeTruthy();
+        });
+
+        test.each(
+            REQUIRED_DATABASE_VARS
+        )('verifyConnectionSettings() - %s is missing', (missingVar) => {
+            delete process.env[missingVar];
+
+            expect(DatabaseClient.verifyConnectionSettings()).toBeFalsy();
+        });
+
+        test.each(
+            REQUIRED_DATABASE_VARS
+        )('verifyConnectionSettings() - %s is empty string', (missingVar) => {
+            process.env[missingVar] = '';
+
+            expect(DatabaseClient.verifyConnectionSettings()).toBeFalsy();
+        });
+
+        test.each(
+            REQUIRED_DATABASE_VARS
+        )('verifyConnectionSettings() - %s is undefined', (missingVar) => {
+            process.env[missingVar] = undefined;
+
+            expect(DatabaseClient.verifyConnectionSettings()).toBeFalsy();
+        });
+
+        test.each(
+            REQUIRED_DATABASE_VARS
+        )('verifyConnectionSettings() - %s is whitespace only', (missingVar) => {
+            process.env[missingVar] = '   ';
+
+            expect(DatabaseClient.verifyConnectionSettings()).toBeFalsy();
+        });
+    });
+
+    describe('init()', () => {
+        beforeEach(() => {
+            process.env = { ...TEST_DATABASE_ENV };
+            vi.clearAllMocks();
+        });
+
+        afterEach(async () => {
+            process.env = ORIGINAL_ENV;
+            vi.clearAllMocks();
+            await DatabaseClient.closeConnectionPool();
+        });
+
+        test('init() - successful initialization', async () => {
+            const mockPool = { execute: vi.fn(), end: vi.fn().mockResolvedValue(undefined) };
+            mysql.createPool = vi.fn().mockResolvedValue(mockPool);
+
+            await DatabaseClient.init();
+
+            expect(mysql.createPool).toHaveBeenCalledWith({
+                host: TEST_DATABASE_ENV.MYSQL_HOST,
+                port: TEST_DATABASE_ENV.MYSQL_PORT,
+                user: TEST_DATABASE_ENV.MYSQL_USER,
+                password: TEST_DATABASE_ENV.MYSQL_PASSWORD,
+                database: TEST_DATABASE_ENV.MYSQL_DATABASE
+            });
+
+            expect(DatabaseClient.connectionPool).toBe(mockPool);
+        });
+
+        test('init() - invalid connection settings', async () => {
+            process.env.MYSQL_HOST = '';
+
+            await expect(DatabaseClient.init()).rejects.toThrow('Invalid database connection settings.');
+        });
+
+        test('init() - mysql createPool throws error', async () => {
+            const mockError = new Error('Connection failed');
+            mysql.createPool = vi.fn().mockRejectedValue(mockError);
+
+            await expect(DatabaseClient.init()).rejects.toThrow('Connection failed');
+            expect(DatabaseClient.connectionPool).toBeNull();
+        });
+
+        test('init() - returns early if connection pool already exists', async () => {
+            const mockPool = { execute: vi.fn(), end: vi.fn().mockResolvedValue(undefined) };
+            mysql.createPool = vi.fn().mockResolvedValue(mockPool);
+
+            // First initialization
+            await DatabaseClient.init();
+            expect(mysql.createPool).toHaveBeenCalledTimes(1);
+
+            // Reset the mock to verify it's not called again
+            mysql.createPool.mockClear();
+
+            // Second initialization should return early
+            await DatabaseClient.init();
+            expect(mysql.createPool).not.toHaveBeenCalled();
+        });
+
+        test('init() - waits for existing init promise', async () => {
+            const mockPool = { execute: vi.fn(), end: vi.fn().mockResolvedValue(undefined) };
+            mysql.createPool = vi.fn().mockResolvedValue(mockPool);
+
+            // Start two initializations simultaneously
+            const initPromise1 = DatabaseClient.init();
+            const initPromise2 = DatabaseClient.init();
+
+            await Promise.all([initPromise1, initPromise2]);
+
+            // Should only create pool once
+            expect(mysql.createPool).toHaveBeenCalledTimes(1);
+            expect(DatabaseClient.connectionPool).toBe(mockPool);
+        });
+
+        test('init() - handles concurrent initialization with error', async () => {
+            const mockError = new Error('Connection failed');
+            mysql.createPool = vi.fn().mockRejectedValue(mockError);
+
+            // Start two initializations simultaneously
+            const initPromise1 = DatabaseClient.init();
+            const initPromise2 = DatabaseClient.init();
+
+            await expect(Promise.all([initPromise1, initPromise2])).rejects.toThrow('Connection failed');
+
+            // Should only try to create pool once
+            expect(mysql.createPool).toHaveBeenCalledTimes(1);
+            expect(DatabaseClient.connectionPool).toBeNull();
+        });
+    });
+
+    describe('closeConnectionPool()', () => {
+        beforeEach(() => {
+            process.env = { ...TEST_DATABASE_ENV };
+            vi.clearAllMocks();
+        });
+
+        afterEach(async () => {
+            process.env = ORIGINAL_ENV;
+            vi.clearAllMocks();
+            // Ensure cleanup even if test fails
+            try {
+                await DatabaseClient.closeConnectionPool();
+            } catch (error) {
+                // Ignore cleanup errors
+            }
+        });
+
+        test('closeConnectionPool() - successfully closes pool', async () => {
+            const mockPool = {
+                execute: vi.fn(),
+                end: vi.fn().mockResolvedValue(undefined)
+            };
+            mysql.createPool = vi.fn().mockResolvedValue(mockPool);
+
+            // Initialize first
+            await DatabaseClient.init();
+            expect(DatabaseClient.connectionPool).toBe(mockPool);
+
+            // Then close
+            await DatabaseClient.closeConnectionPool();
+
+            expect(mockPool.end).toHaveBeenCalledTimes(1);
+            expect(DatabaseClient.connectionPool).toBeNull();
+        });
+
+        test('closeConnectionPool() - handles pool.end() error', async () => {
+            const mockPool = {
+                execute: vi.fn(),
+                end: vi.fn().mockRejectedValue(new Error('Close error'))
+            };
+            mysql.createPool = vi.fn().mockResolvedValue(mockPool);
+
+            // Mock console.error to verify error logging
+            const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+            // Initialize first
+            await DatabaseClient.init();
+            expect(DatabaseClient.connectionPool).toBe(mockPool);
+
+            // Then close - should not throw despite end() error
+            await DatabaseClient.closeConnectionPool();
+
+            expect(mockPool.end).toHaveBeenCalledTimes(1);
+            expect(consoleSpy).toHaveBeenCalledWith(new Error('Close error'));
+            expect(DatabaseClient.connectionPool).toBeNull();
+
+            consoleSpy.mockRestore();
+        });
+
+        test('closeConnectionPool() - does nothing when pool is null', async () => {
+            expect(DatabaseClient.connectionPool).toBeNull();
+
+            // Should not throw
+            await DatabaseClient.closeConnectionPool();
+
+            expect(DatabaseClient.connectionPool).toBeNull();
+        });
+
+        test('closeConnectionPool() - waits for init promise before closing', async () => {
+            const mockPool = {
+                execute: vi.fn(),
+                end: vi.fn().mockResolvedValue(undefined)
+            };
+            mysql.createPool = vi.fn().mockResolvedValue(mockPool);
+
+            // Start initialization but don't await it
+            const initPromise = DatabaseClient.init();
+
+            // Start close immediately
+            const closePromise = DatabaseClient.closeConnectionPool();
+
+            // Wait for both to complete
+            await Promise.all([initPromise, closePromise]);
+
+            expect(mockPool.end).toHaveBeenCalledTimes(1);
+            expect(DatabaseClient.connectionPool).toBeNull();
+        });
+    });
+});
