@@ -87,6 +87,8 @@ export default [
 
             'require-atomic-updates': 'error',
 
+            'require-await': 'error',
+
             'use-isnan': ['error', {
                 enforceForSwitchCase: true,
                 enforceForIndexOf: true
