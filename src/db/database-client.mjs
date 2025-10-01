@@ -27,6 +27,7 @@ import { Validation } from '../utils/validation.mjs';
 export class DatabaseClient {
     static #connectionPool = null;
     static #initPromise = null;
+    static #closePromise = null;
 
     constructor() {
         throw new Error('DatabaseClient is a static class and cannot be instantiated.');
@@ -53,6 +54,10 @@ export class DatabaseClient {
     }
 
     static async init() {
+        if (DatabaseClient.#closePromise) {
+            await DatabaseClient.#closePromise;
+        }
+
         if (DatabaseClient.#connectionPool) {
             return;
         }
@@ -66,7 +71,7 @@ export class DatabaseClient {
             throw new Error('Invalid database connection settings.');
         }
 
-        const initPromise = DatabaseClient.#getConnectionPool();
+        const initPromise = DatabaseClient.#initConnectionPool();
         DatabaseClient.#initPromise = initPromise;
 
         try {
@@ -83,22 +88,31 @@ export class DatabaseClient {
             await DatabaseClient.#initPromise;
         }
 
+        if (DatabaseClient.#closePromise) {
+            await DatabaseClient.#closePromise;
+        }
+
         const pool = DatabaseClient.#connectionPool;
 
         if (pool) {
-            try {
-                await pool.end();
-            } catch (error) {
-                console.error(error);
-            }
+            const closePromise = pool.end();
+            DatabaseClient.#closePromise = closePromise;
 
-            if (DatabaseClient.#connectionPool === pool) {
-                DatabaseClient.#connectionPool = null;
+            try {
+                await closePromise;
+            } finally {
+                if (DatabaseClient.#connectionPool === pool) {
+                    DatabaseClient.#connectionPool = null;
+                }
+
+                if (DatabaseClient.#closePromise === closePromise) {
+                    DatabaseClient.#closePromise = null;
+                }
             }
         }
     }
 
-    static async #getConnectionPool() {
+    static async #initConnectionPool() {
         try {
             DatabaseClient.#connectionPool = await mysql.createPool({
                 host: process.env.MYSQL_HOST,
