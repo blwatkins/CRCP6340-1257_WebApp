@@ -31,7 +31,7 @@ INSERT INTO projects (
     active
 ) VALUES (
     "gradient graphs (fall 2025)",
-    "./images/projects/gradient-graphs.png",
+    "images/projects/gradient-graphs.png",
     "A version of brittni's gradient graphs project created for the web application project for CRCP 6340; SMU Fall 2025 term.",
     32,
     0.001,
@@ -51,7 +51,7 @@ INSERT INTO projects (
     active
 ) VALUES (
     "TEST",
-    "./images/coming-soon-poster.png",
+    "images/coming-soon-poster.png",
     "A TEST.",
     32,
     0.001,
