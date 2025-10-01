@@ -239,6 +239,26 @@ describe('DatabaseClient', () => {
                 expect(mysql.createPool).toHaveBeenCalledTimes(1);
                 expect(DatabaseClient.connectionPool).toBeNull();
             });
+
+            test('DatabaseClient.init() - waits for close promise before initializing', async () => {
+                const mockPool = {
+                    execute: vi.fn(),
+                    end: vi.fn().mockResolvedValue(undefined)
+                };
+                mysql.createPool = vi.fn().mockResolvedValue(mockPool);
+
+                expect(DatabaseClient.connectionPool).toBeNull();
+
+                await DatabaseClient.init();
+
+                const closePromise = DatabaseClient.closeConnectionPool();
+                const initPromise = DatabaseClient.init();
+
+                await Promise.all([closePromise, initPromise]);
+
+                expect(mysql.createPool).toHaveBeenCalledTimes(2);
+                expect(DatabaseClient.connectionPool).toBe(mockPool);
+            });
         });
     });
 
