@@ -27,6 +27,7 @@ import { Validation } from '../utils/validation.mjs';
 export class DatabaseClient {
     static #connectionPool = null;
     static #initPromise = null;
+    static #closePromise = null;
 
     constructor() {
         throw new Error('DatabaseClient is a static class and cannot be instantiated.');
@@ -38,14 +39,14 @@ export class DatabaseClient {
 
     static verifyConnectionSettings() {
         const host = process.env.MYSQL_HOST;
-        const port = process.env.MYSQL_PORT;
+        const port = Number.parseInt(process.env.MYSQL_PORT, 10);
         const user = process.env.MYSQL_USER;
         const password = process.env.MYSQL_PASSWORD;
         const database = process.env.MYSQL_DATABASE;
 
         return (
             Validation.isValidString(host) &&
-            Validation.isValidString(port) &&
+            Validation.isValidNumber(port) &&
             Validation.isValidString(user) &&
             Validation.isValidString(password) &&
             Validation.isValidString(database)
@@ -53,6 +54,10 @@ export class DatabaseClient {
     }
 
     static async init() {
+        if (DatabaseClient.#closePromise) {
+            await DatabaseClient.#closePromise;
+        }
+
         if (DatabaseClient.#connectionPool) {
             return;
         }
@@ -66,7 +71,7 @@ export class DatabaseClient {
             throw new Error('Invalid database connection settings.');
         }
 
-        const initPromise = DatabaseClient.#getConnectionPool();
+        const initPromise = DatabaseClient.#initConnectionPool();
         DatabaseClient.#initPromise = initPromise;
 
         try {
@@ -83,26 +88,35 @@ export class DatabaseClient {
             await DatabaseClient.#initPromise;
         }
 
+        if (DatabaseClient.#closePromise) {
+            await DatabaseClient.#closePromise;
+        }
+
         const pool = DatabaseClient.#connectionPool;
 
         if (pool) {
-            try {
-                await pool.end();
-            } catch (error) {
-                console.error(error);
-            }
+            const closePromise = pool.end();
+            DatabaseClient.#closePromise = closePromise;
 
-            if (DatabaseClient.#connectionPool === pool) {
-                DatabaseClient.#connectionPool = null;
+            try {
+                await closePromise;
+            } finally {
+                if (DatabaseClient.#connectionPool === pool) {
+                    DatabaseClient.#connectionPool = null;
+                }
+
+                if (DatabaseClient.#closePromise === closePromise) {
+                    DatabaseClient.#closePromise = null;
+                }
             }
         }
     }
 
-    static async #getConnectionPool() {
+    static async #initConnectionPool() {
         try {
             DatabaseClient.#connectionPool = await mysql.createPool({
                 host: process.env.MYSQL_HOST,
-                port: process.env.MYSQL_PORT,
+                port: Number.parseInt(process.env.MYSQL_PORT, 10),
                 user: process.env.MYSQL_USER,
                 password: process.env.MYSQL_PASSWORD,
                 database: process.env.MYSQL_DATABASE

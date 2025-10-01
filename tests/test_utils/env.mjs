@@ -29,20 +29,7 @@ export const TEST_ENV = {
     MAIL_USER: 'user@fake-website.fake',
     MAIL_PASSWORD: 'password',
     MAIL_FROM: 'from@fake-website.fake',
-    MAIL_TO: 'to@fake-website.fake'
-};
-
-export const REQUIRED_EMAIL_VARS = [
-    ['SMTP_SERVICE'],
-    ['SMTP_REQUIRE_TLS'],
-    ['MAIL_USER'],
-    ['MAIL_PASSWORD'],
-    ['MAIL_FROM'],
-    ['MAIL_TO']
-];
-
-export const TEST_DATABASE_ENV = {
-    ...ORIGINAL_ENV,
+    MAIL_TO: 'to@fake-website.fake',
     MYSQL_HOST: 'localhost',
     MYSQL_PORT: '3306',
     MYSQL_USER: 'test_user',
@@ -56,4 +43,13 @@ export const REQUIRED_DATABASE_VARS = [
     ['MYSQL_USER'],
     ['MYSQL_PASSWORD'],
     ['MYSQL_DATABASE']
+];
+
+export const REQUIRED_EMAIL_VARS = [
+    ['SMTP_SERVICE'],
+    ['SMTP_REQUIRE_TLS'],
+    ['MAIL_USER'],
+    ['MAIL_PASSWORD'],
+    ['MAIL_FROM'],
+    ['MAIL_TO']
 ];

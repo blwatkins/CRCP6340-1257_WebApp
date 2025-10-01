@@ -28,11 +28,15 @@ import { EmailClient } from '../../src/utils/email-client.mjs';
 
 import { ORIGINAL_ENV, TEST_ENV, REQUIRED_EMAIL_VARS } from '../test_utils/env.mjs';
 
+// TODO - follow patterns established in DatabaseClient unit tests.
+
 describe('EmailClient', () => {
     afterAll(() => {
         vi.clearAllMocks();
         vi.resetModules();
     });
+
+    test.todo('EmailClient constructor');
 
     describe('EmailClient.sanitizeEmailSubject()', () => {
         test.each([
@@ -157,6 +161,14 @@ describe('EmailClient', () => {
             REQUIRED_EMAIL_VARS
         )('EmailClient.verifyEmailSettings() - %s is undefined', (missingVar) => {
             process.env[missingVar] = undefined;
+
+            expect(EmailClient.verifyEmailSettings()).toBeFalsy();
+        });
+
+        test.each(
+            REQUIRED_EMAIL_VARS
+        )('EmailClient.verifyEmailSettings() - %s is whitespace only', (missingVar) => {
+            process.env[missingVar] = '   ';
 
             expect(EmailClient.verifyEmailSettings()).toBeFalsy();
         });

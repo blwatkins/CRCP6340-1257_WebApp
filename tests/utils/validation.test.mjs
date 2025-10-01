@@ -78,4 +78,8 @@ describe('Validation', () => {
             expect(Validation.sanitizeString(input)).toBe(expected);
         });
     });
+
+    describe('Validation.isValidNumber()', () => {
+        test.todo('Validation.isValidNumber()');
+    });
 });
