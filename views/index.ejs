@@ -19,13 +19,15 @@
         <div class="fluid-container bg-secondary-subtle">
         <div id="content" class="container">
             <div class="row py-3 align-items-center">
-                <div class="col text-center m-2">
-                    <h2 class="text-center m-3">featured project</h2>
-                    <%- include('includes/project-card', { project: featuredProject, cardWidth: '20rem' }); %>
-                    <a href="./projects" class="btn btn-primary mx-auto my-2" role="button">
-                        view all projects
-                    </a>
-                </div>
+                <% if (featuredProject) { %>
+                    <div class="col text-center m-2">
+                        <h2 class="text-center m-3">featured project</h2>
+                        <%- include('includes/project-card', { project: featuredProject, cardWidth: '20rem' }); %>
+                        <a href="./projects" class="btn btn-primary mx-auto my-2" role="button">
+                            view all projects
+                        </a>
+                    </div>
+                <% } %>
                 <div class="col m-2" id="about">
                     <h2 class="text-center">about brittni</h2>
                     <p>
