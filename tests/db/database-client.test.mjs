@@ -78,6 +78,18 @@ describe('DatabaseClient', () => {
             expect(DatabaseClient.verifyConnectionSettings()).toBeTruthy();
         });
 
+        test('DatabaseClient.verifyConnectionSettings() - port is not a number', () => {
+            process.env.MYSQL_PORT = 'not a number';
+
+            expect(DatabaseClient.verifyConnectionSettings()).toBeFalsy();
+        });
+
+        test('DatabaseClient.verifyConnectionSettings() - port is NaN', () => {
+            process.env.MYSQL_PORT = NaN;
+
+            expect(DatabaseClient.verifyConnectionSettings()).toBeFalsy();
+        });
+
         test.each(
             REQUIRED_DATABASE_VARS
         )('DatabaseClient.verifyConnectionSettings() - %s is missing', (missingVar) => {

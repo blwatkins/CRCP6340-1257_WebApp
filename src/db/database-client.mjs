@@ -39,14 +39,14 @@ export class DatabaseClient {
 
     static verifyConnectionSettings() {
         const host = process.env.MYSQL_HOST;
-        const port = process.env.MYSQL_PORT;
+        const port = Number.parseInt(process.env.MYSQL_PORT);
         const user = process.env.MYSQL_USER;
         const password = process.env.MYSQL_PASSWORD;
         const database = process.env.MYSQL_DATABASE;
 
         return (
             Validation.isValidString(host) &&
-            Validation.isValidString(port) &&
+            Validation.isValidNumber(port) &&
             Validation.isValidString(user) &&
             Validation.isValidString(password) &&
             Validation.isValidString(database)
@@ -116,7 +116,7 @@ export class DatabaseClient {
         try {
             DatabaseClient.#connectionPool = await mysql.createPool({
                 host: process.env.MYSQL_HOST,
-                port: process.env.MYSQL_PORT,
+                port: Number.parseInt(process.env.MYSQL_PORT),
                 user: process.env.MYSQL_USER,
                 password: process.env.MYSQL_PASSWORD,
                 database: process.env.MYSQL_DATABASE
