@@ -137,7 +137,7 @@ describe('DatabaseClient', () => {
 
             expect(mysql.createPool).toHaveBeenCalledWith({
                 host: TEST_ENV.MYSQL_HOST,
-                port: TEST_ENV.MYSQL_PORT,
+                port: Number.parseInt(TEST_ENV.MYSQL_PORT),
                 user: TEST_ENV.MYSQL_USER,
                 password: TEST_ENV.MYSQL_PASSWORD,
                 database: TEST_ENV.MYSQL_DATABASE
