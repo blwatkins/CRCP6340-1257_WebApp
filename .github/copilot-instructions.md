@@ -22,7 +22,7 @@ Always reference these instructions first and fallback to search or bash command
 - Contact form requires environment variables for email functionality
 
 ### Testing
-- Test command: `npm test` -- runs Vitest test suite with 135 tests (plus 4 TODO tests) and coverage reporting
+- Test command: `npm test` -- runs Vitest test suite with 184 tests (plus 5 TODO tests) and coverage reporting
 - Additional test scripts available:
   - `npm run test:watch` -- runs Vitest in watch mode for development
   - `npm run test:ui` -- runs Vitest with UI interface for interactive testing
@@ -35,10 +35,11 @@ Always reference these instructions first and fallback to search or bash command
 - Test coverage reports generated in `./_coverage/`
 - All tests should pass with 100% code coverage
 - **TODO Tests**: The following tests are marked as `test.todo()` and will be implemented in future iterations:
-  - `DatabaseClient` class tests (`tests/db/database-client.test.mjs`)
   - `ProjectsClient` class tests (`tests/db/projects-client.test.mjs`) 
   - `Projects` class tests (`tests/models/projects.test.mjs`)
   - `GET /projects/$id` route tests (`tests/app.test.mjs`)
+  - `EmailClient` constructor tests (`tests/utils/email-client.test.mjs`)
+  - `Validation.isValidNumber()` tests (`tests/utils/validation.test.mjs`)
 
 ## Validation
 
@@ -144,13 +145,13 @@ After making any changes, ALWAYS validate the application by:
 │   ├── app.test.mjs         # Express app route tests
 │   ├── public.test.mjs      # Static file serving tests
 │   ├── db/                  # Database class tests
-│   │   ├── database-client.test.mjs  # DatabaseClient tests (TODO)
+│   │   ├── database-client.test.mjs  # DatabaseClient tests with comprehensive coverage including error handling
 │   │   └── projects-client.test.mjs  # ProjectsClient tests (TODO)
 │   ├── models/              # Model class tests
 │   │   └── projects.test.mjs # Projects class tests (TODO)
 │   └── utils/               # Utility function tests
-│       ├── email-client.test.mjs     # EmailClient tests (refactored from utils.test.cjs)
-│       └── validation.test.mjs       # Validation tests (refactored from utils.test.cjs)
+│       ├── email-client.test.mjs     # EmailClient tests (refactored from utils.test.cjs, with TODO constructor tests)
+│       └── validation.test.mjs       # Validation tests (refactored from utils.test.cjs, with TODO isValidNumber tests)
 ├── public/                   # Static web content directory
 │   ├── scripts/
 │   │   ├── splash.js        # p5.js animated splash screen with fill and outline circles
@@ -177,7 +178,7 @@ After making any changes, ALWAYS validate the application by:
 ├── .env                     # Environment variables (not in repo, required for email functionality)
 ├── .github/
 │   ├── workflows/
-│   │   ├── nodejs.yml        # Node.js lint and test workflow
+│   │   ├── npm-test.yml        # Node.js lint and test workflow with permissions
 │   │   └── codeql.yml        # CodeQL security scanning
 │   ├── dependabot.yml       # Dependency update automation
 │   ├── CODEOWNERS           # Code ownership
@@ -190,12 +191,12 @@ After making any changes, ALWAYS validate the application by:
 ### Important Code Locations
 - **Server configuration**: `src/server.mjs` (Express server startup, port 3000, database shutdown logic)
 - **Express app**: `src/app.mjs` (routes, middleware, EJS view engine, GET and POST endpoints, DatabaseClient initialization)
-- **Database client**: `src/db/database-client.mjs` (DatabaseClient class for MySQL connection management)
+- **Database client**: `src/db/database-client.mjs` (DatabaseClient class for MySQL connection management with improved error handling)
 - **Projects client**: `src/db/projects-client.mjs` (ProjectsClient class for database queries)
 - **Projects model**: `src/models/projects.mjs` (Projects class for project data processing)
 - **Email client**: `src/utils/email-client.mjs` (EmailClient class with nodemailer, refactored from utils.cjs)
 - **Validation utilities**: `src/utils/validation.mjs` (Validation class, refactored from utils.cjs)
-- **ESLint configuration**: `eslint.config.mjs` (comprehensive linting rules for code quality, ES modules)
+- **ESLint configuration**: `eslint.config.mjs` (comprehensive linting rules including require-await for code quality, ES modules)
 - **Vitest configuration**: `vitest.config.mjs` (test configuration with coverage reporting)
 - **Main webpage**: `views/index.ejs` (homepage template with navigation, p5.js splash screen, featured project, and about sections)
 - **Contact page**: `views/contact.ejs` (contact page template with working form, validation, Bootstrap styling)
@@ -210,7 +211,7 @@ After making any changes, ALWAYS validate the application by:
 - **Styling**: `public/style/style.css` (custom purple theme, JetBrains Mono font, splash styles, bg-secondary-subtle override)
 - **Static assets**: `public/images/` (favicon, coming soon poster, project images, and other images)
 - **Database schema**: `schema/` (SQL files for database creation, sample data, and queries)
-- **Test files**: `tests/` (Vitest unit tests for app routes, utilities, database, models, and static serving)
+- **Test files**: `tests/` (Vitest unit tests for app routes, utilities, database with improved error handling tests, models, and static serving)
 
 ## Environment Variables
 
@@ -402,6 +403,7 @@ views/                      # EJS template directory
 ### Code Style
 - ESLint is configured with comprehensive rules in `eslint.config.mjs` (ES modules format)
 - Includes rules for code quality, security, Node.js best practices, and stylistic consistency
+- Key rules include require-await for async function validation and error handling improvements
 - Run `npm run lint` to check code style and quality
 - Follow existing code patterns in the repository
 - Use ES modules (`import`/`export`) with `.mjs` extensions in `src/` and `tests/` directories
@@ -409,7 +411,7 @@ views/                      # EJS template directory
 - Favor async/await syntax over Promise chains
 
 ### CI/CD
-- Node.js lint and test workflow configured in `.github/workflows/nodejs.yml`
+- Node.js lint and test workflow configured in `.github/workflows/npm-test.yml` with proper permissions
 - CodeQL security scanning configured in `.github/workflows/codeql.yml` for JavaScript/TypeScript and GitHub Actions
 - Vitest test suite provides comprehensive test coverage
 - Dependabot configured for npm and GitHub Actions dependency updates
