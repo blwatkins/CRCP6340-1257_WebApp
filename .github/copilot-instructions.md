@@ -28,8 +28,8 @@ Always reference these instructions first and fallback to search or bash command
   - `npm run test:ui` -- runs Vitest with UI interface for interactive testing
   - `npm run test:coverage` -- runs tests with coverage reporting
 - Unit tests implemented for:
-  - Express app routes (including GET routes for /, /projects, /contact, /acknowledgements, /projects/:id and POST /mail endpoint)
-  - Express app utility functions (string validation, email send with mocked nodemailer, Projects class)
+  - Express app routes
+  - Express app utility functions
   - Static file serving
 - Lint command: `npm run lint` -- runs ESLint on configuration, server, scripts, src, and tests directories
 - Test coverage reports generated in `./_coverage/`
@@ -124,8 +124,8 @@ After making any changes, ALWAYS validate the application by:
 │   ├── models/              # Data model classes
 │   │   └── projects.mjs     # Projects class for project data processing
 │   └── utils/               # Utility functions
-│       ├── email-client.mjs # EmailClient class (refactored from utils.cjs)
-│       └── validation.mjs   # Validation class (refactored from utils.cjs)
+│       ├── email-client.mjs # EmailClient class
+│       └── validation.mjs   # Validation class
 ├── views/                    # EJS template directory
 │   ├── includes/            # Reusable EJS partials
 │   │   ├── head.ejs         # Common HTML head content
@@ -140,24 +140,24 @@ After making any changes, ALWAYS validate the application by:
 │   ├── contact.ejs          # Contact page template with working contact form
 │   ├── projects.ejs         # Projects page template with dynamic project cards
 │   ├── project.ejs          # Individual project page template
-│   └── acknowledgements.ejs # Acknowledgements page template crediting Express, Nodemailer, Bootstrap, and FontAwesome
+│   └── acknowledgements.ejs # Acknowledgements page template
 ├── tests/                    # Vitest test files
 │   ├── app.test.mjs         # Express app route tests
 │   ├── public.test.mjs      # Static file serving tests
 │   ├── db/                  # Database class tests
-│   │   ├── database-client.test.mjs  # DatabaseClient tests with comprehensive coverage including error handling
+│   │   ├── database-client.test.mjs  # DatabaseClient tests
 │   │   └── projects-client.test.mjs  # ProjectsClient tests (TODO)
 │   ├── models/              # Model class tests
 │   │   └── projects.test.mjs # Projects class tests (TODO)
 │   └── utils/               # Utility function tests
-│       ├── email-client.test.mjs     # EmailClient tests (refactored from utils.test.cjs, with TODO constructor tests)
-│       └── validation.test.mjs       # Validation tests (refactored from utils.test.cjs, with TODO isValidNumber tests)
+│       ├── email-client.test.mjs     # EmailClient tests (with TODO constructor tests)
+│       └── validation.test.mjs       # Validation tests (with TODO isValidNumber tests)
 ├── public/                   # Static web content directory
 │   ├── scripts/
 │   │   ├── splash.js        # p5.js animated splash screen with fill and outline circles
 │   │   └── contact-email.js # Contact form validation and submission handling
 │   ├── style/
-│   │   └── style.css        # Custom CSS styles (includes bg-secondary-subtle override)
+│   │   └── style.css        # Custom CSS styles
 │   └── images/
 │       ├── coming-soon-poster.png  # Featured project placeholder image
 │       ├── projects/
@@ -168,24 +168,24 @@ After making any changes, ALWAYS validate the application by:
 │   ├── schema.sql              # Database table creation script
 │   ├── projects.sql            # Sample project data insertion script
 │   └── queries.sql             # Example database queries
-├── _coverage/                  # Generated files (test coverage, etc.)
-│   └── [generated files]      # Vitest coverage reports (generated)
-├── eslint.config.mjs         # ESLint configuration with comprehensive rules (ES modules)
+├── _coverage/                  # Generated files for test coverage reports
+│   └── [generated files]       # Vitest coverage reports (generated)
+├── eslint.config.mjs           # ESLint configuration with comprehensive rules (ES modules)
 ├── vitest.config.mjs           # Vitest testing configuration with coverage
-├── package.json             # Node.js dependencies and scripts
-├── package-lock.json        # Dependency lock file
+├── package.json                # Node.js dependencies and scripts
+├── package-lock.json           # Dependency lock file
 ├── velocity-copyright-template.txt # Copyright header template
 ├── .env                     # Environment variables (not in repo, required for email functionality)
 ├── .github/
 │   ├── workflows/
-│   │   ├── npm-test.yml        # Node.js lint and test workflow with permissions
-│   │   └── codeql.yml        # CodeQL security scanning
-│   ├── dependabot.yml       # Dependency update automation
-│   ├── CODEOWNERS           # Code ownership
+│   │   ├── npm-test.yml        # npm lint and test workflow
+│   │   └── codeql.yml          # CodeQL security scanning
+│   ├── dependabot.yml          # Dependency update automation
+│   ├── CODEOWNERS              # Code ownership
 │   └── copilot-instructions.md # This file
-├── .gitignore               # Git ignore rules
-├── LICENSE                  # MIT License
-└── README.md                # Project description
+├── .gitignore                  # Git ignore rules
+├── LICENSE                     # MIT License
+└── README.md                   # Project description
 ```
 
 ### Important Code Locations
@@ -194,15 +194,15 @@ After making any changes, ALWAYS validate the application by:
 - **Database client**: `src/db/database-client.mjs` (DatabaseClient class for MySQL connection management with improved error handling)
 - **Projects client**: `src/db/projects-client.mjs` (ProjectsClient class for database queries)
 - **Projects model**: `src/models/projects.mjs` (Projects class for project data processing)
-- **Email client**: `src/utils/email-client.mjs` (EmailClient class with nodemailer, refactored from utils.cjs)
-- **Validation utilities**: `src/utils/validation.mjs` (Validation class, refactored from utils.cjs)
-- **ESLint configuration**: `eslint.config.mjs` (comprehensive linting rules including require-await for code quality, ES modules)
+- **Email client**: `src/utils/email-client.mjs` (EmailClient class with nodemailer)
+- **Validation utilities**: `src/utils/validation.mjs` (Validation class)
+- **ESLint configuration**: `eslint.config.mjs` (comprehensive linting rules)
 - **Vitest configuration**: `vitest.config.mjs` (test configuration with coverage reporting)
 - **Main webpage**: `views/index.ejs` (homepage template with navigation, p5.js splash screen, featured project, and about sections)
 - **Contact page**: `views/contact.ejs` (contact page template with working form, validation, Bootstrap styling)
 - **Projects page**: `views/projects.ejs` (projects page template with dynamic project cards using `project-card.ejs` layout)
 - **Individual project page**: `views/project.ejs` (template for individual project pages)
-- **Acknowledgements page**: `views/acknowledgements.ejs` (credits page template for Express, Nodemailer, Bootstrap, and FontAwesome with social media links)
+- **Acknowledgements page**: `views/acknowledgements.ejs` (credits page template with social media links)
 - **Error pages**: `views/errors/404.ejs` and `views/errors/500.ejs` (error page templates)
 - **EJS includes**: `views/includes/` (reusable EJS partials for head, header, footer, and scripts)
 - **Project card layout**: `views/includes/project-card.ejs` (reusable project card component)
@@ -326,7 +326,7 @@ $ ls -la
 LICENSE
 README.md
 eslint.config.mjs           # ESLint configuration (ES modules)
-vitest.config.mjs             # Vitest testing configuration
+vitest.config.mjs           # Vitest testing configuration
 node_modules/               # Created after npm install
 _coverage/                  # Generated files (test coverage)
 schema/                     # Database schema and SQL files
