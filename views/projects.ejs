@@ -16,7 +16,7 @@
             <div class="row row-cols-auto row-cols-lg-<%= maxCols %> py-3">
                 <% projects.forEach((project, index) => { %>
                     <div class="col text-center mx-auto">
-                        <%- include('includes/project-card', { project: project }); %>
+                        <%- include('includes/project-card', { project: project, cardWidth: '20rem' }); %>
                     </div>
                 <% }); %>
 

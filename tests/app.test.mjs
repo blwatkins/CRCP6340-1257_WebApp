@@ -57,6 +57,12 @@ describe('app routing', () => {
             const response = await request(app).get('/');
             expect(response.statusCode).toBe(200);
         });
+
+        test.todo('GET / - returns 200 with mocked database');
+
+        test.todo('GET / - returns 200 with database connection error');
+
+        test.todo('GET / - returns 200 with empty database');
     });
 
     describe('GET /acknowledgements', () => {
@@ -78,6 +84,12 @@ describe('app routing', () => {
             const response = await request(app).get('/projects');
             expect(response.statusCode).toBe(200);
         });
+
+        test.todo('GET / - returns 200 with mocked database');
+
+        test.todo('GET / - returns 200 with database connection error');
+
+        test.todo('GET / - returns 200 with empty database');
     });
 
     describe('GET /project/:id', () => {

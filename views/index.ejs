@@ -19,19 +19,15 @@
         <div class="fluid-container bg-secondary-subtle">
         <div id="content" class="container">
             <div class="row py-3 align-items-center">
-                <div class="col text-center m-2">
-                    <h2 class="text-center">featured project</h2>
-                    <!-- TODO: replace with randomly selected project and project-card.ejs layout -->
-                    <div class="card mx-auto my-2 bg-secondary-subtle" style="width: 20rem; max-width: 90%;">
-                        <img src="./images/coming-soon-poster.png" class="card-img-top px-3 pt-3" alt="coming soon poster with light bulbs and a purple and blue butterfly on a purple background.">
-                        <div class="card-body text-center">
-                            <h5 class="card-title m-0">coming soon!</h5>
-                        </div>
+                <% if (featuredProject) { %>
+                    <div class="col text-center m-2">
+                        <h2 class="text-center m-3">featured project</h2>
+                        <%- include('includes/project-card', { project: featuredProject, cardWidth: '20rem' }); %>
+                        <a href="./projects" class="btn btn-primary mx-auto my-2" role="button">
+                            view all projects
+                        </a>
                     </div>
-                    <a href="./projects" class="btn btn-primary mx-auto my-2" role="button">
-                        view all projects
-                    </a>
-                </div>
+                <% } %>
                 <div class="col m-2" id="about">
                     <h2 class="text-center">about brittni</h2>
                     <p>

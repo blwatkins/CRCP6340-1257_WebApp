@@ -36,6 +36,19 @@ export class ProjectsClient extends DatabaseClient {
         return [];
     }
 
+    static async queryAllProjectIds() {
+        const query = 'SELECT id FROM projects';
+
+        try {
+            const [rows] = await ProjectsClient.connectionPool.execute(query);
+            return rows;
+        } catch (error) {
+            console.error(error);
+        }
+
+        return [];
+    }
+
     static async queryProjectById(projectId) {
         const query = 'SELECT * FROM projects WHERE id = ?';
         const values = [projectId];

@@ -25,6 +25,7 @@ import express from 'express';
 import { DatabaseClient } from './db/database-client.mjs';
 import { Projects } from './models/projects.mjs';
 import { EmailClient } from './utils/email-client.mjs';
+import { Random } from './utils/random.mjs';
 import { Validation } from './utils/validation.mjs';
 
 export const app = express();
@@ -39,8 +40,16 @@ app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.static('public'));
 
-app.get('/', (request, response) => {
-    response.render('index.ejs');
+app.get('/', async (request, response) => {
+    const projectIds = await Projects.getAllProjectIds();
+    const featuredProjectId = Random.selectRandomElement(projectIds);
+    let featuredProject = undefined;
+
+    if (featuredProjectId) {
+        featuredProject = await Projects.getProjectById(featuredProjectId);
+    }
+
+    response.render('index.ejs', { featuredProject: featuredProject });
 });
 
 app.get('/acknowledgements', (request, response) => {

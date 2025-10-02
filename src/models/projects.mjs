@@ -36,6 +36,17 @@ export class Projects {
         return [];
     }
 
+    static async getAllProjectIds() {
+        try {
+            const projectIds = await ProjectsClient.queryAllProjectIds();
+            return projectIds.map(project => project.id);
+        } catch (error) {
+            console.error(error);
+        }
+
+        return [];
+    }
+
     static async getProjectById(projectId) {
         try {
             const project = await ProjectsClient.queryProjectById(projectId);
