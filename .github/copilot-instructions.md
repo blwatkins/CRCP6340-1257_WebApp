@@ -40,6 +40,7 @@ Always reference these instructions first and fallback to search or bash command
   - `GET /projects/$id` route tests (`tests/app.test.mjs`)
   - `EmailClient` constructor tests (`tests/utils/email-client.test.mjs`)
   - `Validation.isValidNumber()` tests (`tests/utils/validation.test.mjs`)
+  - `Random` class tests (`tests/utils/random.test.mjs`)
 
 ## Validation
 
@@ -54,13 +55,14 @@ After making any changes, ALWAYS validate the application by:
    - Page loads with purple navigation bar
    - "brittni's fall 2025 nfts" branding displays and links to index.html
    - Navigation links ("home", "about", "projects", "contact", "acknowledgements") are clickable and functional
+   - "Connect Wallet" button displays in header navigation for EVM wallet connections
    - **Splash screen displays** with animated p5.js canvas showing:
      - Animated colorful circles appearing and fading (both filled circles and outline circles)
      - Circles distributed evenly across the canvas using poisson disc sampling algorithm
      - "brittni watkins" text centered on screen (64px JetBrains Mono)
      - "Fall 2025 NFTs" text below (32px JetBrains Mono)
      - Full viewport height canvas (100vh)
-   - **Featured project section** displays with coming soon card and "view all projects" button
+   - **Featured project section** displays with randomly selected project from database and "view all projects" button
    - "about brittni" section displays with real biographical content
    - Footer displays copyright notice, social media links with FontAwesome icons, and navigation links
 6. **Contact form testing**: Navigate to `/contact` and verify:
@@ -84,6 +86,11 @@ After making any changes, ALWAYS validate the application by:
 9. **Error page testing**: 
    - Navigate to `/nonexistent` and verify 404 error page displays with proper styling
    - Test server error handling (500 error page should display for server errors)
+10. **Wallet connection testing**:
+   - Verify "Connect Wallet" button displays in header navigation
+   - Test wallet connection functionality (requires MetaMask or compatible EVM wallet)
+   - Verify button shows wallet address preview after successful connection
+   - Test wallet connection error handling when no wallet extension is available
 
 ### Expected Behavior
 - Server starts immediately (within 1 second)
@@ -98,6 +105,8 @@ After making any changes, ALWAYS validate the application by:
 - Email notifications sent when SMTP environment variables are properly configured
 - Social media links in footer open in new tabs with proper accessibility attributes
 - Project pages are dynamically generated using Projects data
+- Featured project on homepage is randomly selected from database projects
+- EVM wallet connection functionality available via "Connect Wallet" button
 - Error pages (404, 500) render correctly with proper styling
 
 ### Known Issues
@@ -109,6 +118,7 @@ After making any changes, ALWAYS validate the application by:
 - Projects page functionality depends on database connectivity for displaying dynamic project data
 - Splash screen animation requires JavaScript to be enabled
 - Social media links require FontAwesome to load for icons to display properly
+- Wallet connection requires MetaMask or compatible EVM wallet extension to be installed
 
 ## Project Structure
 
@@ -125,6 +135,7 @@ After making any changes, ALWAYS validate the application by:
 │   │   └── projects.mjs     # Projects class for project data processing
 │   └── utils/               # Utility functions
 │       ├── email-client.mjs # EmailClient class
+│       ├── random.mjs       # Random class
 │       └── validation.mjs   # Validation class
 ├── views/                    # EJS template directory
 │   ├── includes/            # Reusable EJS partials
@@ -151,11 +162,13 @@ After making any changes, ALWAYS validate the application by:
 │   │   └── projects.test.mjs # Projects class tests (TODO)
 │   └── utils/               # Utility function tests
 │       ├── email-client.test.mjs     # EmailClient tests (with TODO constructor tests)
+│       ├── random.test.mjs           # Random class tests (TODO)
 │       └── validation.test.mjs       # Validation tests (with TODO isValidNumber tests)
 ├── public/                   # Static web content directory
 │   ├── scripts/
 │   │   ├── splash.js        # p5.js animated splash screen with fill and outline circles
-│   │   └── contact-email.js # Contact form validation and submission handling
+│   │   ├── contact-email.js # Contact form validation and submission handling
+│   │   └── wallet.js        # EVM wallet connection functionality
 │   ├── style/
 │   │   └── style.css        # Custom CSS styles
 │   └── images/
@@ -195,6 +208,7 @@ After making any changes, ALWAYS validate the application by:
 - **Projects client**: `src/db/projects-client.mjs` (ProjectsClient class for database queries)
 - **Projects model**: `src/models/projects.mjs` (Projects class for project data processing)
 - **Email client**: `src/utils/email-client.mjs` (EmailClient class with nodemailer)
+- **Random utilities**: `src/utils/random.mjs` (Random class with selectRandomElement method)
 - **Validation utilities**: `src/utils/validation.mjs` (Validation class)
 - **ESLint configuration**: `eslint.config.mjs` (comprehensive linting rules)
 - **Vitest configuration**: `vitest.config.mjs` (test configuration with coverage reporting)
@@ -208,6 +222,7 @@ After making any changes, ALWAYS validate the application by:
 - **Project card layout**: `views/includes/project-card.ejs` (reusable project card component)
 - **Splash animation**: `public/scripts/splash.js` (p5.js animated canvas with Circle and CirclePoissonDiscSampler classes)
 - **Contact form script**: `public/scripts/contact-email.js` (form validation, submission, UI feedback, and custom validation methods)
+- **Wallet connection script**: `public/scripts/wallet.js` (EVM wallet connection functionality with MetaMask support)
 - **Styling**: `public/style/style.css` (custom purple theme, JetBrains Mono font, splash styles, bg-secondary-subtle override)
 - **Static assets**: `public/images/` (favicon, coming soon poster, project images, and other images)
 - **Database schema**: `schema/` (SQL files for database creation, sample data, and queries)
@@ -426,10 +441,12 @@ views/                      # EJS template directory
 - **Update social media links**: Edit footer section in `views/includes/footer-navigation.ejs`
 - **Modify splash animation**: Edit `public/scripts/splash.js` (p5.js sketch with Circle class and CirclePoissonDiscSampler for even distribution)
 - **Add client-side JavaScript**: Create files in `public/scripts/` directory with copyright headers
+- **Add wallet functionality**: Edit `public/scripts/wallet.js` (EVM wallet connection with MetaMask integration)
 - **Add server routes**: Edit `src/app.mjs` (Express routes and middleware)
 - **Add database functionality**: Edit `src/db/database-client.mjs` (DatabaseClient class) and `src/db/projects-client.mjs` (ProjectsClient class)
 - **Add data models**: Create classes in `src/models/` directory (e.g., Projects class)
 - **Add email functionality**: Edit `src/utils/email-client.mjs` (EmailClient class)
+- **Add random utilities**: Edit `src/utils/random.mjs` (Random class with selectRandomElement method)
 - **Add validation**: Edit `src/utils/validation.mjs` (Validation class)
 - **Server configuration**: Edit `src/server.mjs` (port, startup logic, shutdown handling)
 - **Add unit tests**: Create test files in `tests/` directory (Vitest format, using .mjs extension)
