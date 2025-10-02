@@ -150,22 +150,25 @@
     }
 
     const form = document.getElementById(CONTACT_FORM_ID);
-    form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        event.stopPropagation();
 
-        if (form.checkValidity() && checkCustomFormValidity()) {
-            disableForm();
-            await sendContactEmail();
-        }
+    if (form) {
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            event.stopPropagation();
 
-        form.classList.add(WAS_VALIDATED_CLASS);
-    }, false);
+            if (form.checkValidity() && checkCustomFormValidity()) {
+                disableForm();
+                await sendContactEmail();
+            }
 
-    form.addEventListener('input', () => {
-        form.classList.remove(WAS_VALIDATED_CLASS);
-        form.checkValidity();
-        checkCustomFormValidity();
-        form.classList.add(WAS_VALIDATED_CLASS);
-    });
+            form.classList.add(WAS_VALIDATED_CLASS);
+        }, false);
+
+        form.addEventListener('input', () => {
+            form.classList.remove(WAS_VALIDATED_CLASS);
+            form.checkValidity();
+            checkCustomFormValidity();
+            form.classList.add(WAS_VALIDATED_CLASS);
+        });
+    }
 })();

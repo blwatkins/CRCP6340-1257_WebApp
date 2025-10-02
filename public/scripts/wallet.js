@@ -26,26 +26,30 @@
     const CONNECT_BUTTON_ID = 'wallet-connect';
     let connectButton = document.getElementById(CONNECT_BUTTON_ID);
 
-    connectButton.addEventListener('click', async () => {
-        await connectWallet();
-    });
+    if (connectButton) {
+        connectButton.addEventListener('click', async () => {
+            await connectWallet();
+        });
+    }
 
     async function connectWallet() {
-        await window.ethereum
-            .request({ method: 'eth_requestAccounts' })
-            .then((accounts) => {
-                console.log(accounts);
-                // get the user address.
-                // set userAddress to user address.
-                // get substring of use address.
-                // change the innerHTML of the 'connect' button to the user address.
-            }).catch((error) => {
-                console.log('nope.');
-                console.error(error);
+        if (window.ethereum) {
+            await window.ethereum
+                .request({ method: 'eth_requestAccounts' })
+                .then((accounts) => {
+                    console.log(accounts);
+                    // get the user address.
+                    // set userAddress to user address.
+                    // get substring of use address.
+                    // change the innerHTML of the 'connect' button to the user address.
+                }).catch((error) => {
+                    console.log('nope.');
+                    console.error(error);
 
-                if (error.code === 4001) {
-                    // user rejected the request
-                }
-            });
+                    if (error.code === 4001) {
+                        // user rejected the request
+                    }
+                });
+        }
     }
 })();
