@@ -23,6 +23,7 @@
 (() => {
     'use strict';
     let userAddress = null;
+    let addressPreview = null;
     const CONNECT_BUTTON_ID = 'wallet-connect';
     let connectButton = document.getElementById(CONNECT_BUTTON_ID);
 
@@ -33,23 +34,26 @@
     }
 
     async function connectWallet() {
-        if (window.ethereum) {
+        if (window.ethereum && userAddress === null && addressPreview === null) {
+            connectButton.disabled = true;
+
             await window.ethereum
                 .request({ method: 'eth_requestAccounts' })
                 .then((accounts) => {
-                    console.log(accounts);
-                    // get the user address.
-                    // set userAddress to user address.
-                    // get substring of use address.
-                    // change the innerHTML of the 'connect' button to the user address.
-                }).catch((error) => {
-                    console.log('nope.');
-                    console.error(error);
+                    if (accounts.length > 0) {
+                        userAddress = accounts[0];
+                        addressPreview = userAddress.substring(0, 6) + '...' + userAddress.substring(userAddress.length - 4);
+                        connectButton.innerHTML = addressPreview;
 
-                    if (error.code === 4001) {
-                        // user rejected the request
+                        return userAddress;
                     }
+
+                    return undefined;
+                }).catch((error) => {
+                    console.error(error);
                 });
+
+            connectButton.disabled = false;
         }
     }
 })();
