@@ -11,13 +11,18 @@ Always reference these instructions first and fallback to search or bash command
 - No additional SDK installations required
 
 ### Setup and Dependencies
-- Install dependencies: `npm install` -- takes ~15 seconds (includes ejs, vitest, nodemailer, dotenvx, mysql2, html-entities, supertest, @vitest/ui)
+- Install dependencies: `npm install` -- takes ~15 seconds (includes ejs, vitest, nodemailer, dotenvx, mysql2, html-entities, supertest, @vitest/ui, webpack, webpack-cli, css-loader, style-loader, mini-css-extract-plugin)
 - Environment variables: Create `.env` file for email functionality (SMTP settings, see Environment Variables section). For enhanced security, consider using dotenvx encryption features to encrypt sensitive environment variables.
-- No build process required (Express app with EJS templating and API routes)
+- Build process: Client-side assets are bundled using webpack from `client-src/` to `public/dist/`
+- Run `npm run build` to build client-side assets before running the application
 
 ### Running the Application
+- Build client assets: `npm run build` -- builds ES6 modules and CSS from `client-src/` to `public/dist/`
 - Production server: `npm start` -- starts immediately on port 3000 (uses dotenvx and server.mjs)
 - Development server (with auto-reload): `npm run dev` -- starts immediately with nodemon (uses dotenvx and server.mjs)
+- Development build commands:
+  - `npm run build:dev` -- builds assets in development mode
+  - `npm run build:watch` -- builds assets in development mode with file watching
 - Application serves content at: `http://localhost:3000`
 - Contact form requires environment variables for email functionality
 
@@ -31,7 +36,7 @@ Always reference these instructions first and fallback to search or bash command
   - Express app routes
   - Express app utility functions
   - Static file serving
-- Lint command: `npm run lint` -- runs ESLint on configuration, server, scripts, src, and tests directories
+- Lint command: `npm run lint` -- runs ESLint on configuration, server, scripts, src, tests, and client-src directories
 - Test coverage reports generated in `./_coverage/`
 - All tests should pass with 100% code coverage
 - **TODO Tests**: The following tests are marked as `test.todo()` and will be implemented in future iterations:
@@ -106,7 +111,8 @@ After making any changes, ALWAYS validate the application by:
 - Social media links in footer open in new tabs with proper accessibility attributes
 - Project pages are dynamically generated using Projects data
 - Featured project on homepage is randomly selected from database projects
-- EVM wallet connection functionality available via "Connect Wallet" button
+- EVM wallet connection functionality available via "Connect Wallet" button with webpack-bundled ES6 modules
+- Client-side assets are bundled using webpack from ES6 modules in `client-src/` to `public/dist/`
 - Error pages (404, 500) render correctly with proper styling
 
 ### Known Issues
@@ -119,6 +125,7 @@ After making any changes, ALWAYS validate the application by:
 - Splash screen animation requires JavaScript to be enabled
 - Social media links require FontAwesome to load for icons to display properly
 - Wallet connection requires MetaMask or compatible EVM wallet extension to be installed
+- **Client-side assets must be built** using `npm run build` before running the application for bundled functionality to work
 
 ## Project Structure
 
@@ -164,13 +171,25 @@ After making any changes, ALWAYS validate the application by:
 │       ├── email-client.test.mjs     # EmailClient tests (with TODO constructor tests)
 │       ├── random.test.mjs           # Random class tests (TODO)
 │       └── validation.test.mjs       # Validation tests (with TODO isValidNumber tests)
+├── client-src/                # Client-side source code (ES modules)
+│   ├── js/                    # JavaScript source files
+│   │   ├── index.js          # Main entry point for bundled JavaScript
+│   │   ├── wallet.js         # WalletManager class for EVM wallet connection
+│   │   ├── contact-email.js  # ContactForm class for form handling
+│   │   └── splash.js         # SplashScreen class for p5.js animated splash
+│   └── css/                  # CSS source files
+│       └── index.css         # Main CSS entry point
 ├── public/                   # Static web content directory
-│   ├── scripts/
-│   │   ├── splash.js        # p5.js animated splash screen with fill and outline circles
-│   │   ├── contact-email.js # Contact form validation and submission handling
-│   │   └── wallet.js        # EVM wallet connection functionality
+│   ├── dist/                 # Webpack build output (bundled assets)
+│   │   ├── bundle.js         # Bundled JavaScript (from client-src/js)
+│   │   ├── styles.css        # Bundled CSS (from client-src/css)
+│   │   └── styles.js         # CSS extraction artifact
+│   ├── scripts/              # Legacy individual scripts (now bundled)
+│   │   ├── splash.js         # [DEPRECATED] Individual splash script
+│   │   ├── contact-email.js  # [DEPRECATED] Individual contact form script
+│   │   └── wallet.js         # [DEPRECATED] Individual wallet script
 │   ├── style/
-│   │   └── style.css        # Custom CSS styles
+│   │   └── style.css         # Custom CSS styles
 │   └── images/
 │       ├── coming-soon-poster.png  # Featured project placeholder image
 │       ├── projects/
@@ -185,7 +204,8 @@ After making any changes, ALWAYS validate the application by:
 │   └── [generated files]       # Vitest coverage reports (generated)
 ├── eslint.config.mjs           # ESLint configuration with comprehensive rules (ES modules)
 ├── vitest.config.mjs           # Vitest testing configuration with coverage
-├── package.json                # Node.js dependencies and scripts
+├── webpack.config.js           # Webpack configuration for client-side asset bundling
+├── package.json                # Node.js dependencies and scripts (includes webpack build commands)
 ├── package-lock.json           # Dependency lock file
 ├── velocity-copyright-template.txt # Copyright header template
 ├── .env                     # Environment variables (not in repo, required for email functionality)
@@ -196,7 +216,7 @@ After making any changes, ALWAYS validate the application by:
 │   ├── dependabot.yml          # Dependency update automation
 │   ├── CODEOWNERS              # Code ownership
 │   └── copilot-instructions.md # This file
-├── .gitignore                  # Git ignore rules
+├── .gitignore                  # Git ignore rules (includes public/dist/ for webpack build artifacts)
 ├── LICENSE                     # MIT License
 └── README.md                   # Project description
 ```
@@ -204,6 +224,11 @@ After making any changes, ALWAYS validate the application by:
 ### Important Code Locations
 - **Server configuration**: `src/server.mjs` (Express server startup, port 3000, database shutdown logic)
 - **Express app**: `src/app.mjs` (routes, middleware, EJS view engine, GET and POST endpoints, DatabaseClient initialization)
+- **Webpack configuration**: `webpack.config.js` (ES module webpack config for bundling client-side assets)
+- **Client-side entry point**: `client-src/js/index.js` (main JavaScript entry point, imports all ES6 modules)
+- **Client-side modules**: `client-src/js/` (WalletManager, ContactForm, SplashScreen classes as ES6 modules)
+- **Client-side CSS**: `client-src/css/index.css` (main CSS entry point for bundling)
+- **Bundled assets**: `public/dist/` (webpack output directory with bundle.js and styles.css)
 - **Database client**: `src/db/database-client.mjs` (DatabaseClient class for MySQL connection management with improved error handling)
 - **Projects client**: `src/db/projects-client.mjs` (ProjectsClient class for database queries)
 - **Projects model**: `src/models/projects.mjs` (Projects class for project data processing)
@@ -220,9 +245,9 @@ After making any changes, ALWAYS validate the application by:
 - **Error pages**: `views/errors/404.ejs` and `views/errors/500.ejs` (error page templates)
 - **EJS includes**: `views/includes/` (reusable EJS partials for head, header, footer, and scripts)
 - **Project card layout**: `views/includes/project-card.ejs` (reusable project card component)
-- **Splash animation**: `public/scripts/splash.js` (p5.js animated canvas with Circle and CirclePoissonDiscSampler classes)
-- **Contact form script**: `public/scripts/contact-email.js` (form validation, submission, UI feedback, and custom validation methods)
-- **Wallet connection script**: `public/scripts/wallet.js` (EVM wallet connection functionality with MetaMask support)
+- **Splash animation**: `client-src/js/splash.js` (SplashScreen ES6 class with p5.js animated canvas, Circle and CirclePoissonDiscSampler classes)
+- **Contact form script**: `client-src/js/contact-email.js` (ContactForm ES6 class for form validation, submission, UI feedback, and custom validation methods)
+- **Wallet connection script**: `client-src/js/wallet.js` (WalletManager ES6 class for EVM wallet connection functionality with MetaMask support)
 - **Styling**: `public/style/style.css` (custom purple theme, JetBrains Mono font, splash styles, bg-secondary-subtle override)
 - **Static assets**: `public/images/` (favicon, coming soon poster, project images, and other images)
 - **Database schema**: `schema/` (SQL files for database creation, sample data, and queries)
@@ -425,6 +450,19 @@ views/                      # EJS template directory
 - All source code files must include copyright headers (use `velocity-copyright-template.txt` as reference)
 - Favor async/await syntax over Promise chains
 
+### Client-Side Asset Bundling with Webpack
+- **Source directory**: All client-side source code lives in `client-src/` directory
+- **ES6 modules**: All JavaScript uses ES6 module syntax (import/export) in `client-src/js/`
+- **CSS bundling**: CSS files in `client-src/css/` are processed and bundled
+- **Build process**: Run `npm run build` to bundle assets to `public/dist/`
+- **Development builds**: Use `npm run build:dev` for development mode or `npm run build:watch` for file watching
+- **Main entry points**: 
+  - `client-src/js/index.js` - imports and initializes all JavaScript modules
+  - `client-src/css/index.css` - main CSS entry point
+- **Build output**: Webpack generates `public/dist/bundle.js` and `public/dist/styles.css`
+- **EJS templates**: Updated to reference `/dist/bundle.js` instead of individual script files
+- **ES6 module structure**: All client-side functionality organized as classes (WalletManager, ContactForm, SplashScreen)
+
 ### CI/CD
 - Node.js lint and test workflow configured in `.github/workflows/npm-test.yml` with proper permissions
 - CodeQL security scanning configured in `.github/workflows/codeql.yml` for JavaScript/TypeScript and GitHub Actions
@@ -439,9 +477,9 @@ views/                      # EJS template directory
 - **Add images**: Place in `public/images/` directory
 - **Update navigation**: Modify `views/includes/header-navigation.ejs` and `views/includes/footer-navigation.ejs`
 - **Update social media links**: Edit footer section in `views/includes/footer-navigation.ejs`
-- **Modify splash animation**: Edit `public/scripts/splash.js` (p5.js sketch with Circle class and CirclePoissonDiscSampler for even distribution)
-- **Add client-side JavaScript**: Create files in `public/scripts/` directory with copyright headers
-- **Add wallet functionality**: Edit `public/scripts/wallet.js` (EVM wallet connection with MetaMask integration)
+- **Modify splash animation**: Edit `client-src/js/splash.js` (SplashScreen ES6 class with p5.js sketch, Circle class and CirclePoissonDiscSampler for even distribution)
+- **Add client-side JavaScript**: Create ES6 modules in `client-src/js/` directory with copyright headers, then run `npm run build`
+- **Add wallet functionality**: Edit `client-src/js/wallet.js` (WalletManager ES6 class for EVM wallet connection with MetaMask integration)
 - **Add server routes**: Edit `src/app.mjs` (Express routes and middleware)
 - **Add database functionality**: Edit `src/db/database-client.mjs` (DatabaseClient class) and `src/db/projects-client.mjs` (ProjectsClient class)
 - **Add data models**: Create classes in `src/models/` directory (e.g., Projects class)
