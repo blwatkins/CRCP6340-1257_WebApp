@@ -1,6 +1,6 @@
 # CRCP6340-1257_WebApp
 
-This is a Node.js web application using Express with EJS templating to serve dynamic content and handle contact form submissions for Brittni's Fall 2025 CRCP 6340 project. The application uses EJS templates in the `views` directory for dynamic page rendering, serves static assets from the `public` directory, and includes a working contact form with email notification functionality.
+This is a Node.js web application using Express with EJS templating to serve dynamic content and handle contact form submissions for Brittni's Fall 2025 CRCP 6340 project. The application uses EJS templates in the `views` directory for dynamic page rendering, serves static assets from the `public` directory, and includes a working contact form with email notification functionality. The client-side JavaScript is bundled using Vite for modern development workflow and ES6 module support.
 
 Always reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.
 
@@ -11,15 +11,17 @@ Always reference these instructions first and fallback to search or bash command
 - No additional SDK installations required
 
 ### Setup and Dependencies
-- Install dependencies: `npm install` -- takes ~15 seconds (includes ejs, vitest, nodemailer, dotenvx, mysql2, html-entities, supertest, @vitest/ui)
+- Install dependencies: `npm install` -- takes ~15 seconds (includes ejs, vitest, nodemailer, dotenvx, mysql2, html-entities, supertest, @vitest/ui, vite)
 - Environment variables: Create `.env` file for email functionality (SMTP settings, see Environment Variables section). For enhanced security, consider using dotenvx encryption features to encrypt sensitive environment variables.
-- No build process required (Express app with EJS templating and API routes)
+- Build process: Uses Vite to bundle client-side JavaScript from `client-src/` directory to `dist/` directory
 
 ### Running the Application
-- Production server: `npm start` -- starts immediately on port 3000 (uses dotenvx and server.mjs)
-- Development server (with auto-reload): `npm run dev` -- starts immediately with nodemon (uses dotenvx and server.mjs)
+- Production server: `npm start` -- builds client-side assets with Vite, then starts server on port 3000 (uses dotenvx and server.mjs)
+- Development server (with auto-reload): `npm run dev` -- builds client-side assets in development mode, then starts server with nodemon (uses dotenvx and server.mjs)
+- Client-side development: `npm run dev:client` -- starts Vite development server on port 5173 for client-side asset development
 - Application serves content at: `http://localhost:3000`
 - Contact form requires environment variables for email functionality
+- Build command: `npm run build` -- builds production-optimized client-side assets using Vite
 
 ### Testing
 - Test command: `npm test` -- runs Vitest test suite with 184 tests (plus 5 TODO tests) and coverage reporting
@@ -31,7 +33,7 @@ Always reference these instructions first and fallback to search or bash command
   - Express app routes
   - Express app utility functions
   - Static file serving
-- Lint command: `npm run lint` -- runs ESLint on configuration, server, scripts, src, and tests directories
+- Lint command: `npm run lint` -- runs ESLint on configuration, Vite configuration, client-src, server, and tests directories
 - Test coverage reports generated in `./_coverage/`
 - All tests should pass with 100% code coverage
 - **TODO Tests**: The following tests are marked as `test.todo()` and will be implemented in future iterations:
@@ -125,7 +127,7 @@ After making any changes, ALWAYS validate the application by:
 ### Key Files and Directories
 ```
 /home/runner/work/CRCP6340-1257_WebApp/CRCP6340-1257_WebApp/
-├── src/                      # Source code directory (ES modules)
+├── src/                      # Server-side source code directory (ES modules)
 │   ├── app.mjs              # Express app configuration and routes (GET and POST routes)
 │   ├── server.mjs           # Server startup and initialization
 │   ├── db/                  # Database-related modules
@@ -137,12 +139,21 @@ After making any changes, ALWAYS validate the application by:
 │       ├── email-client.mjs # EmailClient class
 │       ├── random.mjs       # Random class
 │       └── validation.mjs   # Validation class
+├── client-src/              # Client-side source code directory (bundled by Vite)
+│   ├── main.js              # Main entry point for client-side JavaScript
+│   ├── wallet.js            # EVM wallet connection functionality with ES6 modules and sample alerts
+│   ├── splash.js            # p5.js animated splash screen with fill and outline circles
+│   └── contact-email.js     # Contact form validation and submission handling
+├── dist/                    # Generated client-side assets (Vite build output)
+│   ├── main.js              # Bundled main JavaScript file (includes wallet functionality)
+│   ├── splash.js            # Bundled splash screen JavaScript
+│   └── contact-email.js     # Bundled contact form JavaScript
 ├── views/                    # EJS template directory
 │   ├── includes/            # Reusable EJS partials
 │   │   ├── head.ejs         # Common HTML head content
 │   │   ├── header-navigation.ejs  # Navigation header
 │   │   ├── footer-navigation.ejs  # Footer with social links and navigation
-│   │   ├── closing-scripts.ejs    # Bootstrap JS scripts
+│   │   ├── closing-scripts.ejs    # Bootstrap JS scripts and bundled JS references
 │   │   └── project-card.ejs # Project card layout for project cards
 │   ├── errors/              # Error page templates
 │   │   ├── 404.ejs          # 404 error page
@@ -165,10 +176,7 @@ After making any changes, ALWAYS validate the application by:
 │       ├── random.test.mjs           # Random class tests (TODO)
 │       └── validation.test.mjs       # Validation tests (with TODO isValidNumber tests)
 ├── public/                   # Static web content directory
-│   ├── scripts/
-│   │   ├── splash.js        # p5.js animated splash screen with fill and outline circles
-│   │   ├── contact-email.js # Contact form validation and submission handling
-│   │   └── wallet.js        # EVM wallet connection functionality
+│   ├── scripts/             # Legacy scripts directory (now replaced by client-src + Vite build)
 │   ├── style/
 │   │   └── style.css        # Custom CSS styles
 │   └── images/
@@ -185,6 +193,7 @@ After making any changes, ALWAYS validate the application by:
 │   └── [generated files]       # Vitest coverage reports (generated)
 ├── eslint.config.mjs           # ESLint configuration with comprehensive rules (ES modules)
 ├── vitest.config.mjs           # Vitest testing configuration with coverage
+├── vite.config.mjs             # Vite build configuration for client-side assets
 ├── package.json                # Node.js dependencies and scripts
 ├── package-lock.json           # Dependency lock file
 ├── velocity-copyright-template.txt # Copyright header template
@@ -203,13 +212,14 @@ After making any changes, ALWAYS validate the application by:
 
 ### Important Code Locations
 - **Server configuration**: `src/server.mjs` (Express server startup, port 3000, database shutdown logic)
-- **Express app**: `src/app.mjs` (routes, middleware, EJS view engine, GET and POST endpoints, DatabaseClient initialization)
+- **Express app**: `src/app.mjs` (routes, middleware, EJS view engine, GET and POST endpoints, DatabaseClient initialization, serves bundled assets from /js route)
 - **Database client**: `src/db/database-client.mjs` (DatabaseClient class for MySQL connection management with improved error handling)
 - **Projects client**: `src/db/projects-client.mjs` (ProjectsClient class for database queries)
 - **Projects model**: `src/models/projects.mjs` (Projects class for project data processing)
 - **Email client**: `src/utils/email-client.mjs` (EmailClient class with nodemailer)
 - **Random utilities**: `src/utils/random.mjs` (Random class with selectRandomElement method)
 - **Validation utilities**: `src/utils/validation.mjs` (Validation class)
+- **Vite configuration**: `vite.config.mjs` (Vite build configuration for client-side asset bundling)
 - **ESLint configuration**: `eslint.config.mjs` (comprehensive linting rules)
 - **Vitest configuration**: `vitest.config.mjs` (test configuration with coverage reporting)
 - **Main webpage**: `views/index.ejs` (homepage template with navigation, p5.js splash screen, featured project, and about sections)
@@ -220,9 +230,11 @@ After making any changes, ALWAYS validate the application by:
 - **Error pages**: `views/errors/404.ejs` and `views/errors/500.ejs` (error page templates)
 - **EJS includes**: `views/includes/` (reusable EJS partials for head, header, footer, and scripts)
 - **Project card layout**: `views/includes/project-card.ejs` (reusable project card component)
-- **Splash animation**: `public/scripts/splash.js` (p5.js animated canvas with Circle and CirclePoissonDiscSampler classes)
-- **Contact form script**: `public/scripts/contact-email.js` (form validation, submission, UI feedback, and custom validation methods)
-- **Wallet connection script**: `public/scripts/wallet.js` (EVM wallet connection functionality with MetaMask support)
+- **Client-side main entry**: `client-src/main.js` (main entry point that imports wallet functionality)
+- **Wallet connection source**: `client-src/wallet.js` (EVM wallet connection functionality with ES6 modules, MetaMask support, and sample alerts)
+- **Splash animation source**: `client-src/splash.js` (p5.js animated canvas with Circle and CirclePoissonDiscSampler classes)
+- **Contact form source**: `client-src/contact-email.js` (form validation, submission, UI feedback, and custom validation methods)
+- **Bundled assets**: `dist/` (Vite-generated bundled JavaScript files served at /js route)
 - **Styling**: `public/style/style.css` (custom purple theme, JetBrains Mono font, splash styles, bg-secondary-subtle override)
 - **Static assets**: `public/images/` (favicon, coming soon poster, project images, and other images)
 - **Database schema**: `schema/` (SQL files for database creation, sample data, and queries)
@@ -391,6 +403,7 @@ views/                      # EJS template directory
     "eslint-plugin-security": "^3.0.1",
     "nodemon": "^3.1.10",
     "supertest": "^7.1.4",
+    "vite": "^7.1.9",
     "vitest": "^3.2.4"
   }
 }
@@ -406,11 +419,13 @@ views/                      # EJS template directory
 ## Development Guidelines
 
 ### Making Changes
-- Express application with EJS templating and static files - no transpilation or build process
-- Changes to files in `public/` directory are immediately available after server restart
+- Express application with EJS templating, static files, and Vite-bundled client-side assets
+- Changes to files in `client-src/` directory require a build step (`npm run build` or `npm run build:dev`) before being available
+- Changes to files in `public/` directory (except bundled assets) are immediately available after server restart
 - Changes to files in `src/` require server restart to take effect
 - Changes to EJS templates in `views/` require server restart to take effect
-- Use `npm run dev` during development for automatic server restart on file changes
+- Use `npm run dev` during development for automatic build and server restart on file changes
+- Use `npm run dev:client` for Vite development server when working on client-side code
 - Always test both production (`npm start`) and development (`npm run dev`) modes
 - Run `npm test` to ensure changes don't break existing functionality
 - All source code files should include copyright headers (see `velocity-copyright-template.txt`)
@@ -419,9 +434,10 @@ views/                      # EJS template directory
 - ESLint is configured with comprehensive rules in `eslint.config.mjs` (ES modules format)
 - Includes rules for code quality, security, Node.js best practices, and stylistic consistency
 - Key rules include require-await for async function validation and error handling improvements
-- Run `npm run lint` to check code style and quality
+- Run `npm run lint` to check code style and quality (now includes Vite configuration and client-src)
 - Follow existing code patterns in the repository
 - Use ES modules (`import`/`export`) with `.mjs` extensions in `src/` and `tests/` directories
+- Use ES6 modules in `client-src/` directory for modern JavaScript features
 - All source code files must include copyright headers (use `velocity-copyright-template.txt` as reference)
 - Favor async/await syntax over Promise chains
 
@@ -431,6 +447,7 @@ views/                      # EJS template directory
 - Vitest test suite provides comprehensive test coverage
 - Dependabot configured for npm and GitHub Actions dependency updates
 - All tests must pass before merging changes
+- Build process automatically runs before tests to ensure bundled assets are available
 
 ### Common Development Tasks
 - **Add new page**: Create EJS file in `views/` directory with proper includes for header/footer structure and copyright header
@@ -439,9 +456,11 @@ views/                      # EJS template directory
 - **Add images**: Place in `public/images/` directory
 - **Update navigation**: Modify `views/includes/header-navigation.ejs` and `views/includes/footer-navigation.ejs`
 - **Update social media links**: Edit footer section in `views/includes/footer-navigation.ejs`
-- **Modify splash animation**: Edit `public/scripts/splash.js` (p5.js sketch with Circle class and CirclePoissonDiscSampler for even distribution)
-- **Add client-side JavaScript**: Create files in `public/scripts/` directory with copyright headers
-- **Add wallet functionality**: Edit `public/scripts/wallet.js` (EVM wallet connection with MetaMask integration)
+- **Modify splash animation**: Edit `client-src/splash.js` (p5.js sketch with Circle class and CirclePoissonDiscSampler for even distribution)
+- **Add client-side JavaScript**: Create files in `client-src/` directory with copyright headers, use ES6 modules
+- **Add wallet functionality**: Edit `client-src/wallet.js` (EVM wallet connection with ES6 modules, MetaMask integration, and sample alerts)
+- **Build client assets**: Run `npm run build` for production or `npm run build:dev` for development
+- **Vite configuration**: Edit `vite.config.mjs` to modify build settings, entry points, or output configuration
 - **Add server routes**: Edit `src/app.mjs` (Express routes and middleware)
 - **Add database functionality**: Edit `src/db/database-client.mjs` (DatabaseClient class) and `src/db/projects-client.mjs` (ProjectsClient class)
 - **Add data models**: Create classes in `src/models/` directory (e.g., Projects class)
@@ -464,8 +483,17 @@ views/                      # EJS template directory
 - Check that port 3000 is not already in use: `lsof -i :3000`
 - Verify Node.js is available: `node --version`
 - Ensure dependencies are installed: `npm install`
+- Run build process: `npm run build` or `npm run build:dev`
 - Check for syntax errors in `src/server.mjs` or `src/app.mjs`
 - Verify database environment variables are configured if using database features
+
+### Vite Build Issues
+- Ensure Vite is installed: check for `vite` in `package.json` devDependencies
+- Check for syntax errors in `vite.config.mjs`
+- Verify `client-src/` directory exists with source files
+- Run build manually: `npm run build` to see detailed error messages
+- Check that bundled files are generated in `dist/` directory
+- Verify Express app serves bundled assets from `/js` route
 
 ### Contact Form Issues
 - Verify `.env` file exists with proper SMTP configuration
@@ -485,7 +513,16 @@ views/                      # EJS template directory
 - Check for linting issues: `npm run lint`
 - Verify Vitest configuration in `vitest.config.mjs`
 - Ensure all dependencies are installed: `npm install`
+- Verify build process completes: tests automatically run build before testing
 - Note that some tests are marked as TODO and will be skipped
+
+### JavaScript Not Loading
+- Check browser developer tools for JavaScript errors
+- Verify bundled assets exist in `dist/` directory
+- Test bundled asset endpoints: `curl -I http://localhost:3000/js/main.js`
+- Check EJS templates reference correct bundled asset paths (`/js/main.js`, `/js/splash.js`, etc.)
+- Verify Vite build completed successfully without errors
+- Check that Express app serves bundled assets correctly via `/js` route
 
 ### Content Not Loading
 - Verify EJS templates exist in `views/` directory

@@ -16,3 +16,6 @@ node_modules/
 
 # Vitest coverage
 _coverage/
+
+# Vite build output
+dist/
