@@ -39,6 +39,7 @@ try {
 app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.static('public'));
+app.use('/js', express.static('dist'));
 
 app.get('/', async (request, response) => {
     const projectIds = await Projects.getAllProjectIds();
