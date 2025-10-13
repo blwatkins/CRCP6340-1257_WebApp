@@ -34,6 +34,14 @@ h1, h2, h3, h4, h5, h6, .jetbrains {
   font-family: "JetBrains Mono", monospace;
 }
 
+a {
+    color: #025CE3;
+}
+
+a:hover {
+    color: #023e97;
+}
+
 .btn-primary, .bg-primary {
   background-color: #4B0082 !important;
   border-color: #4B0082 !important;
