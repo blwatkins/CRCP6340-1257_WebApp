@@ -2,7 +2,7 @@
 
 This is a Node.js web application using Express with EJS templating to serve dynamic content and handle contact form submissions for Brittni's Fall 2025 CRCP 6340 project. The application uses EJS templates in the `views` directory for dynamic page rendering, serves static assets from the `public` directory, and includes a working contact form with email notification functionality.
 
-Always reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.
+Always reference these instructions first and fall back to search or bash commands only when you encounter unexpected information that does not match the info here.
 
 ## Working Effectively
 
@@ -58,12 +58,12 @@ After making any changes, ALWAYS validate the application by:
    - "Connect Wallet" button displays in header navigation for EVM wallet connections
    - **Splash screen displays** with animated p5.js canvas showing:
      - Animated colorful circles appearing and fading (both filled circles and outline circles)
-     - Circles distributed evenly across the canvas using poisson disc sampling algorithm
+     - Circles distributed evenly across the canvas
      - "brittni watkins" text centered on screen (64px JetBrains Mono)
      - "Fall 2025 NFTs" text below (32px JetBrains Mono)
      - Full viewport height canvas (100vh)
    - **Featured project section** displays with randomly selected project from database and "view all projects" button
-   - "about brittni" section displays with real biographical content
+   - "about brittni" section displays with biographical content
    - Footer displays copyright notice, social media links with FontAwesome icons, and navigation links
 6. **Contact form testing**: Navigate to `/contact` and verify:
    - Contact form loads with proper Bootstrap styling
@@ -75,11 +75,9 @@ After making any changes, ALWAYS validate the application by:
 7. **Acknowledgements page testing**: Navigate to `/acknowledgements` and verify:
    - Page loads with proper header and footer structure
    - Acknowledgements for Express, Nodemailer, Bootstrap, and FontAwesome are displayed with icons
-   - Social media links work and open in new tabs with proper accessibility attributes
-   - Footer social media icons display correctly using FontAwesome
 8. **Projects page testing**: Navigate to `/projects` and verify:
    - Page loads with proper header and footer structure
-   - Project cards are displayed in a grid layout (up to 3 columns) using `project-card.ejs` layout
+   - Project cards are displayed in a grid layout
    - Each project card links to individual project pages (`/projects/1`, `/projects/2`, etc.)
    - Individual project pages load with project title, image, and description
    - Project data is dynamically loaded from database (requires MySQL configuration)
@@ -143,7 +141,7 @@ After making any changes, ALWAYS validate the application by:
 │   │   ├── header-navigation.ejs  # Navigation header
 │   │   ├── footer-navigation.ejs  # Footer with social links and navigation
 │   │   ├── closing-scripts.ejs    # Bootstrap JS scripts
-│   │   └── project-card.ejs # Project card layout using fs-5 class for titles
+│   │   └── project-card.ejs # Project card layout
 │   ├── errors/              # Error page templates
 │   │   ├── 404.ejs          # 404 error page
 │   │   └── 500.ejs          # 500 error page
@@ -219,11 +217,11 @@ After making any changes, ALWAYS validate the application by:
 - **Acknowledgements page**: `views/acknowledgements.ejs` (credits page template with social media links)
 - **Error pages**: `views/errors/404.ejs` and `views/errors/500.ejs` (error page templates)
 - **EJS includes**: `views/includes/` (reusable EJS partials for head, header, footer, and scripts)
-- **Project card layout**: `views/includes/project-card.ejs` (reusable project card component using fs-5 Bootstrap class for titles)
+- **Project card layout**: `views/includes/project-card.ejs` (reusable project card component)
 - **Splash animation**: `public/scripts/splash.js` (p5.js animated canvas with Circle and CirclePoissonDiscSampler classes)
 - **Contact form script**: `public/scripts/contact-email.js` (form validation, submission, UI feedback, and custom validation methods)
 - **Wallet connection script**: `public/scripts/wallet.js` (EVM wallet connection functionality with MetaMask support)
-- **Styling**: `public/style/style.css` (custom purple theme, JetBrains Mono font, splash styles, bg-secondary-subtle override with improved contrast colors)
+- **Styling**: `public/style/style.css` (custom purple theme, JetBrains Mono font, splash styles)
 - **Static assets**: `public/images/` (favicon, coming soon poster, project images, and other images)
 - **Database schema**: `schema/` (SQL files for database creation, sample data, and queries)
 - **Test files**: `tests/` (Vitest unit tests for app routes, utilities, database with improved error handling tests, models, and static serving)
