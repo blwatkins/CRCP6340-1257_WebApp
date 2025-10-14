@@ -81,7 +81,7 @@ After making any changes, ALWAYS validate the application by:
    - Page loads with proper header and footer structure
    - Project cards are displayed in a grid layout (up to 3 columns) using `project-card.ejs` layout
    - Each project card links to individual project pages (`/projects/1`, `/projects/2`, etc.)
-   - Individual project pages load with project title and placeholder content
+   - Individual project pages load with project title, image, and description
    - Project data is dynamically loaded from database (requires MySQL configuration)
 9. **Error page testing**: 
    - Navigate to `/nonexistent` and verify 404 error page displays with proper styling
@@ -143,7 +143,7 @@ After making any changes, ALWAYS validate the application by:
 │   │   ├── header-navigation.ejs  # Navigation header
 │   │   ├── footer-navigation.ejs  # Footer with social links and navigation
 │   │   ├── closing-scripts.ejs    # Bootstrap JS scripts
-│   │   └── project-card.ejs # Project card layout for project cards
+│   │   └── project-card.ejs # Project card layout using fs-5 class for titles
 │   ├── errors/              # Error page templates
 │   │   ├── 404.ejs          # 404 error page
 │   │   └── 500.ejs          # 500 error page
@@ -215,15 +215,15 @@ After making any changes, ALWAYS validate the application by:
 - **Main webpage**: `views/index.ejs` (homepage template with navigation, p5.js splash screen, featured project, and about sections)
 - **Contact page**: `views/contact.ejs` (contact page template with working form, validation, Bootstrap styling)
 - **Projects page**: `views/projects.ejs` (projects page template with dynamic project cards using `project-card.ejs` layout)
-- **Individual project page**: `views/project.ejs` (template for individual project pages)
+- **Individual project page**: `views/project.ejs` (template for individual project pages with project image and description)
 - **Acknowledgements page**: `views/acknowledgements.ejs` (credits page template with social media links)
 - **Error pages**: `views/errors/404.ejs` and `views/errors/500.ejs` (error page templates)
 - **EJS includes**: `views/includes/` (reusable EJS partials for head, header, footer, and scripts)
-- **Project card layout**: `views/includes/project-card.ejs` (reusable project card component)
+- **Project card layout**: `views/includes/project-card.ejs` (reusable project card component using fs-5 Bootstrap class for titles)
 - **Splash animation**: `public/scripts/splash.js` (p5.js animated canvas with Circle and CirclePoissonDiscSampler classes)
 - **Contact form script**: `public/scripts/contact-email.js` (form validation, submission, UI feedback, and custom validation methods)
 - **Wallet connection script**: `public/scripts/wallet.js` (EVM wallet connection functionality with MetaMask support)
-- **Styling**: `public/style/style.css` (custom purple theme, JetBrains Mono font, splash styles, bg-secondary-subtle override)
+- **Styling**: `public/style/style.css` (custom purple theme, JetBrains Mono font, splash styles, bg-secondary-subtle override with improved contrast colors)
 - **Static assets**: `public/images/` (favicon, coming soon poster, project images, and other images)
 - **Database schema**: `schema/` (SQL files for database creation, sample data, and queries)
 - **Test files**: `tests/` (Vitest unit tests for app routes, utilities, database with improved error handling tests, models, and static serving)
@@ -377,16 +377,16 @@ views/                      # EJS template directory
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "html-entities": "^2.6.0",
-    "mysql2": "^3.15.0",
-    "nodemailer": "^7.0.6"
+    "mysql2": "^3.15.2",
+    "nodemailer": "^7.0.9"
   },
   "devDependencies": {
-    "@eslint/js": "^9.36.0",
+    "@eslint/js": "^9.37.0",
     "@stylistic/eslint-plugin": "^5.4.0",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
-    "eslint": "^9.36.0",
-    "eslint-plugin-es-x": "^9.1.0",
+    "eslint": "^9.37.0",
+    "eslint-plugin-es-x": "^9.1.1",
     "eslint-plugin-n": "^17.23.1",
     "eslint-plugin-security": "^3.0.1",
     "nodemon": "^3.1.10",
