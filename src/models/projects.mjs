@@ -65,7 +65,7 @@ export class Projects {
         return {
             id: projectData.id,
             title: projectData.title,
-            image_url: encodeURIComponent(projectData.image_url),
+            image_url: encode(projectData.image_url),
             description: projectData.description
         };
     }

@@ -20,13 +20,17 @@
  * SOFTWARE.
  */
 
+import cors from 'cors';
 import express from 'express';
+
+import { rateLimit } from 'express-rate-limit';
 
 import { DatabaseClient } from './db/database-client.mjs';
 import { Projects } from './models/projects.mjs';
 import { EmailClient } from './utils/email-client.mjs';
 import { Random } from './utils/random.mjs';
 import { Validation } from './utils/validation.mjs';
+import { MILLIS_PER_SECOND, SECONDS_PER_MINUTE } from './utils/constants.mjs';
 
 export const app = express();
 
@@ -36,6 +40,16 @@ try {
     console.error(error);
 }
 
+const limiter = rateLimit({
+    windowMs: MILLIS_PER_SECOND * SECONDS_PER_MINUTE,
+    limit: 100,
+    standardHeaders: 'draft-8',
+    legacyHeaders: false,
+    ipv6Subnet: 56
+});
+
+app.use(limiter);
+app.use(cors());
 app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.static('public'));
