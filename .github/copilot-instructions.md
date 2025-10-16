@@ -11,7 +11,7 @@ Always reference these instructions first and fall back to search or bash comman
 - No additional SDK installations required
 
 ### Setup and Dependencies
-- Install dependencies: `npm install` -- takes ~15 seconds (includes ejs, vitest, nodemailer, dotenvx, mysql2, html-entities, supertest, @vitest/ui)
+- Install dependencies: `npm install` -- takes ~15 seconds (includes ejs, vitest, nodemailer, dotenvx, mysql2, html-entities, supertest, @vitest/ui, cors, express-rate-limit)
 - Environment variables: Create `.env` file for email functionality (SMTP settings, see Environment Variables section). For enhanced security, consider using dotenvx encryption features to encrypt sensitive environment variables.
 - No build process required (Express app with EJS templating and API routes)
 
@@ -132,6 +132,7 @@ After making any changes, ALWAYS validate the application by:
 │   ├── models/              # Data model classes
 │   │   └── projects.mjs     # Projects class for project data processing
 │   └── utils/               # Utility functions
+│       ├── constants.mjs    # Shared constants for rate limiting and other configurations
 │       ├── email-client.mjs # EmailClient class
 │       ├── random.mjs       # Random class
 │       └── validation.mjs   # Validation class
@@ -201,13 +202,14 @@ After making any changes, ALWAYS validate the application by:
 
 ### Important Code Locations
 - **Server configuration**: `src/server.mjs` (Express server startup, port 3000, database shutdown logic)
-- **Express app**: `src/app.mjs` (routes, middleware, EJS view engine, GET and POST endpoints, DatabaseClient initialization)
+- **Express app**: `src/app.mjs` (routes, middleware, EJS view engine, GET and POST endpoints, DatabaseClient initialization, CORS middleware, rate limiting middleware)
 - **Database client**: `src/db/database-client.mjs` (DatabaseClient class for MySQL connection management with improved error handling)
 - **Projects client**: `src/db/projects-client.mjs` (ProjectsClient class for database queries)
 - **Projects model**: `src/models/projects.mjs` (Projects class for project data processing)
 - **Email client**: `src/utils/email-client.mjs` (EmailClient class with nodemailer)
 - **Random utilities**: `src/utils/random.mjs` (Random class with selectRandomElement method)
 - **Validation utilities**: `src/utils/validation.mjs` (Validation class)
+- **Constants utilities**: `src/utils/constants.mjs` (Shared constants for rate limiting and other configurations)
 - **ESLint configuration**: `eslint.config.mjs` (comprehensive linting rules)
 - **Vitest configuration**: `vitest.config.mjs` (test configuration with coverage reporting)
 - **Main webpage**: `views/index.ejs` (homepage template with navigation, p5.js splash screen, featured project, and about sections)
@@ -224,6 +226,7 @@ After making any changes, ALWAYS validate the application by:
 - **Styling**: `public/style/style.css` (custom purple theme, JetBrains Mono font, splash styles)
 - **Static assets**: `public/images/` (favicon, coming soon poster, project images, and other images)
 - **Database schema**: `schema/` (SQL files for database creation, sample data, and queries)
+- **Constants utilities**: `src/utils/constants.mjs` (shared constants for rate limiting and other configurations)
 - **Test files**: `tests/` (Vitest unit tests for app routes, utilities, database with improved error handling tests, models, and static serving)
 
 ## Environment Variables
@@ -372,8 +375,10 @@ views/                      # EJS template directory
 {
   "dependencies": {
     "@dotenvx/dotenvx": "^1.51.0",
+    "cors": "^2.8.5",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
     "html-entities": "^2.6.0",
     "mysql2": "^3.15.2",
     "nodemailer": "^7.0.9"
@@ -440,12 +445,13 @@ views/                      # EJS template directory
 - **Modify splash animation**: Edit `public/scripts/splash.js` (p5.js sketch with Circle class and CirclePoissonDiscSampler for even distribution)
 - **Add client-side JavaScript**: Create files in `public/scripts/` directory with copyright headers
 - **Add wallet functionality**: Edit `public/scripts/wallet.js` (EVM wallet connection with MetaMask integration)
-- **Add server routes**: Edit `src/app.mjs` (Express routes and middleware)
+- **Add server routes**: Edit `src/app.mjs` (Express routes and middleware, CORS, rate limiting)
 - **Add database functionality**: Edit `src/db/database-client.mjs` (DatabaseClient class) and `src/db/projects-client.mjs` (ProjectsClient class)
 - **Add data models**: Create classes in `src/models/` directory (e.g., Projects class)
 - **Add email functionality**: Edit `src/utils/email-client.mjs` (EmailClient class)
 - **Add random utilities**: Edit `src/utils/random.mjs` (Random class with selectRandomElement method)
 - **Add validation**: Edit `src/utils/validation.mjs` (Validation class)
+- **Add constants**: Edit `src/utils/constants.mjs` (Shared constants for rate limiting and other configurations)
 - **Server configuration**: Edit `src/server.mjs` (port, startup logic, shutdown handling)
 - **Add unit tests**: Create test files in `tests/` directory (Vitest format, using .mjs extension)
 - **Environment setup**: Edit `.env` file for email and database configuration (not committed to repo)
