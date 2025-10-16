@@ -38,7 +38,7 @@ export class DatabaseClient {
     }
 
     static get hasConnectionPool() {
-        return DatabaseClient.#connectionPool !== null;
+        return DatabaseClient.#connectionPool !== null && DatabaseClient.#connectionPool !== undefined;
     }
 
     static verifyConnectionSettings() {
