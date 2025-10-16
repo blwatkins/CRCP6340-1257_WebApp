@@ -16,3 +16,6 @@ node_modules/
 
 # Vitest coverage
 _coverage/
+
+# Certificates
+ca-certificate.crt
