@@ -226,7 +226,6 @@ After making any changes, ALWAYS validate the application by:
 - **Styling**: `public/style/style.css` (custom purple theme, JetBrains Mono font, splash styles)
 - **Static assets**: `public/images/` (favicon, coming soon poster, project images, and other images)
 - **Database schema**: `schema/` (SQL files for database creation, sample data, and queries)
-- **Constants utilities**: `src/utils/constants.mjs` (shared constants for rate limiting and other configurations)
 - **Test files**: `tests/` (Vitest unit tests for app routes, utilities, database with improved error handling tests, models, and static serving)
 
 ## Environment Variables

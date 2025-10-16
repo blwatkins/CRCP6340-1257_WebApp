@@ -24,45 +24,51 @@ import { DatabaseClient } from './database-client.mjs';
 
 export class ProjectsClient extends DatabaseClient {
     static async queryAllProjects() {
-        const query = 'SELECT * FROM projects';
+        if (ProjectsClient.hasConnectionPool) {
+            const query = 'SELECT * FROM projects';
 
-        try {
-            const [rows] = await ProjectsClient.connectionPool.execute(query);
-            return rows;
-        } catch (error) {
-            console.error(error);
+            try {
+                const [rows] = await ProjectsClient.connectionPool.execute(query);
+                return rows;
+            } catch (error) {
+                console.error(error);
+            }
         }
 
         return [];
     }
 
     static async queryAllProjectIds() {
-        const query = 'SELECT id FROM projects';
+        if (ProjectsClient.hasConnectionPool) {
+            const query = 'SELECT id FROM projects';
 
-        try {
-            const [rows] = await ProjectsClient.connectionPool.execute(query);
-            return rows;
-        } catch (error) {
-            console.error(error);
+            try {
+                const [rows] = await ProjectsClient.connectionPool.execute(query);
+                return rows;
+            } catch (error) {
+                console.error(error);
+            }
         }
 
         return [];
     }
 
     static async queryProjectById(projectId) {
-        const query = 'SELECT * FROM projects WHERE id = ?';
-        const values = [projectId];
+        if (ProjectsClient.hasConnectionPool) {
+            const query = 'SELECT * FROM projects WHERE id = ?';
+            const values = [projectId];
 
-        try {
-            const [rows] = await ProjectsClient.connectionPool.execute(query, values);
+            try {
+                const [rows] = await ProjectsClient.connectionPool.execute(query, values);
 
-            if (rows.length > 0) {
-                return rows[0];
-            } else {
-                return undefined;
+                if (rows.length > 0) {
+                    return rows[0];
+                } else {
+                    return undefined;
+                }
+            } catch (error) {
+                console.error(error);
             }
-        } catch (error) {
-            console.error(error);
         }
 
         return undefined;
