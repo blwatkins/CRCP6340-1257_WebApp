@@ -37,6 +37,10 @@ export class DatabaseClient {
         return DatabaseClient.#connectionPool;
     }
 
+    static get hasConnectionPool() {
+        return DatabaseClient.#connectionPool !== null;
+    }
+
     static verifyConnectionSettings() {
         const host = process.env.MYSQL_HOST;
         const port = Number.parseInt(process.env.MYSQL_PORT, 10);

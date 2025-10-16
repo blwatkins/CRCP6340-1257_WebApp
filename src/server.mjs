@@ -27,7 +27,7 @@ import { DatabaseClient } from './db/database-client.mjs';
 const port = 3000;
 
 const server = app.listen(port, () => {
-    console.log(`CRCP 6340 (1257) WebApp listening at http://localhost:${port}`);
+    console.log(`CRCP 6340 (1257) WebApp listening at port ${port}`);
 });
 
 async function shutdown() {
