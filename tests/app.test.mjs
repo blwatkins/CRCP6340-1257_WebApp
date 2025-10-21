@@ -20,29 +20,9 @@
  * SOFTWARE.
  */
 
-vi.mock('nodemailer');
-
-import nodemailer from 'nodemailer';
 import request from 'supertest';
 
 import { app } from '../src/app.mjs';
-
-afterAll(() => {
-    vi.clearAllMocks();
-    vi.resetModules();
-});
-
-const ORIGINAL_ENV = process.env;
-
-const TEST_ENV = {
-    ...ORIGINAL_ENV,
-    SMTP_SERVICE: 'fake',
-    SMTP_REQUIRE_TLS: 'true',
-    MAIL_USER: 'user@fake-website.fake',
-    MAIL_PASSWORD: 'password',
-    MAIL_FROM: 'from@fake-website.fake',
-    MAIL_TO: 'to@fake-website.fake'
-};
 
 describe('app routing', () => {
     describe('general routes', () => {
@@ -72,13 +52,6 @@ describe('app routing', () => {
         });
     });
 
-    describe('GET /contact', () => {
-        test('GET /contact - returns 200', async () => {
-            const response = await request(app).get('/contact');
-            expect(response.statusCode).toBe(200);
-        });
-    });
-
     describe('GET /projects', () => {
         test('GET /projects - returns 200', async () => {
             const response = await request(app).get('/projects');
@@ -104,75 +77,5 @@ describe('app routing', () => {
         // });
 
         test.todo('GET /projects/$id');
-    });
-
-    describe('POST /mail', () => {
-        beforeEach(() => {
-            process.env = { ...TEST_ENV };
-            vi.clearAllMocks();
-        });
-
-        afterEach(() => {
-            process.env = ORIGINAL_ENV;
-            vi.clearAllMocks();
-        });
-
-        test('POST /mail - success', async () => {
-            const sendMailMock = vi.fn().mockResolvedValue('success');
-            const createTransportMock = vi.fn().mockReturnValue({ sendMail: sendMailMock });
-            nodemailer.createTransport = createTransportMock;
-
-            const response = await request(app)
-                .post('/mail')
-                .send({ subject: 'Test Subject', message: 'Test Body' });
-
-            expect(response.statusCode).toBe(200);
-            expect(response.text).toBe('Email sent successfully.');
-            expect(sendMailMock).toHaveBeenCalledWith({
-                from: TEST_ENV.MAIL_FROM,
-                to: TEST_ENV.MAIL_TO,
-                subject: 'Test Subject',
-                text: 'Test Body'
-            });
-        });
-
-        test('POST /mail - invalid subject or message', async () => {
-            const response = await request(app)
-                .post('/mail')
-                .send({ subject: '', message: '' });
-
-            expect(response.statusCode).toBe(400);
-            expect(response.text).toBe('Invalid request format.');
-        });
-
-        test('POST /mail - missing required fields', async () => {
-            const response = await request(app)
-                .post('/mail')
-                .send({ subject: 'Test Subject' });
-
-            expect(response.statusCode).toBe(400);
-            expect(response.text).toBe('Invalid request format.');
-        });
-
-        test('POST /mail - malformed JSON', async () => {
-            const response = await request(app)
-                .post('/mail')
-                .send('invalid json');
-
-            expect(response.statusCode).toBe(400);
-        });
-
-        test('POST /mail - sendEmail error', async () => {
-            const sendMailMock = vi.fn().mockRejectedValue(new Error('SMTP error'));
-            const createTransportMock = vi.fn().mockReturnValue({ sendMail: sendMailMock });
-            nodemailer.createTransport = createTransportMock;
-
-            const response = await request(app)
-                .post('/mail')
-                .send({ subject: 'Test Subject', message: 'Test Body' });
-
-            expect(response.statusCode).toBe(500);
-            expect(response.text).toBe('Error sending email.');
-        });
     });
 });

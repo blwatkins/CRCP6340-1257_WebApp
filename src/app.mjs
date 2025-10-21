@@ -27,9 +27,7 @@ import { rateLimit } from 'express-rate-limit';
 
 import { DatabaseClient } from './db/database-client.mjs';
 import { Projects } from './models/projects.mjs';
-import { EmailClient } from './utils/email-client.mjs';
 import { Random } from './utils/random.mjs';
-import { Validation } from './utils/validation.mjs';
 import { MILLIS_PER_SECOND, SECONDS_PER_MINUTE } from './utils/constants.mjs';
 
 export const app = express();
@@ -76,12 +74,6 @@ app.get('/acknowledgements', (request, response) => {
                 linkURL: 'https://expressjs.com/'
             },
             {
-                fontAwesomeIcon: 'fa-solid fa-envelope',
-                introText: 'Built with',
-                linkText: 'Nodemailer',
-                linkURL: 'https://nodemailer.com/'
-            },
-            {
                 fontAwesomeIcon: 'fa-brands fa-css',
                 introText: 'Built with',
                 linkText: 'Bootstrap',
@@ -122,41 +114,6 @@ app.get('/projects/:id', async (request, response) => {
         }
     } else {
         response.status(404).render('errors/404.ejs');
-    }
-});
-
-app.post('/mail', async (request, response) => {
-    console.debug('Mail request received.');
-
-    if (request.body) {
-        const requestSubject = request.body.subject;
-        const requestMessage = request.body.message;
-        let subject;
-        let message;
-
-        if (Validation.isValidString(requestSubject)) {
-            subject = Validation.sanitizeString(requestSubject);
-        }
-
-        if (Validation.isValidString(requestMessage)) {
-            message = Validation.sanitizeString(requestMessage);
-        }
-
-        if (subject && message) {
-            try {
-                await EmailClient.sendEmail(subject, message);
-                const successMessage = 'Email sent successfully.';
-                console.debug(successMessage);
-                response.send(successMessage);
-            } catch (error) {
-                console.error(`Error sending email: ${error}`);
-                response.status(500).send('Error sending email.');
-            }
-        } else {
-            response.status(400).send('Invalid request format.');
-        }
-    } else {
-        response.status(400).send('Invalid request format.');
     }
 });
 
