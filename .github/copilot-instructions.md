@@ -1,6 +1,6 @@
 # CRCP6340-1257_WebApp
 
-This is a Node.js web application using Express with EJS templating to serve dynamic content and handle contact form submissions for Brittni's Fall 2025 CRCP 6340 project. The application uses EJS templates in the `views` directory for dynamic page rendering, serves static assets from the `public` directory, and includes a working contact form with email notification functionality.
+This is a Node.js web application using Express with EJS templating to serve dynamic content for Brittni's Fall 2025 CRCP 6340 project. The application uses EJS templates in the `views` directory for dynamic page rendering and serves static assets from the `public` directory.
 
 Always reference these instructions first and fall back to search or bash commands only when you encounter unexpected information that does not match the info here.
 
@@ -11,15 +11,14 @@ Always reference these instructions first and fall back to search or bash comman
 - No additional SDK installations required
 
 ### Setup and Dependencies
-- Install dependencies: `npm install` -- takes ~15 seconds (includes ejs, vitest, nodemailer, dotenvx, mysql2, html-entities, supertest, @vitest/ui, cors, express-rate-limit)
-- Environment variables: Create `.env` file for email functionality (SMTP settings, see Environment Variables section). For enhanced security, consider using dotenvx encryption features to encrypt sensitive environment variables.
+- Install dependencies: `npm install` -- takes ~15 seconds (includes ejs, vitest, dotenvx, mysql2, html-entities, supertest, @vitest/ui, cors, express-rate-limit)
+- Environment variables: Create `.env` file for database functionality (MySQL settings, see Environment Variables section). For enhanced security, consider using dotenvx encryption features to encrypt sensitive environment variables.
 - No build process required (Express app with EJS templating and API routes)
 
 ### Running the Application
 - Production server: `npm start` -- starts immediately on port 3000 (uses dotenvx and server.mjs)
 - Development server (with auto-reload): `npm run dev` -- starts immediately with nodemon (uses dotenvx and server.mjs)
 - Application serves content at: `http://localhost:3000`
-- Contact form requires environment variables for email functionality
 
 ### Testing
 - Test command: `npm test` -- runs Vitest test suite with 184 tests (plus 5 TODO tests) and coverage reporting
@@ -38,7 +37,6 @@ Always reference these instructions first and fall back to search or bash comman
   - `ProjectsClient` class tests (`tests/db/projects-client.test.mjs`) 
   - `Projects` class tests (`tests/models/projects.test.mjs`)
   - `GET /projects/$id` route tests (`tests/app.test.mjs`)
-  - `EmailClient` constructor tests (`tests/utils/email-client.test.mjs`)
   - `Validation.isValidNumber()` tests (`tests/utils/validation.test.mjs`)
   - `Random` class tests (`tests/utils/random.test.mjs`)
 
@@ -50,11 +48,10 @@ After making any changes, ALWAYS validate the application by:
 1. **Start the server**: Run `npm start` and verify it shows "CRCP 6340 (1257) WebApp listening at port 3000"
 2. **Test HTTP response**: Run `curl -I http://localhost:3000` and verify you get "HTTP/1.1 200 OK"
 3. **Test content delivery**: Run `curl -s http://localhost:3000 | head -20` and verify HTML content is returned
-4. **Test contact form API**: Run `curl -X POST -H "Content-Type: application/json" -d '{"subject":"Test","message":"Test message"}' http://localhost:3000/mail` and verify appropriate response (success requires .env email configuration)
-5. **Manual UI testing**: Open `http://localhost:3000` in a browser and verify:
+4. **Manual UI testing**: Open `http://localhost:3000` in a browser and verify:
    - Page loads with purple navigation bar
    - "brittni's fall 2025 nfts" branding displays and links to index.html
-   - Navigation links ("home", "about", "projects", "contact", "acknowledgements") are clickable and functional
+   - Navigation links ("home", "about", "projects", "acknowledgements") are clickable and functional
    - "Connect Wallet" button displays in header navigation for EVM wallet connections
    - **Splash screen displays** with animated p5.js canvas showing:
      - Animated colorful circles appearing and fading (both filled circles and outline circles)
@@ -65,26 +62,19 @@ After making any changes, ALWAYS validate the application by:
    - **Featured project section** displays with randomly selected project from database and "view all projects" button
    - "about brittni" section displays with biographical content
    - Footer displays copyright notice, social media links with FontAwesome icons, and navigation links
-6. **Contact form testing**: Navigate to `/contact` and verify:
-   - Contact form loads with proper Bootstrap styling
-   - Form validation works (required fields, email format, custom validation)
-   - Custom validation prevents empty strings and whitespace-only strings for name and message fields
-   - Form disables submit button during processing
-   - Form shows appropriate success/error messages
-   - Form clears on successful submission, retains data on error
-7. **Acknowledgements page testing**: Navigate to `/acknowledgements` and verify:
+5. **Acknowledgements page testing**: Navigate to `/acknowledgements` and verify:
    - Page loads with proper header and footer structure
-   - Acknowledgements for Express, Nodemailer, Bootstrap, and FontAwesome are displayed with icons
-8. **Projects page testing**: Navigate to `/projects` and verify:
+   - Acknowledgements for Express, Bootstrap, and FontAwesome are displayed with icons
+6. **Projects page testing**: Navigate to `/projects` and verify:
    - Page loads with proper header and footer structure
    - Project cards are displayed in a grid layout
    - Each project card links to individual project pages (`/projects/1`, `/projects/2`, etc.)
    - Individual project pages load with project title, image, and description
    - Project data is dynamically loaded from database (requires MySQL configuration)
-9. **Error page testing**: 
+7. **Error page testing**: 
    - Navigate to `/nonexistent` and verify 404 error page displays with proper styling
    - Test server error handling (500 error page should display for server errors)
-10. **Wallet connection testing**:
+8. **Wallet connection testing**:
    - Verify "Connect Wallet" button displays in header navigation
    - Test wallet connection functionality (requires MetaMask or compatible EVM wallet)
    - Verify button shows wallet address preview after successful connection
@@ -95,12 +85,9 @@ After making any changes, ALWAYS validate the application by:
 - No compilation or build step required
 - Static assets serve correctly from `/public` directory
 - EJS templates render correctly with dynamic content
-- Navigation uses Express routes for page navigation (/, /projects, /contact, /acknowledgements) and anchor links for single-page scrolling (/#about)
+- Navigation uses Express routes for page navigation (/, /projects, /acknowledgements) and anchor links for single-page scrolling (/#about)
 - ESLint passes without errors on all configured files
 - Vitest tests pass with 100% code coverage
-- Contact form validates input and submits via POST /mail endpoint
-- Custom client-side validation prevents empty strings and whitespace-only strings
-- Email notifications sent when SMTP environment variables are properly configured
 - Social media links in footer open in new tabs with proper accessibility attributes
 - Project pages are dynamically generated using Projects data
 - Featured project on homepage is randomly selected from database projects
@@ -109,7 +96,6 @@ After making any changes, ALWAYS validate the application by:
 
 ### Known Issues
 - External resources (Google Fonts, Bootstrap CDN, p5.js CDN, FontAwesome CDN) may be blocked in some environments - this is normal and doesn't affect core functionality
-- Contact form email functionality requires proper SMTP environment configuration in `.env` file
 - Database functionality requires proper MySQL environment configuration in `.env` file
 - Server will show "[MISSING_ENV_FILE]" warning if `.env` file is not present (this is normal for static-only usage)
 - Database connection errors will appear if MySQL environment variables are missing or incorrect
@@ -132,7 +118,6 @@ After making any changes, ALWAYS validate the application by:
 │   ├── models/              # Data model classes
 │   │   └── projects.mjs     # Projects class for project data processing
 │   └── utils/               # Utility functions
-│       ├── email-client.mjs # EmailClient class
 │       ├── random.mjs       # Random class
 │       └── validation.mjs   # Validation class
 ├── views/                    # EJS template directory
@@ -146,7 +131,6 @@ After making any changes, ALWAYS validate the application by:
 │   │   ├── 404.ejs          # 404 error page
 │   │   └── 500.ejs          # 500 error page
 │   ├── index.ejs            # Homepage template with navigation, splash, featured project, and about sections
-│   ├── contact.ejs          # Contact page template with working contact form
 │   ├── projects.ejs         # Projects page template with dynamic project cards
 │   ├── project.ejs          # Individual project page template
 │   └── acknowledgements.ejs # Acknowledgements page template
@@ -159,13 +143,11 @@ After making any changes, ALWAYS validate the application by:
 │   ├── models/              # Model class tests
 │   │   └── projects.test.mjs # Projects class tests (TODO)
 │   └── utils/               # Utility function tests
-│       ├── email-client.test.mjs     # EmailClient tests (with TODO constructor tests)
 │       ├── random.test.mjs           # Random class tests (TODO)
 │       └── validation.test.mjs       # Validation tests (with TODO isValidNumber tests)
 ├── public/                   # Static web content directory
 │   ├── scripts/
 │   │   ├── splash.js        # p5.js animated splash screen with fill and outline circles
-│   │   ├── contact-email.js # Contact form validation and submission handling
 │   │   └── wallet.js        # EVM wallet connection functionality
 │   ├── style/
 │   │   └── style.css        # Custom CSS styles
@@ -186,7 +168,7 @@ After making any changes, ALWAYS validate the application by:
 ├── package.json                # Node.js dependencies and scripts
 ├── package-lock.json           # Dependency lock file
 ├── velocity-copyright-template.txt # Copyright header template
-├── .env                     # Environment variables (not in repo, required for email functionality)
+├── .env                     # Environment variables (not in repo, required for database functionality)
 ├── .github/
 │   ├── workflows/
 │   │   ├── npm-test.yml        # npm lint and test workflow
@@ -201,18 +183,16 @@ After making any changes, ALWAYS validate the application by:
 
 ### Important Code Locations
 - **Server configuration**: `src/server.mjs` (Express server startup, port 3000, database shutdown logic)
-- **Express app**: `src/app.mjs` (routes, middleware, EJS view engine, GET and POST endpoints, DatabaseClient initialization, CORS middleware, rate limiting middleware)
+- **Express app**: `src/app.mjs` (routes, middleware, EJS view engine, GET endpoints, DatabaseClient initialization, CORS middleware, rate limiting middleware)
 - **Database client**: `src/db/database-client.mjs` (DatabaseClient class for MySQL connection management with improved error handling and connection pool checking)
 - **Projects client**: `src/db/projects-client.mjs` (ProjectsClient class for database queries with connection pool validation)
 - **Projects model**: `src/models/projects.mjs` (Projects class for project data processing)
-- **Email client**: `src/utils/email-client.mjs` (EmailClient class with nodemailer)
 - **Random utilities**: `src/utils/random.mjs` (Random class with selectRandomElement method)
 - **Validation utilities**: `src/utils/validation.mjs` (Validation class)
 
 - **ESLint configuration**: `eslint.config.mjs` (comprehensive linting rules)
 - **Vitest configuration**: `vitest.config.mjs` (test configuration with coverage reporting)
 - **Main webpage**: `views/index.ejs` (homepage template with navigation, p5.js splash screen, featured project, and about sections)
-- **Contact page**: `views/contact.ejs` (contact page template with working form, validation, Bootstrap styling)
 - **Projects page**: `views/projects.ejs` (projects page template with dynamic project cards using `project-card.ejs` layout)
 - **Individual project page**: `views/project.ejs` (template for individual project pages with project image and description)
 - **Acknowledgements page**: `views/acknowledgements.ejs` (credits page template with social media links)
@@ -220,7 +200,6 @@ After making any changes, ALWAYS validate the application by:
 - **EJS includes**: `views/includes/` (reusable EJS partials for head, header, footer, and scripts)
 - **Project card layout**: `views/includes/project-card.ejs` (reusable project card component)
 - **Splash animation**: `public/scripts/splash.js` (p5.js animated canvas with Circle and CirclePoissonDiscSampler classes)
-- **Contact form script**: `public/scripts/contact-email.js` (form validation, submission, UI feedback, and custom validation methods)
 - **Wallet connection script**: `public/scripts/wallet.js` (EVM wallet connection functionality with MetaMask support)
 - **Styling**: `public/style/style.css` (custom purple theme, JetBrains Mono font, splash styles)
 - **Static assets**: `public/images/` (favicon, coming soon poster, project images, and other images)
@@ -229,25 +208,8 @@ After making any changes, ALWAYS validate the application by:
 
 ## Environment Variables
 
-### Required for Email Functionality
-Create a `.env` file in the repository root with the following variables for contact form email functionality:
-
-```env
-# SMTP Configuration
-SMTP_SERVICE=gmail
-SMTP_REQUIRE_TLS=true
-
-# Email Authentication
-MAIL_USER=your-email@gmail.com
-MAIL_PASSWORD=your-app-password
-
-# Email Addresses
-MAIL_FROM=your-email@gmail.com
-MAIL_TO=recipient@example.com
-```
-
 ### Required for Database Functionality
-The following MySQL database environment variables must also be added to your `.env` file:
+Create a `.env` file in the repository root with the following MySQL database environment variables:
 
 ```env
 # MySQL Database Configuration
@@ -259,14 +221,6 @@ MYSQL_DATABASE=your-database-name
 ```
 
 ### Environment Variable Details
-**Email Configuration:**
-- **SMTP_SERVICE**: Email service provider (gmail, outlook, etc.)
-- **SMTP_REQUIRE_TLS**: Whether to require TLS encryption (true/false)
-- **MAIL_USER**: SMTP authentication username
-- **MAIL_PASSWORD**: SMTP authentication password (use app-specific passwords for Gmail)
-- **MAIL_FROM**: Email address to send from
-- **MAIL_TO**: Email address to send contact form submissions to
-
 **Database Configuration:**
 - **MYSQL_HOST**: MySQL server hostname or IP address
 - **MYSQL_PORT**: MySQL server port (typically 3306)
@@ -322,9 +276,7 @@ npx @dotenvx/dotenvx decrypt -f .env.vault
 
 ### Important Notes
 - Environment variables are loaded using `@dotenvx/dotenvx`
-- Contact form will return errors if email environment variables are not properly configured
 - Database functionality will fail if MySQL environment variables are not properly configured
-- For Gmail, use app-specific passwords rather than regular account passwords
 - The application will show "[MISSING_ENV_FILE]" warning if `.env` file is missing (this is normal for static-only usage)
 - Database connection errors will appear in logs if MySQL environment variables are missing or incorrect
 - **Encryption is optional but recommended** for enhanced security, especially in team environments
@@ -378,8 +330,7 @@ views/                      # EJS template directory
     "express": "^5.1.0",
     "express-rate-limit": "^8.1.0",
     "html-entities": "^2.6.0",
-    "mysql2": "^3.15.2",
-    "nodemailer": "^7.0.9"
+    "mysql2": "^3.15.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.37.0",
@@ -446,7 +397,6 @@ views/                      # EJS template directory
 - **Add server routes**: Edit `src/app.mjs` (Express routes and middleware, CORS, rate limiting)
 - **Add database functionality**: Edit `src/db/database-client.mjs` (DatabaseClient class) and `src/db/projects-client.mjs` (ProjectsClient class)
 - **Add data models**: Create classes in `src/models/` directory (e.g., Projects class)
-- **Add email functionality**: Edit `src/utils/email-client.mjs` (EmailClient class)
 - **Add random utilities**: Edit `src/utils/random.mjs` (Random class with selectRandomElement method)
 - **Add validation**: Edit `src/utils/validation.mjs` (Validation class)
 
@@ -469,12 +419,6 @@ views/                      # EJS template directory
 - Check for syntax errors in `src/server.mjs` or `src/app.mjs`
 - Verify database environment variables are configured if using database features
 
-### Contact Form Issues
-- Verify `.env` file exists with proper SMTP configuration
-- Check server logs for email sending errors
-- Test email configuration with external SMTP tool
-- Verify environment variables are loaded: check for "[MISSING_ENV_FILE]" warnings
-
 ### Database Issues
 - Verify `.env` file contains proper MySQL configuration
 - Check that MySQL server is running and accessible
@@ -495,8 +439,7 @@ views/                      # EJS template directory
 - Verify includes are properly referenced in EJS templates
 - Check browser developer tools for 404 errors
 - Confirm server is running and responding: `curl -I http://localhost:3000`
-- Test API endpoints: `curl -X POST -H "Content-Type: application/json" -d '{"subject":"Test","message":"Test"}' http://localhost:3000/mail`
-- Test individual routes: `curl -I http://localhost:3000/projects`, `curl -I http://localhost:3000/contact`, etc.
+- Test individual routes: `curl -I http://localhost:3000/projects`, `curl -I http://localhost:3000/acknowledgements`, etc.
 
 ### External Resources Blocked
 - Google Fonts and Bootstrap CDN may be blocked in some environments
