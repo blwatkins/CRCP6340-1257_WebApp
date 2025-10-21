@@ -89,10 +89,6 @@ app.get('/acknowledgements', (request, response) => {
     });
 });
 
-app.get('/contact', (request, response) => {
-    response.render('contact.ejs');
-});
-
 app.get('/projects', async (request, response) => {
     const projects = await Projects.getAllProjects();
     response.render('projects.ejs', { projects: projects, maxCols: 3 });
